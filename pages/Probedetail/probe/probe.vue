@@ -107,7 +107,15 @@ export default {
 	onReachBottom() {
 		this.more = "loading"
 	},
+	created() {
+		this.queryprobelist()
+	},
 	methods: {
+		queryprobelist(){
+			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:6}).then(res => {
+				console.log(res)
+			})
+		},
 		func(){
 			uni.scanCode({
 			    onlyFromCamera: true,

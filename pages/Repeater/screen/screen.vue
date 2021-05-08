@@ -5,9 +5,9 @@
 			<view class="screen-top">
 				<text style="font-size: 32rpx;opacity: 0.5;color: #FFFFFF;">设备状态</text>
 				<view class="screen-list">
-					<view class="screen-cat" :class="item.active=='active'?'screen-cat-active':''" v-for="(item,index) in screenlist" :key="index" @click="active(index)">
+					<view class="screen-cat" :class="indexes==index?'screen-cat-active':''" v-for="(item,index) in screenlist" :key="index" @click="active(index)">
 						<text>{{ item.text }}</text>
-						<image v-if="item.active=='active'" src="../../../static/icon/13926.png" mode=""></image>
+						<image v-if="indexes==index" src="../../../static/icon/13926.png" mode=""></image>
 					</view>
 				</view>
 			</view>
@@ -47,9 +47,9 @@
 					<image @click="close" src="../../../static/icon/6708.png" mode=""></image>
 				</view>
 				<scroll-view  class="scroll" scroll-y="true" >
-					<view class="scroll-list" :class="activeto==item?'active':''" v-for="(item,index) in transmissionlist" :key="index" @click="activelist(item)">
-						<text>{{item}}</text>
-						<image v-if="activeto==item" src="../../../static/icon/6963.png" mode=""></image>
+					<view class="scroll-list" :class="activeto==item.line_name?'active':''" v-for="(item,index) in transmissionlist" :key="index" @click="activelist(item)">
+						<text>{{item.line_name}}</text>
+						<image v-if="activeto==item.line_name" src="../../../static/icon/6963.png" mode=""></image>
 					</view>
 				</scroll-view>
 				
@@ -64,9 +64,9 @@
 					<image @click="Pagodaclose" src="../../../static/icon/6708.png" mode=""></image>
 				</view>
 				<scroll-view class="scroll" scroll-y="true" >
-					<view class="scroll-list" :class="activeto==item?'active':''" v-for="(item,index) in Pagodalist" :key="index" @click="activePagodalist(item)">
-						<text>{{item}}</text>
-						<image v-if="activeto==item" src="../../../static/icon/6963.png" mode=""></image>
+					<view class="scroll-list" :class="activeto==item.tagan_name?'active':''" v-for="(item,index) in Pagodalist" :key="index" @click="activePagodalist(item)">
+						<text>{{item.tagan_name}}</text>
+						<image v-if="activeto==item.tagan_name" src="../../../static/icon/6963.png" mode=""></image>
 					</view>
 				</scroll-view>
 				
@@ -79,21 +79,14 @@
 	export default {
 		data() {
 			return {
+				indexes: -1,
+				line_id: "",
+				tagan_id: "",
 				meesage: "选择输电线路",
 				msg: "选择塔杆号",
 				activeto: "",
-				transmissionlist: [
-					"110kV丹诗文线",
-					"220kV龙轿 I 回线G78",
-					"110kV丹诗文",
-					"220kV龙轿 I 回线G77",
-					"110kV丹诗线",
-					"220kV龙轿 I 回线G87",
-					"220kV龙轿 I 回线787",
-					"220kV龙轿 I 回G787",
-					"220kV龙轿 I 线G787",
-					"220kV龙轿回线G787"
-				],
+				isflag: false,
+				transmissionlist: [],
 				Pagodalist: [
 					"N5",
 					"S82",
@@ -106,56 +99,75 @@
 				screenlist: [
 					{
 						text: "全部",
-						icon: "",
-						active: ""
+						icon: ""
 					},
 					{
 						text: "电量低",
-						icon: "",
-						active: ""
+						icon: ""
 					},
 					{
 						text: "已离线",
-						icon: "",
-						active: ""
+						icon: ""
 					},
 				]
 			};
 		},
+		created() {
+			this.allline()
+		},
 		methods:{
+			allline(){
+				this.$api.postapi('/api/repeater/sel_all_line').then(res => {
+					this.transmissionlist = res.data.data
+				})
+			},
 			transmission(){
 				this.$refs.popup.open()
 			},
 			active(index){
-				if(this.screenlist[index].active == 'active'){
-					this.screenlist[index].active = ''
-				}else{
-					this.screenlist[index].active = 'active'
-				}
+				this.indexes = index
 			},
 			activelist(item){
-				this.activeto = item
-				this.meesage = item
+				this.activeto = item.line_name
+				this.meesage = item.line_name
+				this.line_id = item.id
+				this.$api.postapi('/api/repeater/selTaganByLineId',{line_id:item.id}).then(res => {
+					this.isflag = true
+					this.Pagodalist = res.data.data
+					this.activeto = "选择塔杆号"
+					this.msg = "选择塔杆号"
+				})
 				this.$refs.popup.close()
 			},
 			activePagodalist(item){
-				this.activeto = item
-				this.msg = item
-				this.$refs.popuptwo.close()
+					this.activeto = item.tagan_name
+					this.msg = item.tagan_name
+					this.tagan_id = item.id
+					this.$refs.popuptwo.close()
 			},
 			close(){
 				this.$refs.popup.close()
 			},
 			Pagoda(){
-				this.$refs.popuptwo.open()
+				if(this.isflag){
+					this.$refs.popuptwo.open()
+				}
 			},
 			Pagodaclose(){
 				this.$refs.popuptwo.close()
 			},
 			jump(){
-				uni.navigateTo({
-					url:"../Repeaterlist/Repeaterlist"
+				this.$api.postapi('/api/repeater/repeater_screen',{
+					state:this.indexes,
+					keyword: this.keyword,
+					line_id: this.line_id,
+					tagan_id: this.tagan_id
+				}).then(res => {
+					console.log(res)
 				})
+				// uni.navigateTo({
+				// 	url:"../Repeaterlist/Repeaterlist"
+				// })
 			}
 		}
 	}

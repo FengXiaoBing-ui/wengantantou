@@ -17,9 +17,9 @@
 				</view>
 				<view class="list-mid">
 					<view class="list-mid-left">
-						<text>{{ item.ip }}</text>
-						<text>{{ item.repeater_phone }}</text>
-						<text>{{ item.tower_position }}</text>
+						<text>IP: {{ item.ip }}</text>
+						<text>4G卡号: {{ item.repeater_phone }}</text>
+						<text>位置: {{ item.tower_position }}</text>
 					</view>
 					<view class="list-mid-right">
 						<text>关联探头</text>
