@@ -4,7 +4,7 @@
 		<view class="wrap">
 			<view class="inputbox">
 				<text>输入原登录密码</text>
-				<input type="password" value="" />
+				<input type="password" value="" v-model="oldpassword" />
 			</view>
 			<view class="outlogin" @click="next">
 				<text>下一步</text>
@@ -17,14 +17,34 @@
 	export default {
 		data() {
 			return {
-				
+				oldpassword: ""
 			};
 		},
 		methods:{
 			next(){
-				uni.navigateTo({
-					url:"../modifypasswordtwo/modifypasswordtwo"
+				if(this.oldpassword == ""){
+					uni.showToast({
+						title:"请输入原登录密码",
+						icon:"none"
+					})
+					return false
+				}
+				this.$api.postapi('/api/user/check_old_pwd',{loginId:uni.getStorageSync('loginId'),pwd:this.oldpassword}).then(res => {
+					console.log(res)
+					if(res.data.code==1){
+						uni.navigateTo({
+							url:"../modifypasswordtwo/modifypasswordtwo"
+						})
+					}
+					if(res.data.code==0){
+						uni.showToast({
+							title:res.data.msg,
+							icon:"none"
+						})
+						this.oldpassword = ''
+					}
 				})
+				
 			}
 		}
 	}

@@ -63,7 +63,7 @@
 						<view></view>
 					</view>
 					<view class="list-content">
-						<text>告警详情</text>
+						<text>任务内容</text>
 						<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
 						<view></view>
 					</view>
@@ -90,20 +90,20 @@
 			return {
 				listcontent: [
 					{
-						title: "输电塔名称",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "发生时间",
-						text: "2021-12-21 14:21:45"
-					},
-					{
 						title: "设备名称",
 						text: "温感探头"
 					},
 					{
 						title: "设备编号",
 						text: "TEER864584522"
+					},
+					{
+						title: "塔杆信息",
+						text: "110kV丹诗文线-N4"
+					},
+					{
+						title: "设备位置",
+						text: "A相大号位上子导线"
 					}
 				]
 			};

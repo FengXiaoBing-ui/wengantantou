@@ -4,45 +4,45 @@
 		
 		
 		<view class="probe-list">
-			<view class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump">
-				<view class="probe-list-box-top" :style="item.state == '已离线' ? 'opacity:0.4' : ''">
+			<view class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump(item.id)">
+				<view class="probe-list-box-top" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
 					<view class="box-top-left">
 						<image src="../../../static/icon/6834.png" mode=""></image>
-						<text>编号{{ item.number }}</text>
+						<text>编号{{ item.device_id }}</text>
 					</view>
 					<view class="box-top-right">
-						<image v-if="item.state == '工作中'" src="../../../static/icon/6833.png" mode=""></image>
-						<image v-if="item.state == '已离线'" src="../../../static/icon/6832.png" mode=""></image>
-						<image v-if="item.state == '待激活'" src="../../../static/icon/6837.png" mode=""></image>
-						<text>{{ item.state }}</text>
+						<image v-if="item.state_text == '工作中'" src="../../../static/icon/6833.png" mode=""></image>
+						<image v-if="item.state_text == '已离线'" src="../../../static/icon/6832.png" mode=""></image>
+						<image v-if="item.state_text == '待激活'" src="../../../static/icon/6837.png" mode=""></image>
+						<text>{{ item.state_text }}</text>
 					</view>
 				</view>
-				<view class="electric" :style="item.state == '已离线' ? 'opacity:0.4' : ''">
+				<view class="electric" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
 					<view
 						class="electric-left"
-						:class="{ 'electric-left-blue': item.electric > 30, 'electric-left-red': item.electric <= 30, 'electric-left-no': item.state == '已离线','electric-left-lixian': item.state=='待激活' }"
+						:class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }"
 					>
-						<view class="electric-num-left" :class="{ blue: item.electric > 30, red: item.electric <= 30 }" :style="{ width: item.electric + '%' }"></view>
+						<view class="electric-num-left" :class="{ blue: item.power_number > 30, red: item.power_number <= 30 }" :style="{ width: item.power_number + '%' }"></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
-						<text class="num">{{ item.electric?item.electric+'%':'---' }}</text>
+						<text class="num">{{ item.power_number?item.power_number+'%':'---' }}</text>
 					</view>
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.temperature <= 30,
-							'electric-right-origin': item.temperature <= 50 && item.temperature > 30,
-							'electric-right-red': item.temperature > 50,
-							'electric-left-no': item.state == '已离线',
-							'electric-left-lixian': item.state=='待激活'
+							'electric-right-blue': item.now_temperature <= 30,
+							'electric-right-origin': item.now_temperature <= 50 && item.now_temperature > 30,
+							'electric-right-red': item.now_temperature > 50,
+							'electric-left-no': item.state_text == '已离线',
+							'electric-left-lixian': item.state_text=='待激活'
 						}"
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.temperature?item.temperature+'%':'---' }}</text>
+						<text class="num">{{ item.now_temperature?item.now_temperature+'%':'---' }}</text>
 					</view>
 				</view>
-				<text class="bot-text" :style="item.state == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.gps }}</text>
+				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
 		</view>
@@ -57,51 +57,7 @@ export default {
 		return {
 			more: "noMore",
 			keyword: '',
-			probelist: [
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '85',
-					temperature: '28',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '30',
-					temperature: '45',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '67',
-					temperature: '53',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '已离线',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '待激活',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '待激活',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '33',
-					temperature: '23',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				}
-			]
+			probelist: []
 		};
 	},
 	onReachBottom() {
@@ -114,6 +70,7 @@ export default {
 		queryprobelist(){
 			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:6}).then(res => {
 				console.log(res)
+				this.probelist = res.data.data
 			})
 		},
 		func(){
@@ -134,9 +91,9 @@ export default {
 			    }
 			});
 		},
-		jump(){
+		jump(id){
 			uni.navigateTo({
-				url:"../probeDetail/probeDetail"
+				url:"../probeDetail/probeDetail?id="+id
 			})
 		},
 		screenjump(){

@@ -11,11 +11,11 @@
 		</view>
 		<image class="aimg" src="../../../static/icon/6664.png" mode=""></image>
 		<view class="headtitle">
-			<text>编号T5B464668444447</text>
-			<text>型号：JTW-1203V-012</text>
+			<text>编号{{ repeateinfo.repeater_id }}</text>
+			<text>型号：{{ repeateinfo.class }}</text>
 			<view class="states">
 				<image src="../../../static/icon/6833.png" mode=""></image>
-				<text>工作中</text>
+				<text>{{ repeateinfo.state_text }}</text>
 			</view>
 		</view>
 
@@ -23,19 +23,19 @@
 			<view class="option">
 				<view @click="jump">
 					<text>关联探头</text>
-					<text>50个</text>
+					<text>{{ repeateinfo.temp_sensor_number }}个</text>
 				</view>
 				<view>
 					<text>告警记录</text>
-					<text>3条</text>
+					<text>{{ repeateinfo.warn_count }}条</text>
 				</view>
 			</view>
 			<view class="electric">
 				<view class="electric-box">
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
-					<text style="font-weight: bold;">85%</text>
-					<view class="process" :style="{width: '85%'}"></view>
+					<text style="font-weight: bold;">{{ repeateinfo.repeater_power }}%</text>
+					<view class="process" :style="{width: repeateinfo.repeater_power+'%'}"></view>
 				</view>
 			</view>
 			<view class="basic">
@@ -44,12 +44,39 @@
 					<text>基本信息</text>
 				</view>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
+					<view class="list-content">
 						<view class="nowrap">
-							<text>{{ item.title }}</text>
-							<text>{{ item.text }}</text>
+							<text>设备名称</text>
+							<text>{{ repeateinfo.repeater_name }}</text>
 						</view>
-						
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>设备编号</text>
+							<text>{{ repeateinfo.repeater_id }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>型号</text>
+							<text>{{ repeateinfo.class  }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>工作环境</text>
+							<text>{{ repeateinfo.work_environment }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>防护等级</text>
+							<text>{{ repeateinfo.protect_state }}</text>
+						</view>
 						<view class="borderbot"></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
@@ -61,20 +88,61 @@
 					<text>安装信息</text>
 				</view>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in installinfo" :key="index">
+					<view class="list-content">
 						<view class="nowrap">
-							<text>{{ item.title }}</text>
-							<text v-if="item.text">{{ item.text }}</text>
-							<view v-else class="nowrap-box">
+							<text>中继器IP</text>
+							<text>{{ repeateinfo.ip }}</text>
+						</view>
+						
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>4G卡号</text>
+							<text>{{ repeateinfo.repeater_phone }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>安装位置</text>
+							<text>{{ repeateinfo.tower_position }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>关联服务器</text>
+							<view class="nowrap-box">
 								<image src="../../../static/icon/6873.png" mode=""></image>
 								<view>
-									<text style="font-weight: bold;opacity: 1;font-size: 32rpx;">{{ item.http }}</text>
-									<text style="opacity: 0.5;">{{ item.ip }}</text>
+									<text style="font-weight: bold;opacity: 1;font-size: 32rpx;">{{ repeateinfo.repearter_url }}</text>
+									<text style="opacity: 0.5;">{{ repeateinfo.repearter_ip }}</text>
 								</view>
 							</view>
 						</view>
-						
-						<view v-if="item.text" class="borderbot"></view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>安装情况说明</text>
+							<text >{{ repeateinfo.install_detail }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>设备状态</text>
+							<text>{{ repeateinfo.state_text }}</text>
+						</view>
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>使用情况</text>
+							<text>{{ repeateinfo.use_time }}投入使用, 已使用{{ repeateinfo.run_time }}天</text>
+						</view>
+						<view class="borderbot"></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
 				</view>
@@ -85,10 +153,18 @@
 					<text>责任小组信息</text>
 				</view>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcont" :key="index">
+					<view class="list-content">
 						<view class="nowrap">
-							<text>{{ item.title }}</text>
-							<text>{{ item.text }}</text>
+							<text>负责公司</text>
+							<text>{{ repeateinfo.company_name }}</text>
+						</view>
+						
+						<view class="borderbot"></view>
+					</view>
+					<view class="list-content">
+						<view class="nowrap">
+							<text>运维班长</text>
+							<text>{{ repeateinfo.duty_master }}</text>
 						</view>
 						
 						<view class="borderbot"></view>
@@ -105,6 +181,8 @@
 export default {
 	data() {
 		return {
+			id: "",
+			repeateinfo: {},
 			active: '数据',
 			checked: false,
 			selectedYear: new Date().getFullYear(),
@@ -178,14 +256,16 @@ export default {
 	},
 	created() {},
 	onLoad(option) {
+		this.id = option.id
 		this.$api.postapi('/api/repeater/sel_repeater_detail',{id:option.id}).then(res => {
 			console.log(res)
+			this.repeateinfo = res.data.data
 		})
 	},
 	methods: {
 		jump(){
 			uni.navigateTo({
-				url:"../relation/relation"
+				url:"../relation/relation?id="+this.id
 			})
 		},
 		record(){
@@ -470,6 +550,7 @@ export default {
 				.nowrap{
 					display: flex;
 					flex-wrap: wrap;
+					align-items: center;
 					.nowrap-box{
 						width: 100%;
 						border: 1rpx solid rgba(68, 146, 194, 0.5);
@@ -509,7 +590,7 @@ export default {
 				text{
 					&:nth-child(1){
 						display: inline-block;
-						min-width: 160rpx;
+						min-width: 200rpx;
 						font-size: 28rpx;
 						font-family: Source Han Sans CN;
 						font-weight: 400;

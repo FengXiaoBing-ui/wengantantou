@@ -36,7 +36,7 @@
 		
 	
 		<view class="wrap">
-			<view v-if="active=='探头'" class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump">
+			<view v-if="active=='探头'" class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump(item.id)">
 				<view class="probe-list-box-top" :style="item.state == '已离线' ? 'opacity:0.4' : ''">
 					<view class="box-top-left">
 						<image src="../../../static/icon/6834.png" mode=""></image>
@@ -79,7 +79,7 @@
 				<text class="bot-text" :style="item.state == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
-			<view v-if="active=='中继器'" class="list" v-for="(item,indexes) in mylist" :key="indexes+10" @click="jump">
+			<view v-if="active=='中继器'" class="list" v-for="(item,indexes) in mylist" :key="indexes+10" @click="repeaterjump(item.id)">
 				<view class="list-top">
 					<view class="list-top-left">
 						<image src="../../../static/icon/wifi.png" mode=""></image>
@@ -222,11 +222,16 @@
 					this.arr[index].show = false
 				}
 			},
-			jump(){
+			jump(id){
 				uni.navigateTo({
-					url:"../../Probedetail/probeDetail/probeDetail"
+					url:"../../Probedetail/probeDetail/probeDetail?id="+id
 				})
 			},
+			repeaterjump(id){
+				uni.navigateTo({
+					url:"../../Repeater/Repeaterdetail/Repeaterdetail?id="+id
+				})
+			}
 		}
 	}
 </script>

@@ -4,9 +4,9 @@
 		<view class="wrap">
 			<view class="inputbox">
 				<text>设置新的登录密码</text>
-				<input type="password" value="" />
+				<input type="password" value="" v-model="newpassword" />
 				<text>重复输入新密码</text>
-				<input type="password" value="" />
+				<input type="password" value="" v-model="newpasswordtoo" />
 			</view>
 			<view class="outlogin" @click="sure">
 				<image src="../../../static/icon/6932.png" mode=""></image>
@@ -20,14 +20,42 @@
 	export default {
 		data() {
 			return {
-				
+				newpassword: "",
+				newpasswordtoo: ""
 			};
 		},
 		methods:{
 			sure(){
-				uni.navigateTo({
-					url:"../modifycompleted/modifycompleted"
+				if(this.newpassword==""){
+					uni.showToast({
+						title:"请输入新的登录密码",
+						icon:"none"
+					})
+					return false
+				}
+				if(this.newpasswordtoo==""){
+					uni.showToast({
+						title:"请重复输入新的登录密码",
+						icon:"none"
+					})
+					return false
+				}
+				if(this.newpassword!=this.newpasswordtoo){
+					uni.showToast({
+						title:"两次密码不一致",
+						icon:"none"
+					})
+					return false
+				}
+				this.$api.postapi('/api/user/upd_new_pwd',{loginId:uni.getStorageSync('loginid'),pwd: this.newpassword}).then(res => {
+					console.log(res)
+					if(res.data.code==1){
+						uni.navigateTo({
+							url:"../modifycompleted/modifycompleted"
+						})
+					}
 				})
+				
 			}
 		}
 	}

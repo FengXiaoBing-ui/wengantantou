@@ -20,9 +20,9 @@
 				<view class="from-box">
 					<text>运维班长</text>
 					<view class="add-box">
-						<view class="add" v-for="(item, index) in people" :key="index">
-							<text>{{ item }}</text>
-							<image @click="deletename(item, index)" src="../../../static/icon/close.png" mode=""></image>
+						<view class="add" v-if="people!=null">
+							<text>{{ people.user_name }}</text>
+							<image @click="deletename()" src="../../../static/icon/close.png" mode=""></image>
 						</view>
 						<view class="addto" @click="addpeople">
 							<image src="../../../static/icon/add.png" mode=""></image>
@@ -32,7 +32,7 @@
 				</view>
 				<view class="from-box">
 					<text>任务内容</text>
-					<textarea value="" placeholder="请输入任务的内容描述..." />
+					<textarea value="" placeholder="请输入任务的内容描述..." v-model="content" />
 				</view>
 			</view>
 			<uni-popup ref="popup" type="bottom">
@@ -63,7 +63,7 @@
 						v-if="!visible"
 						indicator-class="city-picker"
 						:indicator-style="indicatorStyle"
-						:value="[0, 11, 29, 29, 0]"
+						:value="values"
 						@change="bindChangetwo"
 						class="picker-view-two"
 					>
@@ -110,7 +110,7 @@
 						v-if="!visible"
 						indicator-class="city-picker"
 						:indicator-style="indicatorStyle"
-						:value="[0, 11, 29, 29, 0]"
+						:value="values"
 						@change="bindChangetwo"
 						class="picker-view-two"
 					>
@@ -128,7 +128,7 @@
 					</picker-view>
 				</view>
 			</uni-popup>
-			<view class="sumbit">
+			<view class="sumbit" @click="sumbit">
 				<image src="../../../static/icon/6932.png" mode=""></image>
 				<text>提交任务</text>
 			</view>
@@ -182,17 +182,26 @@ export default {
 			msgmonthtwo:month,
 			msgdaytwo: day,
 			visible: true,
+			content: "",
 			indicatorStyle: `height: 50px;`,
-			people: []
+			people: null,
+			id: "",
+			type: ""
 		};
 	},
 	onLoad(option) {
+		if(option.maker){
+			let maker = JSON.parse(option.maker)
+			this.id = maker.id
+			this.type = maker.type
+		}
+		if(option.id&&option.type){
+			this.id = option.id
+			this.type = option.type
+		}
 		if(option.arr){
 			let arr = JSON.parse(option.arr)
-			
-			for(let i = 0; i < arr.length; i ++ ){
-				this.people.push(arr[i])
-			}
+			this.people = arr
 		}
 		
 	},
@@ -206,10 +215,47 @@ export default {
 			}
 			arr[1] = this.month - 1;
 			arr[2] = this.day - 1;
+			console.log(arr)
+			return arr;
+		},
+		values: function(){
+			let arr = [];
+			arr[0] = 0;
+			arr[1] = this.hours - 1;
+			arr[2] = this.minutes - 1;
+			arr[3] = this.second -1;
+			arr[4] = 0
+			console.log(arr)
 			return arr;
 		}
 	},
 	methods: {
+		sumbit(){
+			let newtime = this.msgyear+'-'+this.msgmonth +'-'+ this.msgday +' '+ this.hoursmsg +':'+ this.minutesmsg +':'+ this.secondmsg
+			newtime = new Date(newtime).getTime()
+			let oktime = this.msgyeartwo +'-'+ this.msgmonthtwo +'-'+ this.msgdaytwo +' '+ this.hoursmsgtwo +':'+ this.minutesmsgtwo +':'+ this.secondmsgtwo
+			oktime = new Date(oktime).getTime()
+			let obj = {
+					begintime_str: newtime,
+					endtime_str: oktime,
+					duty_master_id: this.people.id,
+					task_remark: this.content,
+					type: this.type,
+					alarm_id: this.id
+				}
+			obj = JSON.stringify(obj)
+			this.$api.postapi('/api/pubtask/publish_warn_task',{
+				loginId:uni.getStorageSync('loginId'),
+				data: obj
+			}).then(res => {
+				console.log(res)
+				if(res.data.code==1){
+					uni.showToast({
+						title:"提交成功"
+					})
+				}
+			})
+		},
 		addpeople(){
 			uni.navigateTo({
 				url:"../addpeople/addpeople"
@@ -242,10 +288,8 @@ export default {
 			this.secondmsg = this.second;
 			this.$refs.popup.close()
 		},
-		deletename(item, index) {
-			if (this.people[index] == item) {
-				this.people.splice(index, 1);
-			}
+		deletename() {
+			this.people = null
 		},
 		starttime() {
 			if(this.visible==false){

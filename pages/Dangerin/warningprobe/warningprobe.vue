@@ -9,7 +9,7 @@
 				:class="{ listwaitactive: operation, listwaitnoactive: item.active == 'active' }"
 				v-if="isshow"
 				@longtap="longtap(index)"
-				@click="active(index)"
+				@click="active(index,item.id)"
 			>
 				<image v-if="item.active == 'active'" class="active" src="../../../static/icon/6979.png" mode=""></image>
 				<image v-if="operation && item.active == ''" class="active" src="../../../static/icon/2747.png" mode=""></image>
@@ -17,30 +17,30 @@
 				<view class="list-left">
 					<view class="top">
 						<image src="../../../static/icon/6707.png" mode=""></image>
-						<text>{{ item.title }}</text>
+						<text>{{ item.tower_name }}</text>
 					</view>
-					<text class="mid">{{ item.num }}</text>
+					<text class="mid">探头编号{{ item.device_id }}</text>
 					<view class="bot">
-						<image v-if="item.states == '超温警告'" src="../../../static/icon/6918.png" mode=""></image>
-						<image v-if="item.states == '电量低'" src="../../../static/icon/6921.png" mode=""></image>
-						<text :class="{ origin: item.states == '电量低', red: item.states == '超温警告' }">{{ item.states }}</text>
-						<text>于{{ item.time }}</text>
+						<image v-if="item.title == '超温警告'" src="../../../static/icon/6918.png" mode=""></image>
+						<image v-if="item.title == '电量低'" src="../../../static/icon/6921.png" mode=""></image>
+						<text :class="{ origin: item.title == '电量低', red: item.title == '超温警告' }">{{ item.title }}</text>
+						<text>于{{ item.create_time }}</text>
 					</view>
 				</view>
 				<view class="box-foot"></view>
 			</view>
-			<view class="list" v-if="!isshow" v-for="(item, index) in warninglist" :key="index" @click="jump">
+			<view class="list" v-if="!isshow" v-for="(item, index) in warninglist" :key="index" @click="jump(item.id)">
 				<view class="list-left">
 					<view class="top">
 						<image src="../../../static/icon/6707.png" mode=""></image>
-						<text>{{ item.title }}</text>
+						<text>{{ item.tower_name }}</text>
 					</view>
-					<text class="mid">{{ item.num }}</text>
+					<text class="mid">探头编号{{ item.device_id }}</text>
 					<view class="bot">
-						<image v-if="item.states == '超温警告'" src="../../../static/icon/6918.png" mode=""></image>
-						<image v-if="item.states == '电量低'" src="../../../static/icon/6921.png" mode=""></image>
-						<text :class="{ origin: item.states == '电量低', red: item.states == '超温警告' }">{{ item.states }}</text>
-						<text>于{{ item.time }}</text>
+						<image v-if="item.title == '超温警告'" src="../../../static/icon/6918.png" mode=""></image>
+						<image v-if="item.title == '电量低'" src="../../../static/icon/6921.png" mode=""></image>
+						<text :class="{ origin: item.title == '电量低', red: item.title == '超温警告' }">{{ item.title }}</text>
+						<text>于{{ item.create_time }}</text>
 					</view>
 				</view>
 				<view class="list-right"><image src="../../../static/icon/minright.png" mode=""></image></view>
@@ -88,42 +88,28 @@ export default {
 			operation: false,
 			more: 'nomore',
 			isshow: true,
-			warninglist: [
-				{
-					title: '110kV丹诗文线-N4',
-					num: '探头编号T5B464668444447',
-					states: '超温警告',
-					time: '2021-12-21 15:24:20',
-					active: ''
-				},
-				{
-					title: '110kV丹诗文线-N4',
-					num: '探头编号T5B464668444447',
-					states: '电量低',
-					time: '2021-12-21 15:24:20',
-					active: ''
-				},
-				{
-					title: '110kV丹诗文线-N4',
-					num: '探头编号T5B464668444447',
-					states: '超温警告',
-					time: '2021-12-21 15:24:20',
-					active: ''
-				},
-				{
-					title: '110kV丹诗文线-N4',
-					num: '探头编号T5B464668444447',
-					states: '超温警告',
-					time: '2021-12-21 15:24:20',
-					active: ''
-				}
-			]
+			warninglist: []
 		};
 	},
 	onReachBottom() {
 		this.more = 'loading';
 	},
+	created() {
+		this.warning(0)
+	},
 	methods: {
+		warning(type){
+			this.$api.postapi('/api/Alarmlog/sel_sensor_alarm_logs',{
+				type:type,
+				limit: 4
+			}).then(res => {
+				this.warninglist = res.data.data
+				for(let i = 0; i < this.warninglist.length; i ++){
+					this.warninglist[i].active = ""
+				}
+				console.log(this.warninglist)
+			})
+		},
 		func() {
 			this.operation = true;
 		},
@@ -152,8 +138,8 @@ export default {
 				}
 			}
 		},
-		active(index) {
-				let arr = [];
+		active(index,id) {
+			let arr = [];
 			if (this.operation) {
 				if (this.warninglist[index].active == '') {
 					this.warninglist[index].active = 'active';
@@ -170,6 +156,10 @@ export default {
 				}else{
 					this.record = true
 				}
+			}else{
+				uni.navigateTo({
+					url: '../Confirmed/Confirmed?id='+id
+				});
 			}
 		},
 		longtap(index) {
@@ -187,17 +177,19 @@ export default {
 				
 			});
 		},
-		jump() {
+		jump(id) {
 			uni.navigateTo({
-				url: '../Confirmed/Confirmed'
+				url: '../Confirmed/Confirmed?id='+id
 			});
 		},
 		option(v) {
 			if (v == '待确认') {
 				this.isshow = true;
+				this.warning(0)
 				this.garbage = true
 			} else {
 				this.isshow = false;
+				this.warning(1)
 				this.garbage = false
 			}
 		}

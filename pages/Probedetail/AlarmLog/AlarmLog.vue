@@ -7,15 +7,16 @@
 				<view :class="{ activeleft: active == '全部', activemid: active == '待消警', activeright: active == '已消警' }"></view>
 			</view>
 		</view>
-		<view class="recordlist" v-for="(item,index) in recordlist" :key="index" @click="gaojingdetail">
+		<view class="recordlist" v-for="(item,index) in recordlist" :key="index" @click="gaojingdetail(item.id)">
 			<view class="left">
 				<view class="top">
 					<text>{{ item.title }}</text>
-					<text>{{item.time}}</text>
+					<text>于{{item.create_time}}</text>
 				</view>
 				<view class="mid">
 					<view>已确认</view>
-					<view>{{item.states}}</view>
+					<view v-if="item.is_remove_warning==0" style="background: linear-gradient(180deg, rgba(255, 238, 128, 0.35) 0%, rgba(254, 43, 43, 0.35) 100%);">待消警</view>
+					<view v-if="item.is_remove_warning==1">已消警</view>
 				</view>
 			</view>
 			<image class="minright" src="../../../static/icon/minright.png" mode=""></image>
@@ -28,59 +29,44 @@
 export default {
 	data() {
 		return {
+			id:"",
 			more: "nomore",
 			active: '全部',
 			activetext: 'activetext',
 			option: ['全部', '待消警', '已消警'],
-			recordlist: [
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警",
-				},
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警",
-				},
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警",
-				},
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警",
-				},
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警",
-				},
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警1",
-				},
-				{
-					title: "超温警告",
-					time: "于2021-12-21 15:24:20",
-					states: "已消警",
-				}
-			]
+			recordlist: []
 		};
 	},
 	onReachBottom() {
 		this.more = "loading"
 	},
+	onLoad(option) {
+		this.id = option.id
+	},
+	created() {
+		this.alrmlog(-1)
+	},
 	methods: {
+		alrmlog(type){
+			this.$api.postapi('/api/Sensor/sel_alarm_log',{id:this.id,type:type,limit:40}).then(res => {
+				this.recordlist =res.data.data
+			})
+		},
 		anime(item) {
 			this.active = item;
+			if(this.active=="全部"){
+				this.alrmlog(-1)
+			}
+			if(this.active=="待消警"){
+				this.alrmlog(0)
+			}
+			if(this.active=="已消警"){
+				this.alrmlog(1)
+			}
 		},
-		gaojingdetail(){
+		gaojingdetail(id){
 			uni.navigateTo({
-				url:"../warning/warning"
+				url:"../warning/warning?id="+id
 			})
 		}
 	}
@@ -89,7 +75,7 @@ export default {
 
 <style lang="less" scoped>
 .record{
-	margin-top: 128rpx;
+	margin-top: 148rpx;
 	width: 100%;
 	background-image: url(../../../static/icon/headertab.png);
 	background-size: 100% 1000%;

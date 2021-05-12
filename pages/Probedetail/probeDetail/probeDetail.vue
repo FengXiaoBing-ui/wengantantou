@@ -11,11 +11,11 @@
 		</view>
 		<image class="aimg" src="../../../static/icon/6664.png" mode=""></image>
 		<view class="headtitle">
-			<text>编号T5B464668444447</text>
-			<text>型号：JTW-1203V-012</text>
+			<text>编号{{ SensorBase.device_id }}</text>
+			<text>型号：{{ SensorBase.class_name }}</text>
 			<view class="states">
 				<image src="../../../static/icon/6833.png" mode=""></image>
-				<text>工作中</text>
+				<text>{{ SensorBase.state_text }}</text>
 			</view>
 		</view>
 
@@ -25,22 +25,22 @@
 					<view class="box-left-color" :style="{ width: '85%' }"></view>
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
-					<text class="num">85%</text>
+					<text class="num">{{ SensorBase.power_number }}%</text>
 				</view>
 				<view class="box-right">
 					<image src="../../../static/icon/6823.png" mode=""></image>
 					<text>温度</text>
-					<text class="num">85℃</text>
+					<text class="num">{{ SensorBase.now_temperature }}℃</text>
 				</view>
 			</view>
 			<view class="box-mid">
 				<view class="top">
 					<text>安装位置</text>
-					<text>110kV丹诗文线-N4塔杆A相位大号侧下子导线</text>
+					<text>{{ SensorBase.tower_position }}</text>
 				</view>
 				<view class="mid" @click="record">
 					<text>告警记录</text>
-					<text>100条</text>
+					<text>{{ SensorBase.temp_record_count }}条</text>
 				</view>
 				<view class="bot" @click="jumpdetail">
 					<text>详细信息</text>
@@ -76,12 +76,12 @@
 					</view>
 					<view
 						class="option-list"
-						:class="{ 'option-list-red': item.num >= 50, 'option-list-origin': item.num >= 37 && item.num < 50 }"
+						:class="{ 'option-list-red': item.record_value >= 50, 'option-list-origin': item.record_value >= 37 && item.record_value < 50 }"
 						v-for="(item, index) in timetemperature"
 						:key="index"
 					>
-						<text class="leftbord" :class="{ textwhite: item.num < 37, textorigin: item.num >= 37 && item.num < 50, textred: item.num >= 50 }">{{ item.time }}</text>
-						<text :class="{ textwhite: item.num < 37, textorigin: item.num >= 37 && item.num < 50, textred: item.num >= 50 }">{{ item.num }}</text>
+						<text class="leftbord" :class="{ textwhite: item.record_value < 37, textorigin: item.record_value >= 37 && item.record_value < 50, textred: item.record_value >= 50 }">{{ item.time_cycle }}</text>
+						<text :class="{ textwhite: item.record_value < 37, textorigin: item.record_value >= 37 && item.record_value < 50, textred: item.record_value >= 50 }">{{ item.record_value }}</text>
 						<view class="bordbot"></view>
 					</view>
 				</view>
@@ -100,107 +100,75 @@
 export default {
 	data() {
 		return {
+			id: "",
+			SensorBase: {},
 			active: '数据',
 			checked: false,
 			selectedYear: new Date().getFullYear(),
 			selectedMonth: new Date().getMonth(),
 			selectedDate: new Date().getDate(),
 			chartsDataLine4: {
-					"categories": ["2016", "2017", "2018", "2019", "2020", "2021","2022","2023","2024","2025","2026","2027","2028","2029"],
+					"categories": [],
 					"series": [{
-						"name": "成交量A",
-						"data": [35, 8, 25, 37, 4, 20, 4, 20, 68, 4, 20,20, 68, 4, 20, 4, 20,20, 68, 4, 20]
+						"name": "温度",
+						"data": []
 					}]
 				},
 			optiondata: ['数据', '图表'],
-			timetemperature: [
-				{
-					time: '04:15',
-					num: '23'
-				},
-				{
-					time: '04:15',
-					num: '72'
-				},
-				{
-					time: '04:15',
-					num: '23'
-				},
-				{
-					time: '04:15',
-					num: '42'
-				},
-				{
-					time: '04:15',
-					num: '38'
-				},
-				{
-					time: '04:15',
-					num: '24'
-				},
-			]
+			timetemperature: []
 		};
 	},
 	created() {},
 	computed: {
-		calendar: function() {
-			// 定义每个月的天数，如果是闰年第二月改为29天
-			// year=2018;month=1(js--month=0~11)
-			let year = new Date().getFullYear();
-			let month = new Date().getMonth();
-			let nextNum;
-			let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-			if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
-				daysInMonth[1] = 29;
-			}
-			// 获得指定年月的1号是星期几
-			let targetDay = new Date(year, month, 1).getDay();
-			// 将要在calendar__main中渲染的列表
-			let total_calendar_list = [];
-			let preNum = targetDay;
-			// 首先先说一下，我们的日期是(日--六)这个顺序也就是(0--6)
-			// 有了上述的前提我们可以认为targetDay为多少，我们就只需要在total_calendar_list的数组中push几个content为''的obj作为占位
-			if (targetDay > 0) {
-				for (let i = 0; i < preNum; i++) {
-					let obj = {
-						type: 'pre',
-						content: ''
-					};
-					total_calendar_list.push(obj);
-				}
-			}
-			for (let i = 0; i < daysInMonth[month]; i++) {
-				let obj = {
-					type: 'normal',
-					content: i + 1
-				};
-				total_calendar_list.push(obj);
-			}
-			if (total_calendar_list.length > 35) {
-				nextNum = 42 - total_calendar_list.length;
-			} else {
-				nextNum = 35 - total_calendar_list.length;
-			}
-			// 与上面的type=pre同理
-			for (let i = 0; i < nextNum; i++) {
-				let obj = {
-					type: 'next',
-					content: ''
-				};
-				total_calendar_list.push(obj);
-			}
-			return total_calendar_list;
-		}
+	},
+	onLoad(option) {
+		this.id = option.id
+		this.$api.postapi('/api/Sensor/selSensorDetail',{id:this.id}).then(res => {
+			console.log(res)
+			this.SensorBase = res.data.data
+		})
+		// let year = new Date().getTime((this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDate))
+		this.temp_records()
+		
 	},
 	methods: {
+		temp_records(id){
+			let year = this.selectedYear+'-'+(this.selectedMonth+1)+'-'+this.selectedDate
+			this.$api.postapi('/api/Sensor/sel_temp_records',{
+				id:this.id,
+				date: year,
+				limit:4
+			}).then(res => {
+				// console.log(res)
+				if(res.data.code==0){
+					this.timetemperature = []
+					this.chartsDataLine4 = {
+						"categories": [],
+						"series": [{
+							"name": "温度",
+							"data": []
+						}]
+					}
+					return false
+				}
+				this.timetemperature = res.data.data
+				for(var i = 0;i < this.timetemperature.length;i ++){
+					this.chartsDataLine4.categories.push(this.timetemperature[i].time_cycle)
+					this.chartsDataLine4.series[0].data.push(this.timetemperature[i].record_value)
+					console.log(this.chartsDataLine4)
+				}
+				
+			})
+			this.$forceUpdate()
+		},
 		record(){
 			uni.navigateTo({
-				url:"../AlarmLog/AlarmLog"
+				url:"../AlarmLog/AlarmLog?id="+this.SensorBase.id
 			})
 		},
 		jumpdetail(){
 			uni.navigateTo({
-				url:"../probedetailinfo/probedetailinfo"
+				url:"../probedetailinfo/probedetailinfo?id="+this.id
 			})
 		},
 		option(item) {
@@ -221,13 +189,14 @@ export default {
 			}
 			this.selectedDate--;
 			if (this.selectedDate < 1) {
-				this.selectedMonth--;
+				this.selectedMonth--; 
 				if (this.selectedMonth < 0) {
 					this.selectedYear--;
 					this.selectedMonth = 11;
 				}
 				this.selectedDate = daysInMonth[this.selectedMonth];
 			}
+			this.temp_records()
 		},
 		handleNextMonth() {
 			let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -236,13 +205,14 @@ export default {
 			}
 			this.selectedDate++;
 			if (this.selectedDate > daysInMonth[this.selectedMonth]) {
-				this.selectedMonth++;
+				this.selectedMonth++; 
 				if (this.selectedMonth > 11) {
 					this.selectedYear++;
 					this.selectedMonth = 0;
 				}
 				this.selectedDate = 1;
 			}
+			this.temp_records()
 		}
 	}
 };
@@ -568,6 +538,7 @@ export default {
 					text-align: right;
 					display: flex;
 					align-items: center;
+					justify-content: space-between;
 					&::after {
 						content: '';
 						display: inline-block;

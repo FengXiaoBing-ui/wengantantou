@@ -2,10 +2,10 @@
 	<view class="index">
 		<headerTab title="升级记录"></headerTab>
 		<view class="wrap">
-			<view class="list" v-for="item in 10 " :key="item" @click="jump">
+			<view class="list" v-for="item in list" :key="item.id" @click="jump(item.id)">
 				<view class="textleft">
-					<text>版本V1.0.8主要更新</text>
-					<text class="time">更新时间：2021-12-25</text>
+					<text>版本{{ item.title }}</text>
+					<text class="time">更新时间：{{ item.update_time }}</text>
 				</view>
 				
 				<image class="minright" src="../../../static/icon/minright.png" mode=""></image>
@@ -20,13 +20,22 @@
 	export default {
 		data() {
 			return {
-				
+				list: []
 			};
 		},
+		created() {
+			this.upgrate()
+		},
 		methods:{
-			jump(){
+			upgrate(){
+				this.$api.postapi('/api/Fuc/sel_updates',{limit:4}).then(res => {
+					console.log(res)
+					this.list = res.data.data
+				})
+			},
+			jump(id){
 				uni.navigateTo({
-					url:"../upgradedetail/upgradedetail"
+					url:"../upgradedetail/upgradedetail?id="+id
 				})
 			}
 		}

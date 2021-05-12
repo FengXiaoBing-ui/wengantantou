@@ -93,6 +93,11 @@
 
 		},
 		created() {
+			if(!uni.getStorageSync('loginId')){
+				uni.redirectTo({
+					url:"../login/login"
+				})
+			}
 		},
 		methods: {
 			Scancode(){

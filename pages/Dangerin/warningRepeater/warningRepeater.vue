@@ -8,14 +8,14 @@
 				<view class="list-left">
 					<view class="top">
 						<image src="../../../static/icon/6707.png" mode=""></image>
-						<text>{{ item.title }}</text>
+						<text>{{ item.tower_name }}</text>
 					</view>
-					<text class="mid">{{ item.num }}</text>
+					<text class="mid">{{ item.device_id }}</text>
 					<view class="bot">
-						<image v-if="item.states=='设备离线'" src="../../../static/icon/6781.png" mode=""></image>
-						<image v-if="item.states=='电量低'" src="../../../static/icon/6921.png" mode=""></image>
-						<text :class="{'origin':item.states=='电量低','shallow':item.states=='设备离线'}">{{ item.states }}</text>
-						<text>于{{ item.time }}</text>
+						<image v-if="item.title=='设备离线'" src="../../../static/icon/6781.png" mode=""></image>
+						<image v-if="item.title=='电量低'" src="../../../static/icon/6921.png" mode=""></image>
+						<text :class="{'origin':item.title=='电量低','shallow':item.title=='设备离线'}">{{ item.title }}</text>
+						<text>于{{ item.create_time }}</text>
 					</view>
 				</view>
 				<view class="list-right">
@@ -27,14 +27,14 @@
 				<view class="list-left">
 					<view class="top">
 						<image src="../../../static/icon/6707.png" mode=""></image>
-						<text>{{ item.title }}</text>
+						<text>{{ item.tower_name }}</text>
 					</view>
-					<text class="mid">{{ item.num }}</text>
+					<text class="mid">{{ item.device_id }}</text>
 					<view class="bot">
-						<image v-if="item.states=='设备离线'" src="../../../static/icon/6781.png" mode=""></image>
-						<image v-if="item.states=='电量低'" src="../../../static/icon/6921.png" mode=""></image>
-						<text :class="{'origin':item.states=='电量低','shallow':item.states=='设备离线'}">{{ item.states }}</text>
-						<text>于{{ item.time }}</text>
+						<image v-if="item.title=='设备离线'" src="../../../static/icon/6781.png" mode=""></image>
+						<image v-if="item.title=='电量低'" src="../../../static/icon/6921.png" mode=""></image>
+						<text :class="{'origin':item.title=='电量低','shallow':item.title=='设备离线'}">{{ item.title }}</text>
+						<text>于{{ item.create_time }}</text>
 					</view>
 				</view>
 				<view class="list-right">
@@ -98,7 +98,19 @@
 		onReachBottom() {
 			this.more = "loading"
 		},
+		created() {
+			this.warningdata(0)
+		},
 		methods:{
+			warningdata(type){
+				this.$api.postapi('/api/Alarmlog/sel_repeater_alarm_logs',{type:type,limit:4}).then(res => {
+					console.log(res)
+					this.warninglist = res.data.data
+					this.warninglist.forEach(e => {
+						e.active = ""
+					})
+				})
+			},
 			func() {
 				this.operation = true;
 			},
@@ -155,9 +167,11 @@
 				if (v == '待确认') {
 					this.isshow = true;
 					this.garbage = true
+					this.warningdata(0)
 				} else {
 					this.isshow = false;
 					this.garbage = false
+					this.warningdata(1)
 				}
 			}
 		}

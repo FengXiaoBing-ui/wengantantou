@@ -8,9 +8,44 @@
 					<text>基本信息</text>
 				</view>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-						<text>{{ item.title }}</text>
-						<text>{{ item.text }}</text>
+					<view class="list-content">
+						<text>设备名称</text>
+						<text>{{ listcontent.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备编号</text>
+						<text>{{ listcontent.class_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>型号</text>
+						<text>{{ listcontent.repeater_id }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>工作环境</text>
+						<text>{{ listcontent.work_environment }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>测量温度</text>
+						<text>{{ listcontent.measure_lower }}℃-{{ listcontent.measure_upper }}℃</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>正常温度</text>
+						<text>{{ listcontent.normal_lower }}-{{ listcontent.normal_upper }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>告警温度</text>
+						<text>{{ listcontent.warm_number }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>超温温度</text>
+						<text>{{ listcontent.early_warn_upper }}</text>
 						<view></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
@@ -27,8 +62,8 @@
 						<view class="left">
 							<image src="../../../static/icon/wifi.png" mode=""></image>
 							<view class="wifi-right">
-								<text>S181664</text>
-								<text>卡号：192.168.0.4</text>
+								<text>{{ listcontent.repeater_name }}</text>
+								<text>卡号：{{ listcontent.repeater_ip }}</text>
 							</view>
 						</view>
 						<image class="right" src="../../../static/icon/minright.png" mode=""></image>
@@ -38,28 +73,28 @@
 						<view class="left">
 							<image src="../../../static/icon/6707.png" mode=""></image>
 							<view class="wifi-right">
-								<text>110kV丹诗文线-N4</text>
-								<text>位置：A相位-大号侧-单子导线</text>
+								<text>{{ listcontent.line_tagan_position }}</text>
+								<text>位置：{{ listcontent.detail_position }}</text>
 							</view>
 						</view>
 						<image class="right" src="../../../static/icon/minright.png" mode=""></image>
-						<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" src="../../../static/icon/13.png" mode="aspectFill"></image>
+						<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" :src="listcontent.install_picture" mode="aspectFill"></image>
 						
 					</view>
 					<view class="list">
 						<view class="list-content">
 							<text>探头状态</text>
-							<text class="states">工作中</text>
+							<text class="states">{{ listcontent.state_text }}</text>
 							<view></view>
 						</view>
 						<view class="list-content">
 							<text>投入使用时间</text>
-							<text>2021年12月21日</text>
+							<text>{{ listcontent.run_time }}</text>
 							<view></view>
 						</view>
 						<view class="list-content">
 							<text>已使用</text>
-							<text>200天</text>
+							<text>{{ listcontent.run_day }}天</text>
 							<view></view>
 						</view>
 						<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
@@ -76,12 +111,12 @@
 				<view class="list">
 					<view class="list-content">
 						<text>运维专责</text>
-						<text>周大理</text>
+						<text>{{ listcontent.duty_admin }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>运维班长</text>
-						<text>王有才</text>
+						<text>{{ listcontent.duty_master }}</text>
 						<view></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
@@ -95,41 +130,23 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TT56456498464"
-					},
-					{
-						title: "型号",
-						text: "JYB-4089-E"
-					},
-					{
-						title: "工作环境",
-						text: "35kV-500kV"
-					},
-					{
-						title: "测量温度",
-						text: "-55℃~+130℃"
-					},
-					{
-						title: "正常温度",
-						text: "小于30℃"
-					},
-					{
-						title: "告警温度",
-						text: "31℃~49℃"
-					},
-					{
-						title: "超温温度",
-						text: "50℃以上"
-					},
-				]
+				id: "",
+				listcontent: {}
 			};
+		},
+		created() {
+		},
+		onLoad(option) {
+			this.id = option.id
+			this.info()
+		},
+		methods:{
+			info(){
+				this.$api.postapi('/api/Sensor/selSensorBaseDetial',{id:this.id}).then(res => {
+					console.log(res)
+					this.listcontent = res.data.data
+				})
+			}
 		}
 	}
 </script>

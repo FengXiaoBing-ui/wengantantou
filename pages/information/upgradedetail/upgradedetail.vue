@@ -4,10 +4,10 @@
 		<view class="wrap">
 			<view class="box">
 				<view class="title">
-					<text>版本V1.0.8主要更新</text>
-					<text>更新时间：2021-12-25</text>
+					<text>版本{{ upgrade.title }}{{ upgrade.version_number }}</text>
+					<text>更新时间：{{ upgrade.update_time }}</text>
 				</view>
-				<text>重要说明从 2020 年 7 月开始，所有 Windows 更新都将禁用 RemoteFX vGPU 功能，因为它存在安全漏洞。 有关此漏洞的更多信息，请参阅CVE-2020-1036 和 KB4570006。 安装此更新后，尝试启动启用了 RemoteFX vGPU 的虚拟机 (VM) 将失败，并显示如下消息： 如果重新启用 RemoteFX vGPU，将显示类似如下的消息： "无法启动虚拟机，因为 Hyper-v 管理器中禁用了所有支持 RemoteFX 的 Gpu。" "由于服务器的 GPU 资源不足，虚拟机无法启动。" "不再支持 RemoteFX 3D 视频适配器。 如果你仍在使用此适配器，可能会受到安全风险攻击。 了解详细信息（https://go.microsoft.com/fwlink/?linkid=2131976） "</text>
+				<rich-text style="color: #FFFFFF;" :nodes="upgrade.content"></rich-text>
 			</view>
 		</view>
 	</view>
@@ -17,8 +17,14 @@
 	export default {
 		data() {
 			return {
-				
+				upgrade: {}
 			};
+		},
+		onLoad(option) {
+			this.$api.postapi('/api/Fuc/sel_updatge_detial',{id:option.id}).then(res => {
+				console.log(res)
+				this.upgrade = res.data.data
+			})
 		}
 	}
 </script>

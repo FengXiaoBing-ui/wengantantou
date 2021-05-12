@@ -8,13 +8,13 @@
 			</view>
 			<view class="screen">
 				<view class="list">
-					<text :class="item==active?'actevetext':''" v-for="(item,index) in list" :key="index" @click="active = item">{{ item }}</text>
+					<text :class="item==active?'actevetext':''" v-for="(item,index) in list" :key="index" @click="activeoption(item,index)">{{ item }}</text>
 					<view class="bordbot" :class="{'left':active=='待处理','mid':active=='处理中','right':active=='已完成'}"></view>
 				</view>
 			</view>
 		</view>
 		
-		<view class="wrap">
+		<view class="wrap" v-if="!nodata">
 			<view
 			@click="jump"
 				class="list"
@@ -26,11 +26,11 @@
 				<view class="list-left">
 					<view class="top">
 						<image src="../../static/icon/6707.png" mode=""></image>
-						<text>{{ item.title }}</text>
+						<text>{{ item.tagan }}</text>
 					</view>
-					<text class="mid">{{ item.num }}</text>
+					<text class="mid">{{ item.task_number }}</text>
 					<view class="bot">
-						<text>{{ item.time }}</text>
+						<text>{{ item.endtime_str }}</text>
 					</view>
 				</view>
 				<view class="list-right"><image src="../../static/icon/minright.png" mode=""></image></view>
@@ -40,6 +40,7 @@
 				<view class="box-foot"></view>
 			</view>
 		</view>
+		<text class="nodata" v-if="nodata">暂无数据...</text>
 		<image class="footimg" src="../../static/icon/13.png" mode=""></image>
 		<tab-bar :current="currentTabIndex" backgroundColor="#fbfbfb" color="#999" tintColor="#FFFFFF" @click="tabClick"></tab-bar>
 	</view>
@@ -49,68 +50,54 @@
 	export default {
 		data() {
 			return {
+				nodata: false,
 				active: "待处理",
 				isshow: true,
 				currentTabIndex:2,
 				title: 'Hello',
 				list: ["待处理","处理中","已完成"],
-				warninglist: [
-					{
-						title: '110kV丹诗文线-N4',
-						num: '探头编号T5B464668444447',
-						states: '超温警告',
-						time: '计划完成时间：2021-12-25 ',
-						active: ''
-					},
-					{
-						title: '110kV丹诗文线-N4',
-						num: '探头编号T5B464668444447',
-						states: '电量低',
-						time: '计划完成时间：2021-12-25 ',
-						active: ''
-					},
-					{
-						title: '110kV丹诗文线-N4',
-						num: '探头编号T5B464668444447',
-						states: '超温警告',
-						time: '计划完成时间：2021-12-25 ',
-						active: ''
-					},
-					{
-						title: '110kV丹诗文线-N4',
-						num: '探头编号T5B464668444447',
-						states: '超温警告',
-						time: '计划完成时间：2021-12-25 ',
-						active: ''
-					},
-					{
-						title: '110kV丹诗文线-N4',
-						num: '探头编号T5B464668444447',
-						states: '超温警告',
-						time: '计划完成时间：2021-12-25 ',
-						active: ''
-					},
-					{
-						title: '110kV丹诗文线-N4',
-						num: '探头编号T5B464668444447',
-						states: '超温警告',
-						time: '计划完成时间：2021-12-25 ',
-						active: ''
-					}
-				]
+				warninglist: []
 			}
+		},
+		created() {
+			
+			this.waitdata(0)
 		},
 		onShow() {
 			uni.hideTabBar()
 		},
 		onLoad() {
-		
+			
 		},
 		methods: {
-			jump(){
-				uni.navigateTo({
-					url: "../WaitMission/Missiondetails/Missiondetails"
+			activeoption(item,index){
+				this.active = item
+				this.waitdata(index)
+			},
+			waitdata(type){
+				uni.showLoading({
+					title:"loadding..."
 				})
+				this.$api.postapi('/api/pubtask/sel_tasks',{type:type,limit:8}).then(res => {
+					console.log(res)
+					if(res.data.code==0){
+						this.nodata = true
+					}else{
+						this.nodata = false
+						this.warninglist = res.data.data
+					}
+					uni.hideLoading()
+				})
+			},
+			jump(){
+				this.$api.postapi('/api/pubtask/check_task',{loginId:uni.getStorageSync('loginId')}).then(res => {
+					console.log(res)
+					const code = res.data.code
+					uni.navigateTo({
+						url: "../WaitMission/Missiondetails/Missiondetails?code="+code
+					})
+				})
+				
 			},
 			tabClick(index){
 				this.currentTabIndex = index
@@ -335,6 +322,14 @@
 		height: 660rpx;
 		position: fixed;
 		bottom: 0;
+	}
+	.nodata{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		color: #FFFFFF;
+		z-index: 1;
 	}
 }
 </style>

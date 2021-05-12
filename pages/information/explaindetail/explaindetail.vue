@@ -3,15 +3,13 @@
 		<headerTab title="功能说明详情"></headerTab>
 		<view class="wrap">
 			<view class="box">
-				<text class="title">这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍</text>
+				<text class="title">{{ explain.title }}</text>
 				<view class="boxbord">
 					<image src="../../../static/icon/13967.png" mode=""></image>
 				</view>
-				<view style="text-align: start;margin-bottom: 20rpx;">
-					<text>这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍</text>
+				<view style="color: #FFFFFF;">
+					<rich-text :nodes="explain.content"></rich-text>
 				</view>
-				<image class="imgtext" src="../../../static/icon/2554.png" mode="aspectFill"></image>
-				<image class="imgtext" src="../../../static/icon/510.png" mode="aspectFill"></image>
 			</view>
 		</view>
 	</view>
@@ -21,8 +19,17 @@
 	export default {
 		data() {
 			return {
-				
+				explain: {}
 			};
+		},
+		onLoad(option) {
+			this.$api.postapi('/api/Fuc/sel_function_detial',{id:option.id}).then(res => {
+				console.log(res)
+				this.explain = res.data.data
+			})
+		},
+		methods:{
+			
 		}
 	}
 </script>

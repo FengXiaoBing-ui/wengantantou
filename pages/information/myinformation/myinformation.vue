@@ -3,11 +3,36 @@
 		<headerTab title="个人信息"></headerTab>
 		<view class="wrap">
 			<view class="menu">
-				<view class="list" v-for="(item,index) in list" :key="index" >
-					<text class="lefttext">{{ item.title }}</text>
-					<view class="list-right" @click="modify(item.title,item.text)">
-						<text>{{ item.text }}</text>
-						<image v-if="item.states" class="minright" src="../../../static/icon/minright.png" mode=""></image>
+				<view class="list">
+					<text class="lefttext">账号名</text>
+					<view class="list-right">
+						<text>{{ user.admin_name }}</text>
+					</view>
+				</view>
+				<view class="list">
+					<text class="lefttext">姓名</text>
+					<view class="list-right" @click="modify('姓名',user.user_name)">
+						<text>{{ user.user_name }}</text>
+						<image class="minright" src="../../../static/icon/minright.png" mode=""></image>
+					</view>
+				</view>
+				<view class="list">
+					<text class="lefttext">电话</text>
+					<view class="list-right" @click="modify('电话',user.user_phone)">
+						<text>{{ user.user_phone }}</text>
+						<image class="minright" src="../../../static/icon/minright.png" mode=""></image>
+					</view>
+				</view>
+				<view class="list">
+					<text class="lefttext">职务</text>
+					<view class="list-right">
+						<text>{{ user.role_name }}</text>
+					</view>
+				</view>
+				<view class="list">
+					<text class="lefttext">负责线路</text>
+					<view class="list-right">
+						<text>{{ user.line }}</text>
 					</view>
 				</view>
 			</view>
@@ -19,37 +44,21 @@
 	export default {
 		data() {
 			return {
-				list: [
-					{
-						title: "账号名",
-						text: "zhangsan",
-						states: false
-					},
-					{
-						title: "姓名",
-						text: "张琴",
-						states: true
-					},
-					{
-						title: "电话",
-						text: "18685447888",
-						states: true
-					},
-					{
-						title: "职务",
-						text: "运维班长",
-						states: false
-					},
-					{
-						title: "负责线路",
-						text: "110V丹诗文线",
-						states: false
-					}
-					
-				]
+				user: {},
 			};
 		},
+		created() {
+			
+		},
+		onShow() {
+			this.userinfo()
+		},
 		methods:{
+			userinfo(){
+				this.$api.postapi('/api/user/sel_user',{loginId:uni.getStorageSync('loginId')}).then(res => {
+					this.user = res.data.data
+				})
+			},
 			modify(title,text){
 				uni.navigateTo({
 					url:`../modify/modify?type=${title}&text=${text}`

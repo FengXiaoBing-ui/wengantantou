@@ -1,13 +1,28 @@
 <template>
 	<view class="index">
 		<headerTab title="告警详情"></headerTab>
-		<view class="wrap">
+		<view class="wrap" v-if="listcontent.sensor_name!=undefined">
 			<view class="basic">
 				<text class="title">设备信息</text>
-				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-						<text>{{ item.title }}</text>
-						<text>{{ item.text }}</text>
+				<view class="list" >
+					<view class="list-content">
+						<text>输电塔名称</text>
+						<text>{{ listcontent.sensor_name.class_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>发生时间</text>
+						<text>{{ listcontent.create_time }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备名称</text>
+						<text>{{ listcontent.sensor_name.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备编号</text>
+						<text>{{ listcontent.sensor_name.device_id }}</text>
 						<view></view>
 					</view>
 				</view>
@@ -18,7 +33,7 @@
 				<view class="list">
 					<view class="list-content">
 						<text>告警类型</text>
-						<text>超温告警</text>
+						<text>{{ listcontent.title }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
@@ -28,12 +43,12 @@
 					</view>
 					<view class="list-content">
 						<text>当前值</text>
-						<text>53℃</text>
+						<text>{{ listcontent.sensor_name.now_temperature }}℃</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>设定值</text>
-						<text>＞50℃</text>
+						<text>＞{{ listcontent.sensor_name.warm_number }}℃</text>
 						<view></view>
 					</view>
 				</view>
@@ -49,7 +64,8 @@
 					</view>
 					<view class="list-content">
 						<text>处理状态</text>
-						<text>未消警</text>
+						<text v-if="listcontent.is_remove_warning==0" style="color: #FF7672;">未消警</text>
+						<text v-if="listcontent.is_remove_warning==1">已消警</text>
 						<view></view>
 					</view>
 				</view>
@@ -62,25 +78,23 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "输电塔名称",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "发生时间",
-						text: "2021-12-21 14:21:45"
-					},
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TEER864584522"
-					}
-				]
+				id: "",
+				listcontent: {},
 			};
+		},
+		created() {
+			this.info()
+		},
+		onLoad(option) {
+			this.id = option.id
+		},
+		methods:{
+			info(){
+				this.$api.postapi('/api/Sensor/sel_alarm_detail',{id:this.id}).then(res => {
+					console.log(111,res)
+					this.listcontent = res.data.data
+				})
+			}
 		}
 	}
 </script>

@@ -2,8 +2,8 @@
 	<view class="index">
 		<headerTab title="功能说明"></headerTab>
 		<view class="wrap">
-			<view class="list" v-for="item in 10 " :key="item" @click="jump">
-				<text>这里是关于功能的介绍这里是关于功能的介绍这里是关于功能的介绍</text>
+			<view class="list" v-for="item in list" :key="item.id" @click="jump(item.id)">
+				<text>{{ item.title }}</text>
 				<image class="minright" src="../../../static/icon/minright.png" mode=""></image>
 				<image class="leftbord" src="../../../static/icon/vertical.png" mode=""></image>
 			</view>
@@ -16,13 +16,22 @@
 	export default {
 		data() {
 			return {
-				
+				list: []
 			};
 		},
+		created() {
+			this.listexplain()
+		},
 		methods:{
-			jump(){
+			listexplain(){
+				this.$api.postapi('/api/Fuc/sel_functions',{limit:4}).then(res => {
+					console.log(res)
+					this.list = res.data.data
+				})
+			},
+			jump(id){
 				uni.navigateTo({
-					url:"../explaindetail/explaindetail"
+					url:"../explaindetail/explaindetail?id="+id
 				})
 			}
 		}

@@ -2,10 +2,10 @@
 	<view class="index">
 		<headerTab title="选择人员" :sure="true" @func="func"></headerTab>
 		<view class="wrap">
-			<view class="list" :class="item.active=='active'?'activebackground':''" v-for="(item,index) in list" :key="index" @click="active(index)">
-				<text>{{ item.name }}</text>
-				<image v-if="item.active!='active'" src="../../../static/icon/2747.png" mode=""></image>
-				<image v-if="item.active=='active'" src="../../../static/icon/6979.png" mode=""></image>
+			<view class="list" :class="item.user_name==activelist.user_name?'activebackground':''" v-for="(item,index) in list" :key="index" @click="active(item)">
+				<text>{{ item.user_name }}</text>
+				<image v-if="item.user_name!=activelist.user_name" src="../../../static/icon/2747.png" mode=""></image>
+				<image v-if="item.user_name==activelist.user_name" src="../../../static/icon/6979.png" mode=""></image>
 				<view></view>
 			</view>
 			<uni-load-more status="nomore"></uni-load-more>
@@ -17,56 +17,34 @@
 	export default {
 		data() {
 			return {
-				list: [
-					{
-						name: "张大力",
-						active: ""
-					},
-					{
-						name: "柳德喜",
-						active: ""
-					},
-					{
-						name: "发飞洒",
-						active: ""
-					},
-					{
-						name: "手动阀二",
-						active: ""
-					},
-					{
-						name: "供奉的是",
-						active: ""
-					},
-					{
-						name: "陨坑",
-						active: ""
-					},
-					{
-						name: "语课",
-						active: ""
-					},
-				]
+				list: [],
+				activelist: {}
 			};
 		},
+		created() {
+			this.peoplelist()
+		},
 		methods:{
-			active(index){
-				if(this.list[index].active==""){
-					this.list[index].active = 'active'
-				}else{
-					this.list[index].active = ''
-				}
+			peoplelist(){
+				this.$api.postapi('/api/pubtask/sel_duty_master',{
+					loginId: uni.getStorageSync('loginId'),
+					limit: 10
+				}).then(res => {
+					console.log(res)
+					this.list = res.data.data
+				})
+			},
+			active(item){
+				this.activelist = item
+				this.$forceUpdate()
+				
 			},
 			func(){
-				let arr = []
-				this.list.forEach(e => {
-					if(e.active == 'active'){
-						arr.push(e.name)
-					}
-				})
-				arr = JSON.stringify(arr)
+				let arr = JSON.stringify(this.activelist)
+				var pages = getCurrentPages();
+				var prevPage = pages[pages.length - 2];
 				uni.navigateTo({
-					url:"../release/release?arr="+arr
+					url:"../release/release?arr="+arr+'&maker='+JSON.stringify(prevPage.$vm.options)
 				})
 			}
 		}

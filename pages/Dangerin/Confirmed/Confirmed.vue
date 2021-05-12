@@ -1,13 +1,28 @@
 <template>
 	<view class="index">
 		<headerTab title="告警详情"></headerTab>
-		<view class="wrap">
+		<view class="wrap" v-if="listcontent.sensor_name != undefined">
 			<view class="basic">
 				<text class="title">设备信息</text>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-						<text>{{ item.title }}</text>
-						<text>{{ item.text }}</text>
+					<view class="list-content">
+						<text>输电塔名称</text>
+						<text>{{ listcontent.tower_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>发生时间</text>
+						<text>{{ listcontent.create_time }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备名称</text>
+						<text>{{ listcontent.sensor_name.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备编号</text>
+						<text>{{ listcontent.sensor_name.device_id }}</text>
 						<view></view>
 					</view>
 				</view>
@@ -18,22 +33,22 @@
 				<view class="list">
 					<view class="list-content">
 						<text>告警类型</text>
-						<text>超温告警</text>
+						<text>{{ listcontent.title }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>告警详情</text>
-						<text style="display: block;margin: 0;">告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+						<text>{{ listcontent.remark }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>当前值</text>
-						<text>53℃</text>
+						<text>{{ listcontent.sensor_name.now_temperature }}℃</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>设定值</text>
-						<text>＞50℃</text>
+						<text>＞{{ listcontent.sensor_name.warm_number }}℃</text>
 						<view></view>
 					</view>
 				</view>
@@ -44,12 +59,24 @@
 				<view class="list">
 					<view class="list-content">
 						<text>确认状态</text>
-						<text>未确认</text>
+						<text v-if="listcontent.isconfirm==0" style="color: #FBC965;">未确认</text>
+						<text v-else>已确认</text>
+						<view></view>
+					</view>
+					<view class="list-content" v-if="listcontent.isconfirm==1">
+						<text>确认人</text>
+						<text >张绣三</text>
+						<view></view>
+					</view>
+					<view class="list-content" v-if="listcontent.isconfirm==1">
+						<text>确认时间</text>
+						<text >2021-12-25 15:32:21</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>处理状态</text>
-						<text>未消警</text>
+						<text v-if="listcontent.is_remove_warning==0" style="color: #FF7672;">未消警</text>
+						<text v-else>已消警</text>
 						<view></view>
 					</view>
 				</view>
@@ -67,30 +94,24 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "输电塔名称",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "发生时间",
-						text: "2021-12-21 14:21:45"
-					},
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TEER864584522"
-					}
-				]
+				id: "",
+				listcontent: {}
 			};
 		},
+		onLoad(option) {
+			this.id = option.id
+			this.confirmed()
+		},
 		methods:{
+			confirmed(){
+				this.$api.postapi('/api/Alarmlog/sel_sensor_alarm_detail',{id:this.id}).then(res => {
+					console.log(res)
+					this.listcontent = res.data.data
+				})
+			},
 			jump(){
 				uni.navigateTo({
-					url:"../release/release"
+					url:"../release/release?id="+this.listcontent.id+'&type='+this.listcontent.type
 				})
 			}
 		}

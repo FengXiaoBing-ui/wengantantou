@@ -31,7 +31,10 @@
 				})
 			},
 			logout(){
-				
+				uni.removeStorageSync('loginId')
+				uni.redirectTo({
+					url:"../../login/login"
+				})
 			}
 		}
 	}

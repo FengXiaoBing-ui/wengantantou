@@ -22,6 +22,7 @@
 			};
 		},
 		created() {
+			uni.removeStorageSync('loginId')
 			this.miutep = 0
 			let timer;
 			timer = setInterval(() => {

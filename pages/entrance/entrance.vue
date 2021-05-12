@@ -25,8 +25,16 @@
 				return windowheight
 			}
 		},
+		created() {
+			if(uni.getStorageSync('entrance')){
+				uni.redirectTo({
+					url:"../login/login"
+				})
+			}
+		},
 		methods:{
 			getinto(){
+				uni.setStorageSync('entrance',JSON.stringify(true))
 				uni.redirectTo({
 					url:"../login/login"
 				})

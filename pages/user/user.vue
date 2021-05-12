@@ -5,16 +5,16 @@
 		<view class="wrap">
 			<view class="userinfo">
 				<view class="left">
-					<image class="in" src="../../static/icon/2762.png" mode="aspectFill"></image>
+					<image class="in" :src="user.head_img" mode="aspectFill"></image>
 					<image class="out" src="../../static/icon/6989.png" mode=""></image>
 				</view>
 				<view class="right">
 					<view class="namephone">
-						<text>刘德华</text>
-						<text>186 5555 8568</text>
+						<text>{{ user.user_name }}</text>
+						<text>{{ user.user_phone }}</text>
 					</view>
 					<view class="work">
-						运维班长
+						{{ user.role_name }}
 					</view>
 				</view>
 			</view>
@@ -38,6 +38,7 @@
 			return {
 				currentTabIndex:3,
 				title: 'Hello',
+				user: {},
 				list: [
 					{
 						title: "个人信息",
@@ -74,11 +75,20 @@
 		},
 		onShow() {
 			uni.hideTabBar()
+			this.userinfo()
 		},
 		onLoad() {
-		
+			
+		},
+		created() {
+			
 		},
 		methods: {
+			userinfo(){
+				this.$api.postapi('/api/user/sel_user',{loginId:uni.getStorageSync('loginId')}).then(res => {
+					this.user = res.data.data
+				})
+			},
 			jump(path){
 				uni.navigateTo({
 					url:path
@@ -154,8 +164,6 @@
 			
 		}
 		.right{
-			display: flex;
-			flex-direction: column;
 			.namephone{
 				text{
 					&:nth-child(1){
@@ -177,12 +185,12 @@
 				}
 			}
 			.work{
+				max-width: 200rpx;
+				min-width: 140rpx;
 				margin-top: 10rpx;
-				width: 146rpx;
 				height: 47rpx;
 				border: 1rpx solid #5AE8FF;
 				background: linear-gradient(180deg, #5AE8FF 0%, #1C54B8 100%);
-				opacity: 1;
 				border-radius: 29rpx;
 				font-size: 28rpx;
 				font-family: Source Han Sans CN;

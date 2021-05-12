@@ -4,7 +4,7 @@
 		<view class="wrap">
 			<view class="modify-box">
 				<text>修改{{ title }}</text>
-				<input type="text" :value="text" />
+				<input type="text" :value="text" v-model="text" />
 			</view>
 		</view>
 	</view>
@@ -15,7 +15,7 @@
 		data() {
 			return {
 				title: "",
-				text: ""
+				text: "",
 			};
 		},
 		onLoad(option) {
@@ -24,7 +24,26 @@
 		},
 		methods:{
 			func(){
-				
+				this.$api.postapi('/api/user/upd_user',{
+					param: this.text,
+					type:this.title=='姓名'?0:1,
+					loginId:uni.getStorageSync('loginId')
+					}).then(res => {
+						if(res.data.code==1){
+							uni.showToast({
+								title:"修改成功"
+							})
+							setTimeout(() => {
+								uni.switchTab({
+									url:"../../user/user"
+								})
+							},500)
+						}else{
+							uni.showToast({
+								title:"修改失败"
+							})
+						}
+					})
 			}
 		}
 	}

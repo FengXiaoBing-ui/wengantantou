@@ -17,10 +17,10 @@
 				<input type="password" value="" placeholder="输入登录密码" v-model="password" />
 			</view>
 			<view class="remember">
-				<view class="active" @click="remember" v-if="!isshow">
+				<view class="active" @click="remember" v-if="isshow">
 					<image src="../../static/icon/yes.png" mode=""></image>
 				</view>
-				<view class="noactive" @click="remember" v-if="isshow"></view>
+				<view class="noactive" @click="remember" v-if="!isshow"></view>
 				<text>记住密码</text>
 			</view>
 			<button class="loginbtn" type="default" @click="login">立即登录</button>
@@ -35,7 +35,7 @@
 			return {
 				username: "",
 				password: "",
-				isshow: true
+				isshow: false
 			};
 		},
 		computed:{
@@ -49,16 +49,58 @@
 				return windowheight
 			}
 		},
-		methods:{
-			login(){
+		created() {
+			this.password = uni.getStorageSync('password')
+			if(uni.getStorageSync('username')) this.username = uni.getStorageSync('username')
+			if(uni.getStorageSync('remember')){
+				this.isshow = true
+				this.password = uni.getStorageSync('password')
+			}else{
+				this.isshow = false
+			}
+			if(uni.getStorageSync('loginId')){
 				uni.switchTab({
 					url:"../index/index"
+				})
+			}
+		},
+		methods:{
+			login(){
+				uni.setStorageSync('username',this.username)
+				if(uni.getStorageSync('remember')){
+					uni.setStorageSync('password',this.password)
+				}
+				this.$api.postapi('/api/admin/app_login',{
+					username: this.username,
+					userpwd: this.password
+				}).then(res => {
+					console.log(res)
+					if(res.data.code==0){
+						uni.showToast({
+							title:res.data.msg,
+							icon:"none"
+						})
+					}
+					if(res.data.code==1){
+						uni.showToast({
+							title:res.data.msg
+						})
+						uni.setStorageSync('is_publish_task',JSON.stringify(res.data.is_publish_task))
+						uni.setStorageSync('loginId',JSON.stringify(res.data.loginId))
+						uni.switchTab({
+							url:"../index/index"
+						})
+					}
 				})
 			},
 			remember(){
 				this.isshow = !this.isshow
-				if(this.isshow){
-					
+				if(!this.isshow){
+					uni.removeStorageSync('password')
+					uni.removeStorageSync('remember')
+				}else{
+					uni.setStorageSync('password',this.password)
+					uni.setStorageSync('remember',JSON.stringify(this.isshow))
 				}
 			}
 		}

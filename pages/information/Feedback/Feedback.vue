@@ -4,9 +4,9 @@
 		<view class="wrap">
 			<view class="box">
 				<text>写下您遇到的问题和建议，我们将不断改进</text>
-				<textarea value="" placeholder="" />
+				<textarea value="" placeholder="" v-model="content" />
 			</view>
-			<view class="sumbit">
+			<view class="sumbit" @click="sumbit">
 				<image src="../../../static/icon/6932.png" mode=""></image>
 				<text>确认提交</text>
 			</view>
@@ -18,8 +18,27 @@
 	export default {
 		data() {
 			return {
-				
+				content: ""
 			};
+		},
+		methods:{
+			sumbit(){
+				this.$api.postapi('/api/User/feedback',{loginId: uni.getStorageSync('loginId'),content: this.content}).then(res => {
+					console.log(res)
+					if(res.data.code==1){
+						uni.showToast({
+							title:"感谢您的反馈",
+							icon:"none"
+						})
+						this.content = ''
+						setTimeout(() => {
+							uni.switchTab({
+								url:"../../user/user"
+							})
+						},1000)
+					}
+				})
+			}
 		}
 	}
 </script>
