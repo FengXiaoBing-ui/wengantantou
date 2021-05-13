@@ -264,7 +264,7 @@
 						.imgborder{
 							position: absolute;
 							left: 10rpx;
-							top: 8rpx;
+							top: 9rpx;
 							width: 100rpx;
 							height: 100rpx;
 							border-radius: 50%;

@@ -7,33 +7,48 @@
 			<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
 			<text class="headtitle">任务详情</text>
 			<view class="num">
-				<text>任务编号T5B464668444447</text>
+				<text>任务编号{{ mission.task_number }}</text>
 				<text>类型：消警任务</text>
 			</view>
 		</view>
 		<view class="content-box">
-			<view class="basic">
+			<view class="basic" v-if="mission.device != undefined">
 				<text class="title">设备信息</text>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-						<text>{{ item.title }}</text>
-						<text>{{ item.text }}</text>
+					<view class="list-content">
+						<text>设备名称</text>
+						<text>{{ mission.device.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备编号</text>
+						<text>{{ mission.device.device_id }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>塔杆信息</text>
+						<text>{{ mission.device.tagan }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备位置</text>
+						<text>{{ mission.device.device_position }}</text>
 						<view></view>
 					</view>
 				</view>
 			</view>
 			
-			<view class="basic">
+			<view class="basic" v-if="mission.alarm != undefined">
 				<text class="title">告警信息</text>
 				<view class="list">
 					<view class="list-content">
 						<text>告警类型</text>
-						<text>超温告警</text>
+						<text>{{ mission.alarm.title }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>告警详情</text>
-						<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+						<text>{{ mission.alarm.remark }}</text>
 						<view></view>
 					</view>
 				</view>
@@ -44,33 +59,33 @@
 				<view class="list">
 					<view class="list-content">
 						<text>发起人</text>
-						<text>R646S4464646</text>
+						<text>{{ mission.duty_admin }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>运维班长</text>
-						<text>消警</text>
+						<text>{{ mission.duty_master }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>计划开始时间</text>
-						<text>2021-12-24 15:22:22</text>
+						<text>{{ mission.begintime_str }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>计划完成时间</text>
-						<text>2021-12-24 15:22:28</text>
+						<text>{{ mission.endtime_str }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>任务内容</text>
-						<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+						<text>{{ mission.task_remark }}</text>
 						<view></view>
 					</view>
 				</view>
 			</view>
 			<view class="botbtn">
-				<view class="left" @click="implement">
+				<view class="left" @click="implement" v-if="this.mission.is_deal==0&&code==1">
 					<image src="../../../static/icon/6700.png" mode=""></image>
 					<text>执行任务</text>
 				</view>
@@ -80,7 +95,23 @@
 				</view>
 			</view>
 		</view>
-		
+		<uni-popup ref="popup" type="center">
+			<view class="poppp">
+				<view class="imgbox">
+					<image class="out" src="../../../static/icon/6914.png" mode=""></image>
+					<image class="in" src="../../../static/icon/completed.png" mode=""></image>
+				</view>
+				<text class="popuptext">任务已执行，确认提交任务吗？</text>
+				<view class="btnbox">
+					<view class="btnleft" @click="cancel">
+						取消
+					</view>
+					<view class="btnright">
+						确定
+					</view>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -88,35 +119,43 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TEER864584522"
-					},
-					{
-						title: "塔杆信息",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "设备位置",
-						text: "A相大号位上子导线"
-					}
-				]
+				id: "",
+				code: "",
+				mission: {},
 			};
 		},
+		onLoad(option) {
+			this.id = option.id
+			this.code = option.code
+		},
+		onShow() {
+			this.details()
+		},
 		methods:{
-			sumbitjump(){
-				uni.navigateTo({
-					url:"../MissiondetailSubmit/MissiondetailSubmit"
+			details(){
+				this.$api.postapi('/api/pubtask/sel_task_detail',{id:this.id}).then(res => {
+					console.log(res)
+					this.mission = res.data.data
 				})
 			},
+			//提交任务
+			sumbitjump(){
+				if(this.mission.is_deal==1){
+					this.$refs.popup.open()
+				}else{
+					uni.showToast({
+						title:"请先执行任务",
+						icon:"none"
+					})
+				}
+			},
+			cancel(){
+				this.$refs.popup.close()
+			},
+			//执行任务
 			implement(){
 				uni.navigateTo({
-					url:"../implement/implement"
+					url:"../implement/implement?id="+this.mission.id
 				})
 			},
 			backpage(){
@@ -147,6 +186,7 @@
 			height: 100rpx;
 			z-index: 99;
 			display: flex;
+			justify-content: flex-end;
 			.left{
 				width: 374rpx;
 				height: 100rpx;
@@ -319,6 +359,76 @@
 		bottom: 0;
 		width: 100%;
 		height: 660rpx;
+	}
+	.poppp{
+		width: 620rpx;
+		height: 503rpx;
+		background-color: rgba(12, 133, 232, 0.9);
+		background-image: url(../../../static/icon/6959.png);
+		background-position: 50% 50%;
+		background-size: 100% 100%;
+		border-radius: 6rpx;
+		text-align: center;
+		.popuptext{
+			position: relative;
+			top: 90rpx;
+			color: #FFFFFF;
+		}
+		.btnbox{
+			width: 90%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin: 0 auto;
+			margin-top: 130rpx;
+			color: #FFFFFF;
+			.btnleft{
+				width: 49%;
+				height: 88rpx;
+				border: 1rpx solid #5AE8FF;
+				background: linear-gradient(180deg, #3E6E80 0%, #001B4A 100%);
+				opacity: 0.62;
+				line-height: 88rpx;
+				box-sizing: border-box;
+			}
+			.btnright{
+				width: 49%;
+				height: 88rpx;
+				border: 1px solid #5AE8FF;
+				background: linear-gradient(180deg, #5AE8FF 0%, #1C54B8 100%);
+				box-shadow: -2px 0px 5px rgba(90, 232, 255, 0.7);
+				line-height: 88rpx;
+				box-sizing: border-box;
+			}
+		}
+		.imgbox{
+			width: 203rpx;
+			height: 203rpx;
+			position: relative;
+			left: 50%;
+			top: 68rpx;
+			transform: translateX(-50%);
+			.out{
+				width: 203rpx;
+				height: 203rpx;
+				animation: anime 3s linear infinite;
+				@keyframes anime{
+				  0%{-webkit-transform:rotate(0deg);}
+				  25%{-webkit-transform:rotate(90deg);}
+				  50%{-webkit-transform:rotate(180deg);}
+				  75%{-webkit-transform:rotate(270deg);}
+				  100%{-webkit-transform:rotate(360deg);}
+				}
+			}
+			.in{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%,-50%);
+				width: 146rpx;
+				height: 143rpx;
+			}
+		}
 	}
 }
 </style>

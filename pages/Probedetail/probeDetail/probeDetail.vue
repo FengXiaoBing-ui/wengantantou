@@ -123,7 +123,7 @@ export default {
 	},
 	onLoad(option) {
 		this.id = option.id
-		this.$api.postapi('/api/Sensor/selSensorDetail',{id:this.id}).then(res => {
+		this.$api.postapi('/api/Sensor/selSensorDetail',{id:this.id,loginId:uni.getStorageSync('loginId')}).then(res => {
 			console.log(res)
 			this.SensorBase = res.data.data
 		})

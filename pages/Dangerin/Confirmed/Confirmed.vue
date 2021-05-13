@@ -82,7 +82,7 @@
 				</view>
 			</view>
 			
-			<view class="sumbit" @click="jump">
+			<view class="sumbit" @click="jump" v-if="listcontent.is_publish_task==0">
 				<image src="../../../static/icon/5144.png" mode=""></image>
 				<text>发布消警任务</text>
 			</view>
@@ -100,6 +100,9 @@
 		},
 		onLoad(option) {
 			this.id = option.id
+			this.confirmed()
+		},
+		onShow() {
 			this.confirmed()
 		},
 		methods:{

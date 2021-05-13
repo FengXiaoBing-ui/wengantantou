@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
-		<headerTab title="探头告警" @option="option" @func="func" :record="record" :confirmed="true" :garbage="garbage"></headerTab>
-		<view class="wrap">
+		<headerTab title="探头告警" @option="option" @func="func" :record="record" :confirmed="confirmed" :garbage="garbage"></headerTab>
+		<view class="wrap" ref="wrap">
 			<view
 				class="listwait"
 				v-for="(item, index) in warninglist"
@@ -81,6 +81,7 @@
 export default {
 	data() {
 		return {
+			confirmed: true,
 			garbage: true,
 			record: true,
 			activeall: true,
@@ -164,6 +165,8 @@ export default {
 		},
 		longtap(index) {
 			this.operation = true;
+			this.confirmed = false;
+			console.log(this.$refs.wrap.style)
 			if (this.operation) {
 				if (this.warninglist[index].active == '') {
 					this.warninglist[index].active = 'active';

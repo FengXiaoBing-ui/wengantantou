@@ -253,6 +253,11 @@ export default {
 					uni.showToast({
 						title:"提交成功"
 					})
+					setTimeout(() => {
+						uni.switchTab({
+							url:"../Confirmed/Confirmed"
+						})
+					},500)
 				}
 			})
 		},

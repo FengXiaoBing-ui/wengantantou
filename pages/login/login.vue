@@ -87,6 +87,7 @@
 						})
 						uni.setStorageSync('is_publish_task',JSON.stringify(res.data.is_publish_task))
 						uni.setStorageSync('loginId',JSON.stringify(res.data.loginId))
+						uni.setStorageSync('role',JSON.stringify(res.data.role))
 						uni.switchTab({
 							url:"../index/index"
 						})

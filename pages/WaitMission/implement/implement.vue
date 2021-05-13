@@ -1,13 +1,13 @@
 <template>
 	<view class="index">
-		<headerTab title="执行任务" :implement="true"></headerTab>
+		<headerTab title="执行任务" :implement="true" @func="func"></headerTab>
 		<view class="wrap">
-			<view class="basic">
+			<view class="basic" v-if="implementdata.device!=undefined&&implementdata.alarm!=undefined">
 				<text class="title">任务信息</text>
 				<view class="list">
 					<view class="list-content">
 						<text>任务编号</text>
-						<text>R210126001</text>
+						<text>{{ implementdata.task_number }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
@@ -17,32 +17,32 @@
 					</view>
 					<view class="list-content">
 						<text>设备名称</text>
-						<text>温感探头</text>
+						<text>{{ implementdata.device.device_name }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>设备编号</text>
-						<text>TEER864584522</text>
+						<text>{{ implementdata.device.device_id }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>塔杆信息</text>
-						<text>110kV丹诗文线-N4</text>
+						<text>{{ implementdata.device.tagan }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>设备位置</text>
-						<text>A相大号位上子导线</text>
+						<text>{{ implementdata.device.device_position }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>告警类型</text>
-						<text>超温告警</text>
+						<text>{{ implementdata.alarm.title }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>告警详情</text>
-						<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+						<text>{{ implementdata.alarm.remark }}</text>
 						<view class="botborder"></view>
 					</view>
 				</view>
@@ -54,7 +54,7 @@
 						<text>处理照片</text>
 						<view class="imglist">
 							<view class="imglist-box" v-for="(item,index) in imglist" :key="item" >
-								<image class="addimg" :src="'../../../static/icon/'+item" mode="aspectFill"></image>
+								<image class="addimg" :src="item" mode="aspectFill"></image>
 								<image @click="close(index)" class="closeimg" src="../../../static/icon/6947.png" mode=""></image>
 							</view>
 							
@@ -65,7 +65,7 @@
 					</view>
 					<view class="list-content">
 						<text>处理说明</text>
-						<textarea value="" placeholder="输入处理说明文字..." />
+						<textarea value="" placeholder="输入处理说明文字..." v-model="content" />
 					</view>
 					<view class="list-content">
 						<text>处理情况</text>
@@ -84,22 +84,53 @@
 	export default {
 		data() {
 			return {
-				imglist: []
+				id:"",
+				implementdata: {},
+				imglist: [],
+				content: "",
 			};
 		},
+		created() {
+			this.implement()
+		},
+		onLoad(option) {
+			this.id = option.id
+		},
 		methods:{
+			implement(){
+				this.$api.postapi('/api/pubtask/sel_task_detail',{id:this.id}).then(res => {
+					console.log(res)
+					this.implementdata = res.data.data
+				})
+			},
+			func(){
+				this.$api.postapi('/api/pubtask/carry_task',{
+					
+				})
+			},
 			close(index){
 				this.imglist.splice(index, 1)
 			},
-			 addimg(){
+			addimg(){
 				uni.chooseImage({
 					count:9,
 					sourceType:['album'],
 					success: (res) =>  {
-						res.tempFiles.forEach( e => {
-							this.imglist.push(e.name)
-							this.imglist = [...new Set(this.imglist)]
-						})
+						let arr = res.tempFilePaths
+						for(let i = 0; i < arr.length; i ++){
+							uni.uploadFile({
+								url:"http://wgtt.welamp.cn/api/pubtask/uploads_task_imgs",
+								filePath:arr[i],
+								name:'file',
+								success: res => {
+									let imgs = JSON.parse(res.data)
+									this.imglist.push(imgs.data1)
+								},
+								fail:(err => {
+									console.log(22,err)
+								})
+							});
+						}
 					}
 				})
 			}

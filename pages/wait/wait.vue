@@ -15,25 +15,17 @@
 		</view>
 		
 		<view class="wrap" v-if="!nodata">
-			<view
-			@click="jump"
-				class="list"
-				v-for="(item, index) in warninglist"
-				:key="index"
-				v-if="isshow"
-			>
-			
+			<view @click="jump(item.id)" class="list" v-for="(item, index) in warninglist" :key="index" v-if="isshow">
 				<view class="list-left">
 					<view class="top">
 						<image src="../../static/icon/6707.png" mode=""></image>
 						<text>{{ item.tagan }}</text>
 					</view>
-					<text class="mid">{{ item.task_number }}</text>
-					<view class="bot">
-						<text>{{ item.endtime_str }}</text>
-					</view>
+						<text class="mid">任务编号:{{ item.task_number }}</text>
+						<text class="bot">计划完成时间:{{ item.endtime_str }}</text>
 				</view>
-				<view class="list-right"><image src="../../static/icon/minright.png" mode=""></image></view>
+				<view class="list-right"><image src="../../static/icon/minright.png" mode=""></image>
+				</view>
 				<view class="sure">
 					<text>消警任务</text>
 				</view>
@@ -79,7 +71,7 @@
 					title:"loadding..."
 				})
 				this.$api.postapi('/api/pubtask/sel_tasks',{type:type,limit:8}).then(res => {
-					console.log(res)
+					console.log(res.data)
 					if(res.data.code==0){
 						this.nodata = true
 					}else{
@@ -89,15 +81,14 @@
 					uni.hideLoading()
 				})
 			},
-			jump(){
-				this.$api.postapi('/api/pubtask/check_task',{loginId:uni.getStorageSync('loginId')}).then(res => {
+			jump(id){
+				this.$api.postapi('/api/pubtask/check_task',{id:id,loginId:uni.getStorageSync('loginId')}).then(res => {
 					console.log(res)
 					const code = res.data.code
 					uni.navigateTo({
-						url: "../WaitMission/Missiondetails/Missiondetails?code="+code
+						url: "../WaitMission/Missiondetails/Missiondetails?code="+code+'&id='+id
 					})
 				})
-				
 			},
 			tabClick(index){
 				this.currentTabIndex = index
@@ -263,15 +254,12 @@
 						color: #ff7672;
 						opacity: 1;
 					}
-					text {
-						font-size: 28rpx;
-						font-family: Source Han Sans CN;
-						font-weight: 400;
-						line-height: 40rpx;
-						color: #ffffff;
-						opacity: 0.5;
-						margin-left: 10rpx;
-					}
+					font-size: 28rpx;
+					font-family: Source Han Sans CN;
+					font-weight: 400;
+					line-height: 40rpx;
+					color: #ffffff;
+					opacity: 0.5;
 					image {
 						width: 26rpx;
 						height: 38rpx;
