@@ -18,7 +18,7 @@
 					</view>
 					<view class="text">
 						<text>探头告警</text>
-						<text>12</text>
+						<text>{{ probecount }}</text>
 					</view>
 				</view>
 				<view class="right" @click="warningRepeater">
@@ -30,7 +30,7 @@
 					</view>
 					<view class="text">
 						<text>中继器告警</text>
-						<text>0</text>
+						<text>{{ repater_warn_count }}</text>
 					</view>
 					
 				</view>
@@ -48,10 +48,13 @@
 			return {
 				currentTabIndex:1,
 				title: 'Hello',
-				
+				probecount: "",
+				repater_warn_count: ""
 			}
 		},
 		onShow() {
+			this.probecount = this.$store.state.sensor_warn_count
+			this.repater_warn_count = this.$store.state.repater_warn_count
 			uni.hideTabBar()
 		},
 		onLoad() {

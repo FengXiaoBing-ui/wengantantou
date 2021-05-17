@@ -1,116 +1,40 @@
 <template>
-	<view class="wrap">
-		<image class="headimg" src="../../../static/icon/12.png" mode=""></image>
+	<view class="wait">
+		<view class="header">
+			<image class="backpage" @click="backpage" src="../../../static/icon/left.png" mode=""></image>
+			<text class="title">{{ title }}</text>
+			<view class="serch">
+				<image src="../../../static/icon/6645.png" mode=""></image>
+				<input type="text" value="" placeholder="请输入任务单号/内容/设备编号..." placeholder-class="place" />
+			</view>
+			<view class="screen">
+				<view class="list">
+					<text :class="item==active?'actevetext':''" v-for="(item,index) in list" :key="index" @click="activeoption(item,index)">{{ item }}</text>
+					<view class="bordbot" :class="{'left':active=='待处理','mid':active=='处理中','right':active=='已完成'}"></view>
+				</view>
+			</view>
+		</view>
+		
+		<view class="wrap" v-if="!nodata">
+			<view @click="jump(item.id)" class="list" v-for="(item, index) in warninglist" :key="index" v-if="isshow">
+				<view class="list-left">
+					<view class="top">
+						<image src="../../../static/icon/6707.png" mode=""></image>
+						<text>{{ item.tagan }}</text>
+					</view>
+						<text class="mid">任务编号:{{ item.task_number }}</text>
+						<text class="bot">计划完成时间:{{ item.endtime_str }}</text>
+				</view>
+				<view class="list-right"><image src="../../../static/icon/minright.png" mode=""></image>
+				</view>
+				<view class="sure">
+					<text>消警任务</text>
+				</view>
+				<view class="box-foot"></view>
+			</view>
+		</view>
+		<text class="nodata" v-if="nodata">暂无数据...</text>
 		<image class="footimg" src="../../../static/icon/13.png" mode=""></image>
-		
-		<view class="headtab">
-			<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
-			<text class="headtitle">任务详情</text>
-			<view class="num">
-				<text>任务编号T5B464668444447</text>
-				<text>类型：消警任务</text>
-			</view>
-		</view>
-		<view class="content-box">
-			<view class="basic">
-				<text class="title">设备信息</text>
-				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-						<text>{{ item.title }}</text>
-						<text>{{ item.text }}</text>
-						<view class="botborder"></view>
-					</view>
-				</view>
-			</view>
-			
-			<view class="basic">
-				<text class="title">告警信息</text>
-				<view class="list">
-					<view class="list-content">
-						<text>告警类型</text>
-						<text>超温告警</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>告警详情</text>
-						<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
-						<view class="botborder"></view>
-					</view>
-				</view>
-			</view>
-			
-			<view class="basic">
-				<text class="title">任务信息</text>
-				<view class="list">
-					<view class="list-content">
-						<text>发起人</text>
-						<text>R646S4464646</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>运维班长</text>
-						<text>消警</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>计划开始时间</text>
-						<text>2021-12-24 15:22:22</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>计划完成时间</text>
-						<text>2021-12-24 15:22:28</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>告警详情</text>
-						<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
-						<view class="botborder"></view>
-					</view>
-				</view>
-			</view>
-			
-			<view class="basic">
-				<text class="title">执行明细</text>
-				<view class="list">
-					<view class="list-content">
-						<text>处理状态</text>
-						<text>已处理</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>处理说明</text>
-						<text>处理说明的文字处理说明的文字处理说明的文字处理说明的文字</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>处理照片</text>
-						<view class="imglist">
-							<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-							<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-						</view>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>处理人</text>
-						<text>火老四</text>
-						<view class="botborder"></view>
-					</view>
-					<view class="list-content">
-						<text>处理时间</text>
-						<text>2021-12-28 18:32:21</text>
-						<view class="botborder"></view>
-					</view>
-				</view>
-			</view>
-		</view>
-		
 	</view>
 </template>
 
@@ -118,189 +42,295 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TEER864584522"
-					},
-					{
-						title: "塔杆信息",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "设备位置",
-						text: "A相大号位上子导线"
-					}
-				]
-			};
+				index: "",
+				nodata: false,
+				active: "待处理",
+				isshow: true,
+				currentTabIndex:2,
+				title: '',
+				list: ["待处理","处理中","已完成"],
+				warninglist: []
+			}
 		},
-		methods:{
+		created() {
+			this.waitdata(0)
+		},
+		onShow() {
+			uni.hideTabBar()
+		},
+		onLoad(option) {
+			this.index = option.type
+			this.title = option.title
+		},
+		methods: {
 			backpage(){
 				uni.navigateBack({
 					delta:1
 				})
+			},
+			activeoption(item,index){
+				this.active = item
+				this.waitdata(index)
+			},
+			waitdata(type){
+				uni.showLoading({
+					title:"loadding..."
+				})
+				this.$api.postapi('/api/pubtask/sel_tasks',{type:type,limit:8,index: this.index}).then(res => {
+					console.log(res.data)
+					if(res.data.code==0){
+						this.nodata = true
+					}else{
+						this.nodata = false
+						this.warninglist = res.data.data
+					}
+					uni.hideLoading()
+				})
+			},
+			jump(id){
+				this.$api.postapi('/api/pubtask/check_task',{id:id,loginId:uni.getStorageSync('loginId')}).then(res => {
+					console.log(res)
+					const code = res.data.code
+					uni.navigateTo({
+						url: "../Missiondetails/Missiondetails?code="+code+'&id='+id
+					})
+				})
+			},
+			tabClick(index){
+				this.currentTabIndex = index
 			}
 		}
 	}
 </script>
 
 <style lang="less" scoped>
-.wrap{
+.wait{
 	width: 100%;
-	
-	.content-box{
-		padding: 0 34rpx;
-		box-sizing: border-box;
-		padding-bottom: 147rpx;
-		position: relative;
-		top: 120rpx;
-		z-index: 1;
-		.basic{
-			
-			margin-top: 34rpx;
+	.header{
+		width: 100%;
+		height: 225rpx;
+		position: fixed;
+		background-image: url(../../../static/icon/6972.png);
+		background-size: 100% 100%;
+		text-align: center;
+		z-index: 99;
+		.backpage{
+			position: absolute;
+			left: 20rpx;
+			width: 54rpx;
+			height: 54rpx;
+			top: 50rpx;
+		}
+		.title{
+			padding-top: 40rpx;
+			display: block;
+			height: 88rpx;
+			font-size: 36rpx;
+			font-family: Source Han Sans CN;
+			font-weight: 400;
+			line-height: 88rpx;
+			color: #FFFFFF;
+		}
+		.serch{
+			width: 90%;
+			margin: 0 auto;
+			height: 72rpx;
+			border: 1rpx solid #4492C2;
+			background: linear-gradient(180deg, #0D4B88 0%, #013161 100%);
+			box-shadow: 0px -6rpx 12rpx rgba(44, 28, 28, 0.08);
+			display: flex;
+			align-items: center;
+			image{
+				width: 64rpx;
+				height: 64rpx;
+			}
+			input{
+				width: 100%;
+				text-align: start;
+				font-size: 28rpx;
+				font-family: Source Han Sans CN;
+				font-weight: 400;
+				color: #D6F2FF;
+				opacity: 0.56;
+			}
+			.place{
+				font-size: 28rpx;
+				font-family: Source Han Sans CN;
+				font-weight: 400;
+				line-height: 40rpx;
+				color: #D6F2FF;
+				opacity: 0.56;
+			}
+		}
+		.screen{
 			width: 100%;
-			border: 2rpx solid rgba(90, 232, 255, 0.5);
-			background: linear-gradient(180deg, rgba(65, 201, 252, 0.5) 0%, rgba(28, 84, 184, 0.5) 100%);
-			box-shadow: 2rpx 4rpx 10rpx rgba(90, 232, 255, 0.8);
-			padding: 14rpx 34rpx 32rpx 34rpx;
-			box-sizing: border-box;
-			.title{
+			height: 100rpx;
+			background: #032F5E;
+			.list{
+				width: 60%;
+				height: 100rpx;
+				margin: 0 auto;
 				display: flex;
 				align-items: center;
-				font-size: 38rpx;
-				font-family: Source Han Sans CN;
-				font-weight: bold;
-				line-height: 55rpx;
-				color: #FFFFFF;
-				&::before{
-					content: '';
-					display: inline-block;
-					width: 7rpx;
-					height: 34rpx;
-					margin-right: 10rpx;
-					border: 1rpx solid rgba(0, 0, 0, 0);
-					background: linear-gradient(180deg, #D6F2FF 0%, #5AE8FF 100%);
+				justify-content: space-between;
+				position: relative;
+				text{
+					width: 33.3%;
+					font-family: Source Han Sans CN;
+					font-weight: 400;
+					color: #FFFFFF;
+					line-height: 44rpx;
+					font-size: 30rpx;
+					opacity: 0.6;
 				}
-			}
-			.list{
-				box-sizing: border-box;
-				.list-content{
-					display: flex;
-					flex-wrap: wrap;
-					position: relative;
-					padding: 20rpx 0;
-					.imglist{
-						width: 100%;
-						height: auto;
-						display: flex;
-						flex-wrap: wrap;
-						image{
-							margin-right: 10rpx;
-							margin-top: 16rpx;
-							width: 196rpx;
-							height: 196rpx;
-							&:nth-child(3n){
-								margin-right: 0;
-							}
-						}
-					}
-					&:nth-child(1){
-						margin-top: 4rpx;
-					}
-					text{
-						&:nth-child(1){
-							font-size: 28rpx;
-							font-family: Source Han Sans CN;
-							font-weight: 400;
-							line-height: 40rpx;
-							color: #FFFFFF;
-							opacity: 0.7;
-							margin-right: 24rpx;
-						}
-						&:nth-child(2){
-							font-size: 30rpx;
-							font-family: Source Han Sans CN;
-							font-weight: 400;
-							line-height: 44rpx;
-							color: #FFFFFF;
-						}
-					}
-					.botborder{
-						position: absolute;
-						bottom: 0;
-						width: 100%;
-						height: 2rpx;
-						background: #5AE8FF;
-						opacity: 0.5;
-					}
-					&:last-of-type{
-						view{
-							border: none;
-						}
-					}
+				.actevetext{
+					opacity: 1;
+					line-height: 49px;
+					font-size: 34rpx;
+				}
+				.bordbot{
+					position: absolute;
+					bottom: 0;
+					width: 33.3%;
+					height: 6rpx;
+					border: 1rpx solid #5AE8FF;
+					background: linear-gradient(180deg, #5AE8FF 0%, #1C54B8 100%);
+					transition: 0.3s;
+				}
+				.left{
+					left: 0;
+				}
+				.mid{
+					left: 33.3%;
+				}
+				.right{
+					left: 66.6%;
 				}
 			}
 		}
 	}
-	.headtab{
-		width: 100%;
+	
+	.wrap{
+		padding: 7rpx 34rpx 38rpx 34rpx;
+		box-sizing: border-box;
 		position: relative;
-		top: 56rpx;
-		z-index: 1;
-		.num{
-			margin-top: 56rpx;
+		top: 300rpx;
+		padding-bottom: 150rpx;
+		.list {
+			margin: 20rpx 0;
+			width: 100%;
+			height: 182rpx;
+			border: 2rpx solid rgba(90, 232, 255, 0.6);
+			background: linear-gradient(180deg, rgba(65, 201, 252, 0.6) 0%, rgba(28, 84, 184, 0.6) 100%);
+			box-shadow: 2px 3px 8px rgba(90, 232, 255, 0.4);
+			position: relative;
+			padding: 10rpx 20rpx 20rpx 20rpx;
+			box-sizing: border-box;
 			display: flex;
-			flex-direction: column;
 			align-items: center;
-			text{
-				&:nth-child(1){
-					font-size: 36rpx;
-					font-family: Source Han Sans CN;
-					font-weight: bold;
-					line-height: 52rpx;
-					color: #FFFFFF;
+			justify-content: space-between;
+			z-index: 1;
+			.active {
+				width: 41rpx;
+				height: 41rpx;
+			}
+			.list-left {
+				.top {
+					display: flex;
+					align-items: center;
+					text {
+						font-size: 32rpx;
+						font-family: Source Han Sans CN;
+						font-weight: bold;
+						color: #ffffff;
+					}
+					image {
+						width: 48rpx;
+						height: 48rpx;
+					}
 				}
-				&:nth-child(2){
+				.mid {
 					font-size: 28rpx;
 					font-family: Source Han Sans CN;
 					font-weight: 400;
 					line-height: 40rpx;
-					color: #FFFFFF;
-					opacity: 0.6;
+					color: #ffffff;
+				}
+				.bot {
+					display: flex;
+					align-items: center;
+					.origin {
+						color: #fbc965;
+						opacity: 1;
+					}
+					.red {
+						color: #ff7672;
+						opacity: 1;
+					}
+					font-size: 28rpx;
+					font-family: Source Han Sans CN;
+					font-weight: 400;
+					line-height: 40rpx;
+					color: #ffffff;
+					opacity: 0.5;
+					image {
+						width: 26rpx;
+						height: 38rpx;
+					}
 				}
 			}
+			.list-right {
+				image {
+					width: 14rpx;
+					height: 17rpx;
+				}
+			}
+			.sure {
+				position: absolute;
+				top: 17rpx;
+				right: 25rpx;
+				width: 132rpx;
+				height: 43rpx;
+				background: rgba(0, 86, 136, 0.51);
+				border: 1rpx solid #5AE8FF;
+				opacity: 0.92;
+				border-radius: 10rpx;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text{
+					font-size: 28rpx;
+					font-family: Source Han Sans CN;
+					font-weight: 400;
+					color: #FBC965;
+				}
+			}
+			.box-foot {
+				width: 114rpx;
+				height: 4rpx;
+				background: #54d6ff;
+				box-shadow: 0px 0px 8rpx #9ef2ff;
+				position: absolute;
+				bottom: -2rpx;
+				left: 50%;
+				transform: translateX(-50%);
+			}
 		}
-		image{
-			width: 54rpx;
-			height: 54rpx;
-			margin-left: 16rpx;
-		}
-		.headtitle{
-			position: absolute;
-			left: 50%;
-			transform: translateX(-50%);
-			font-size: 36rpx;
-			font-family: Source Han Sans CN;
-			font-weight: 400;
-			line-height: 52rpx;
-			color: #FFFFFF;
-		}
-	}
-	.headimg{
-		position: absolute;
-		top: 0;
-		width: 100%;
-		height: 474rpx;
 	}
 	.footimg{
-		position: fixed;
-		bottom: 0;
 		width: 100%;
 		height: 660rpx;
+		position: fixed;
+		bottom: 0;
+	}
+	.nodata{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		color: #FFFFFF;
+		z-index: 1;
 	}
 }
 </style>

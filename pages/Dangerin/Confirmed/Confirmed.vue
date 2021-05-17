@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<headerTab title="告警详情"></headerTab>
-		<view class="wrap" v-if="listcontent.sensor_name != undefined">
+		<view class="wrap">
 			<view class="basic">
 				<text class="title">设备信息</text>
 				<view class="list">
@@ -15,12 +15,22 @@
 						<text>{{ listcontent.create_time }}</text>
 						<view></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="listcontent.device">
+						<text>设备名称</text>
+						<text>{{ listcontent.device.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content" v-if="listcontent.device">
+						<text>设备编号</text>
+						<text>{{ listcontent.device.device_id }}</text>
+						<view></view>
+					</view>
+					<view class="list-content" v-if="listcontent.sensor_name">
 						<text>设备名称</text>
 						<text>{{ listcontent.sensor_name.device_name }}</text>
 						<view></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="listcontent.sensor_name">
 						<text>设备编号</text>
 						<text>{{ listcontent.sensor_name.device_id }}</text>
 						<view></view>
@@ -41,14 +51,14 @@
 						<text>{{ listcontent.remark }}</text>
 						<view></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content"  v-if="listcontent.device">
 						<text>当前值</text>
-						<text>{{ listcontent.sensor_name.now_temperature }}℃</text>
+						<text>{{ listcontent.device.now_temperature }}℃</text>
 						<view></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content"  v-if="listcontent.device">
 						<text>设定值</text>
-						<text>＞{{ listcontent.sensor_name.warm_number }}℃</text>
+						<text>＞{{ listcontent.device.warm_number }}℃</text>
 						<view></view>
 					</view>
 				</view>
@@ -82,7 +92,7 @@
 				</view>
 			</view>
 			
-			<view class="sumbit" @click="jump" v-if="listcontent.is_publish_task==0">
+			<view class="sumbit" @click="jump" v-if="listcontent.is_publish_task==0&&role==1">
 				<image src="../../../static/icon/5144.png" mode=""></image>
 				<text>发布消警任务</text>
 			</view>
@@ -94,12 +104,15 @@
 	export default {
 		data() {
 			return {
+				role: uni.getStorageSync('role'),
 				id: "",
+				index: "",
 				listcontent: {}
 			};
 		},
 		onLoad(option) {
 			this.id = option.id
+			this.index = option.index
 			this.confirmed()
 		},
 		onShow() {
@@ -107,14 +120,23 @@
 		},
 		methods:{
 			confirmed(){
-				this.$api.postapi('/api/Alarmlog/sel_sensor_alarm_detail',{id:this.id}).then(res => {
+				this.$api.postapi('/api/Alarmlog/sel_sensor_alarm_detail',{id:this.id,index:this.index}).then(res => {
 					console.log(res)
 					this.listcontent = res.data.data
 				})
 			},
 			jump(){
+				let sensor;
+				let type;
+				if(this.listcontent.temperature_sensor_id){
+					sensor = this.listcontent.temperature_sensor_id
+					type = 0
+				}else{
+					sensor = this.listcontent.repeater_id
+					type = 1
+				}
 				uni.navigateTo({
-					url:"../release/release?id="+this.listcontent.id+'&type='+this.listcontent.type
+					url:"../release/release?id="+this.listcontent.id+'&type='+type+'&sensor_id='+ sensor
 				})
 			}
 		}

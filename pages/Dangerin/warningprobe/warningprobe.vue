@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<headerTab title="探头告警" @option="option" @func="func" :record="record" :confirmed="confirmed" :garbage="garbage"></headerTab>
-		<view class="wrap" ref="wrap">
+		<view class="wrap" :class="wraptop == true ? 'longtap' : ''">
 			<view
 				class="listwait"
 				v-for="(item, index) in warninglist"
@@ -9,7 +9,7 @@
 				:class="{ listwaitactive: operation, listwaitnoactive: item.active == 'active' }"
 				v-if="isshow"
 				@longtap="longtap(index)"
-				@click="active(index,item.id)"
+				@click="active(index, item.id)"
 			>
 				<image v-if="item.active == 'active'" class="active" src="../../../static/icon/6979.png" mode=""></image>
 				<image v-if="operation && item.active == ''" class="active" src="../../../static/icon/2747.png" mode=""></image>
@@ -29,7 +29,17 @@
 				</view>
 				<view class="box-foot"></view>
 			</view>
-			<view class="list" v-if="!isshow" v-for="(item, index) in warninglist" :key="index" @click="jump(item.id)">
+			<view
+				class="list"
+				v-if="!isshow"
+				v-for="(item, index) in warninglist"
+				:key="index"
+				:class="{ listwaitactive: operation, listwaitnoactive: item.active == 'active' }"
+				@longtap="longtap(index)"
+				@click="active(index, item.id)"
+			>
+			<image v-if="item.active == 'active'" class="active" src="../../../static/icon/6979.png" mode=""></image>
+			<image v-if="operation && item.active == ''" class="active" src="../../../static/icon/2747.png" mode=""></image>
 				<view class="list-left">
 					<view class="top">
 						<image src="../../../static/icon/6707.png" mode=""></image>
@@ -59,19 +69,19 @@
 					<text>确认所选告警</text>
 				</view>
 			</view>
-			
+
 			<uni-popup ref="popup" type="center">
 				<view class="mycenter">
 					<image class="in" src="../../../static/icon/6913.png" mode=""></image>
 					<image class="out" src="../../../static/icon/6914.png" mode=""></image>
 					<text class="tishi">是否批量确认告警信息？</text>
 					<view class="btn">
-						<view class="btn1" @click="close">是</view>
+						<view class="btn1" @click="alllistsure">是</view>
 						<view class="btn2" @click="close">否</view>
 					</view>
 				</view>
 			</uni-popup>
-			
+
 			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
@@ -81,6 +91,7 @@
 export default {
 	data() {
 		return {
+			wraptop: false,
 			confirmed: true,
 			garbage: true,
 			record: true,
@@ -96,34 +107,67 @@ export default {
 		this.more = 'loading';
 	},
 	created() {
-		this.warning(0)
+		this.warning(0);
 	},
 	methods: {
-		warning(type){
-			this.$api.postapi('/api/Alarmlog/sel_sensor_alarm_logs',{
-				type:type,
-				limit: 4
-			}).then(res => {
-				this.warninglist = res.data.data
-				for(let i = 0; i < this.warninglist.length; i ++){
-					this.warninglist[i].active = ""
-				}
-				console.log(this.warninglist)
-			})
+		warning(type) {
+			this.$api
+				.postapi('/api/Alarmlog/sel_sensor_alarm_logs', {
+					type: type,
+					limit: 10
+				})
+				.then(res => {
+					this.warninglist = res.data.data;
+					for (let i = 0; i < this.warninglist.length; i++) {
+						this.warninglist[i].active = '';
+					}
+				});
 		},
 		func() {
-			this.operation = true;
+			this.wraptop = true;
+			this.confirmed = false;
+			this.operation = !this.operation;
+			if(!this.operation){
+				for (let i = 0; i < this.warninglist.length; i++) {
+					this.warninglist[i].active = '';
+					this.record = true;
+					this.wraptop = false;
+					this.confirmed = true;
+				}
+			}
 		},
-		close(){
-			this.$refs.popup.close()
+		alllistsure() {
+			let ids = [];
+			this.warninglist.forEach(e => {
+				if (e.active == 'active') {
+					ids.push(e.id);
+				}
+			});
+			ids = JSON.stringify(ids);
+			this.$api.postapi('/api/Alarmlog/confirm_choose_warnning', { ids: ids, login_id: uni.getStorageSync('loginId') }).then(res => {
+				console.log(res);
+			});
 			for (let i = 0; i < this.warninglist.length; i++) {
 				this.warninglist[i].active = '';
 			}
-			this.operation = false
-			this.record = true
+			this.operation = false;
+			this.record = true;
+			this.wraptop = false;
+			this.confirmed = true;
+			this.$refs.popup.close();
 		},
-		sure(){
-			this.$refs.popup.open()
+		close() {
+			for (let i = 0; i < this.warninglist.length; i++) {
+				this.warninglist[i].active = '';
+			}
+			this.operation = false;
+			this.record = true;
+			this.wraptop = false;
+			this.confirmed = true;
+			this.$refs.popup.close();
+		},
+		sure() {
+			this.$refs.popup.open();
 		},
 		allactive() {
 			this.activeall = !this.activeall;
@@ -135,11 +179,15 @@ export default {
 			} else {
 				for (let i = 0; i < this.warninglist.length; i++) {
 					this.warninglist[i].active = 'active';
-					this.record = false;
+					if (this.isshow == false) {
+						this.record = false;
+					}else{
+						this.record = true
+					}
 				}
 			}
 		},
-		active(index,id) {
+		active(index, id) {
 			let arr = [];
 			if (this.operation) {
 				if (this.warninglist[index].active == '') {
@@ -148,52 +196,58 @@ export default {
 					this.warninglist[index].active = '';
 				}
 				for (let i = 0; i < this.warninglist.length; i++) {
-					if(this.warninglist[i].active == ''){
-						arr.push(i)
+					if (this.warninglist[i].active == '') {
+						arr.push(i);
 					}
 				}
-				if(arr.length<this.warninglist.length){
-					this.record = false
-				}else{
-					this.record = true
+				if (arr.length < this.warninglist.length) {
+					if (this.isshow == false) {
+						this.record = false;
+					}else{
+						this.record = true
+					}
+				} else {
+					this.record = true;
 				}
-			}else{
+			} else {
 				uni.navigateTo({
-					url: '../Confirmed/Confirmed?id='+id
+					url: '../Confirmed/Confirmed?id=' + id + '&index=0'
 				});
 			}
+			this.$forceUpdate();
 		},
 		longtap(index) {
+			this.wraptop = true;
 			this.operation = true;
 			this.confirmed = false;
-			console.log(this.$refs.wrap.style)
 			if (this.operation) {
 				if (this.warninglist[index].active == '') {
 					this.warninglist[index].active = 'active';
-					this.record = false;
+					if (this.isshow == false) {
+						this.record = false;
+					}else{
+						this.record = true
+					}
 				} else {
 					this.warninglist[index].active = '';
 					this.record = true;
 				}
 			}
-			uni.vibrateShort({
-				
-			});
+			uni.vibrateShort();
 		},
 		jump(id) {
 			uni.navigateTo({
-				url: '../Confirmed/Confirmed?id='+id
+				url: '../Confirmed/Confirmed?id=' + id
 			});
 		},
 		option(v) {
+			this.garbage = true;
 			if (v == '待确认') {
 				this.isshow = true;
-				this.warning(0)
-				this.garbage = true
+				this.warning(0);
 			} else {
 				this.isshow = false;
-				this.warning(1)
-				this.garbage = false
+				this.warning(1);
 			}
 		}
 	}
@@ -207,18 +261,18 @@ export default {
 	position: relative;
 	top: 268rpx;
 	z-index: 1;
-	.mycenter{
-		width:620rpx;
+	.mycenter {
+		width: 620rpx;
 		height: 500rpx;
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%,-50%);
+		transform: translate(-50%, -50%);
 		background-image: url(../../../static/icon/6980.png);
 		background-size: 100% 100%;
 		z-index: 999;
 		position: relative;
-		.btn{
+		.btn {
 			width: 100%;
 			display: flex;
 			justify-content: space-evenly;
@@ -227,34 +281,34 @@ export default {
 			left: 50%;
 			transform: translateX(-50%);
 			bottom: 10%;
-			.btn1{
+			.btn1 {
 				width: 271rpx;
 				height: 88rpx;
-				border: 1rpx solid #5AE8FF;
-				background: linear-gradient(180deg, #5AE8FF 0%, #1C54B8 100%);
+				border: 1rpx solid #5ae8ff;
+				background: linear-gradient(180deg, #5ae8ff 0%, #1c54b8 100%);
 				box-shadow: -2rpx 0px 5rpx rgba(90, 232, 255, 0.7);
 				box-sizing: border-box;
-				color: #FFFFFF;
+				color: #ffffff;
 				text-align: center;
 				line-height: 88rpx;
 			}
-			.btn2{
+			.btn2 {
 				width: 271rpx;
 				height: 88rpx;
 				border: 1rpx solid rgba(90, 232, 255, 0.6);
 				background: linear-gradient(180deg, rgba(62, 110, 128, 0.6) 0%, rgba(0, 27, 74, 0.6) 100%);
 				box-sizing: border-box;
-				color: #FFFFFF;
+				color: #ffffff;
 				text-align: center;
 				line-height: 88rpx;
 			}
 		}
-		.tishi{
+		.tishi {
 			font-size: 32rpx;
 			font-family: Source Han Sans CN;
 			font-weight: 400;
 			line-height: 46rpx;
-			color: #FFFFFF;
+			color: #ffffff;
 			position: absolute;
 			width: 100%;
 			text-align: center;
@@ -262,7 +316,7 @@ export default {
 			transform: translateX(-50%);
 			bottom: 180rpx;
 		}
-		.in{
+		.in {
 			position: absolute;
 			top: 88rpx;
 			left: 50%;
@@ -271,14 +325,24 @@ export default {
 			height: 143rpx;
 			z-index: 9999;
 		}
-		.out{
+		.out {
 			animation: anim 3s linear infinite;
-			@keyframes anim{
-			  0%{-webkit-transform:rotate(0deg);}
-			  25%{-webkit-transform:rotate(90deg);}
-			  50%{-webkit-transform:rotate(180deg);}
-			  75%{-webkit-transform:rotate(270deg);}
-			  100%{-webkit-transform:rotate(360deg);}
+			@keyframes anim {
+				0% {
+					-webkit-transform: rotate(0deg);
+				}
+				25% {
+					-webkit-transform: rotate(90deg);
+				}
+				50% {
+					-webkit-transform: rotate(180deg);
+				}
+				75% {
+					-webkit-transform: rotate(270deg);
+				}
+				100% {
+					-webkit-transform: rotate(360deg);
+				}
 			}
 			position: absolute;
 			top: 60rpx;
@@ -286,13 +350,11 @@ export default {
 			width: 203rpx;
 			height: 203rpx;
 			z-index: 9999;
-			
 		}
 	}
 	.mybotactive {
 		width: 100%;
 		height: 100rpx;
-		background: #ffffff;
 		opacity: 1;
 		position: fixed;
 		left: 0;
@@ -454,5 +516,8 @@ export default {
 		background: linear-gradient(180deg, rgba(65, 201, 252, 0.8) 0%, rgba(28, 84, 184, 0.8) 100%);
 		box-shadow: 2px 3px 8px rgba(90, 232, 255, 0.4);
 	}
+}
+.longtap {
+	top: 160rpx;
 }
 </style>

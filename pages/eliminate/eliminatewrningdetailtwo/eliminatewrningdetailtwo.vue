@@ -30,43 +30,37 @@
 							<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
 							<view class="botborder"></view>
 						</view>
-					</view>
-				</view>
-				
-				<view class="basic">
-					<text class="title">任务信息</text>
-					<view class="list">
 						<view class="list-content">
-							<text>发起人</text>
-							<text>R646S4464646</text>
+							<text>当前值</text>
+							<text>53℃</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
-							<text>运维班长</text>
-							<text>消警</text>
-							<view class="botborder"></view>
-						</view>
-						<view class="list-content">
-							<text>计划开始时间</text>
-							<text>2021-12-24 15:22:22</text>
-							<view class="botborder"></view>
-						</view>
-						<view class="list-content">
-							<text>计划完成时间</text>
-							<text>2021-12-24 15:22:28</text>
-							<view class="botborder"></view>
-						</view>
-						<view class="list-content">
-							<text>告警详情</text>
-							<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+							<text>设定值</text>
+							<text>>50℃</text>
 							<view class="botborder"></view>
 						</view>
 					</view>
 				</view>
 				
 				<view class="basic">
-					<text class="title">执行明细</text>
+					<text class="title">处理情况</text>
 					<view class="list">
+						<view class="list-content">
+							<text>确认状态</text>
+							<text>已确认</text>
+							<view class="botborder"></view>
+						</view>
+						<view class="list-content">
+							<text>确认人</text>
+							<text>张绣三</text>
+							<view class="botborder"></view>
+						</view>
+						<view class="list-content">
+							<text>确认时间</text>
+							<text>2021-12-12</text>
+							<view class="botborder"></view>
+						</view>
 						<view class="list-content">
 							<text>处理状态</text>
 							<text>已处理</text>

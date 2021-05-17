@@ -17,23 +17,26 @@
 				<view class="list">
 					<view class="list-content">
 						<text>设备名称</text>
-						<text>{{ mission.device.device_name }}</text>
-						<view></view>
+						<text v-if="mission.device.repeater_name">{{ mission.device.repeater_name }}</text>
+						<text v-if="mission.device.device_name">{{ mission.device.device_name }}</text>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>设备编号</text>
-						<text>{{ mission.device.device_id }}</text>
-						<view></view>
+						<text v-if="mission.device.repeater_id">{{ mission.device.repeater_id }}</text>
+						<text v-if="mission.device.device_id">{{ mission.device.device_id }}</text>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>塔杆信息</text>
-						<text>{{ mission.device.tagan }}</text>
-						<view></view>
+						<text v-if="mission.device.tagan">{{ mission.device.tagan }}</text>
+						<text v-else>{{ mission.device.tagan }}</text>
+						<view class="botborder"></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="mission.type==0">
 						<text>设备位置</text>
 						<text>{{ mission.device.device_position }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 				</view>
 			</view>
@@ -44,12 +47,12 @@
 					<view class="list-content">
 						<text>告警类型</text>
 						<text>{{ mission.alarm.title }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>告警详情</text>
 						<text>{{ mission.alarm.remark }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 				</view>
 			</view>
@@ -60,36 +63,69 @@
 					<view class="list-content">
 						<text>发起人</text>
 						<text>{{ mission.duty_admin }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>运维班长</text>
 						<text>{{ mission.duty_master }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>计划开始时间</text>
 						<text>{{ mission.begintime_str }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>计划完成时间</text>
 						<text>{{ mission.endtime_str }}</text>
-						<view></view>
+						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>任务内容</text>
 						<text>{{ mission.task_remark }}</text>
-						<view></view>
+						<view class="botborder"></view>
+					</view>
+				</view>
+			</view>
+			<view class="basic" v-if="mission.is_deal!=0">
+				<text class="title">执行明细</text>
+				<view class="list">
+					<view class="list-content">
+						<text>处理状态</text>
+						<text v-if="mission.is_deal==1">处理中</text>
+						<text v-if="mission.is_deal==2">已处理</text>
+						<view class="botborder"></view>
+					</view>
+					<view class="list-content">
+						<text>处理说明</text>
+						<text>{{ mission.task_remark }}</text>
+						<view class="botborder"></view>
+					</view>
+					<view class="list-content">
+						<text>处理照片</text>
+						<view class="imglist">
+							<image v-for="(item,index) in mission.deal_imgs" :key="index" :src="item" mode="aspectFill"></image>
+						</view>
+						<view class="botborder"></view>
+					</view>
+					<view class="list-content">
+						<text>处理人</text>
+						<text>{{ mission.duty_master }}</text>
+						<view class="botborder"></view>
+					</view>
+					<view class="list-content">
+						<text>处理时间</text>
+						<text>{{ mission.deal_time }}</text>
+						<view class="botborder"></view>
 					</view>
 				</view>
 			</view>
 			<view class="botbtn">
-				<view class="left" @click="implement" v-if="this.mission.is_deal==0&&code==1">
+				<view class="left" @click="implement" v-if="mission.is_deal==0&&code==1">
 					<image src="../../../static/icon/6700.png" mode=""></image>
 					<text>执行任务</text>
 				</view>
-				<view class="right" @click="sumbitjump">
+				<view class="right" @click="sumbitjump" v-if="mission.is_deal!=2">
 					<image src="../../../static/icon/51444.png" mode=""></image>
 					<text>提交任务</text>
 				</view>
@@ -106,7 +142,7 @@
 					<view class="btnleft" @click="cancel">
 						取消
 					</view>
-					<view class="btnright">
+					<view class="btnright" @click="sumbit">
 						确定
 					</view>
 				</view>
@@ -136,6 +172,21 @@
 				this.$api.postapi('/api/pubtask/sel_task_detail',{id:this.id}).then(res => {
 					console.log(res)
 					this.mission = res.data.data
+				})
+			},
+			sumbit(){
+				this.$api.postapi('/api/pubtask/submit_task',{id:this.id}).then(res => {
+					console.log(res)
+					if(res.data.code==1){
+						uni.showToast({
+							title:"提交成功"
+						})
+						setTimeout(() => {
+							uni.switchTab({
+								url:"../../wait/wait"
+							})
+						},500)
+					}
 				})
 			},
 			//提交任务
@@ -266,6 +317,21 @@
 					flex-wrap: wrap;
 					position: relative;
 					padding: 20rpx 0;
+					.imglist{
+						width: 100%;
+						height: auto;
+						display: flex;
+						flex-wrap: wrap;
+						image{
+							margin-right: 10rpx;
+							margin-top: 16rpx;
+							width: 196rpx;
+							height: 196rpx;
+							&:nth-child(3n){
+								margin-right: 0;
+							}
+						}
+					}
 					&:nth-child(1){
 						margin-top: 4rpx;
 					}
@@ -287,7 +353,7 @@
 							color: #FFFFFF;
 						}
 					}
-					view{
+					.botborder{
 						position: absolute;
 						bottom: 0;
 						width: 100%;

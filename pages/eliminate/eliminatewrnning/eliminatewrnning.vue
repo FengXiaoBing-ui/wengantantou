@@ -64,7 +64,15 @@
 				]
 			};
 		},
+		created() {
+			this.alldata()
+		},
 		methods:{
+			alldata(){
+				this.$api.postapi('/api/Firealarm/sel_all_alarm',{limit:10}).then(res => {
+					console.log(res)
+				})
+			},
 			jump(){
 				if(this.active=='未处理'){
 					uni.navigateTo({

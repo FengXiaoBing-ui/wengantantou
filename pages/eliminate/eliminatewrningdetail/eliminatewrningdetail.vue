@@ -44,7 +44,7 @@
 			</view>
 			
 			<view class="basic">
-				<text class="title">设备信息</text>
+				<text class="title">处理情况</text>
 				<view class="list">
 					<view class="list-content">
 						<text>确认状态</text>
@@ -52,8 +52,18 @@
 						<view></view>
 					</view>
 					<view class="list-content">
+						<text>处理人</text>
+						<text>张绣三</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>处理时间</text>
+						<text>2021-12-12</text>
+						<view></view>
+					</view>
+					<view class="list-content">
 						<text>处理状态</text>
-						<text>未消警</text>
+						<text>未处理</text>
 						<view></view>
 					</view>
 				</view>
@@ -69,6 +79,10 @@
 				listcontent: [
 					{
 						title: "输电塔名称",
+						text: "110kV丹诗文线-N4"
+					},
+					{
+						title: "具体位置",
 						text: "110kV丹诗文线-N4"
 					},
 					{

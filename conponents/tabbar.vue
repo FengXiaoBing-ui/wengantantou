@@ -29,13 +29,13 @@
 						icon: require("../static/icon/171.png"),
 						text: "告警",
 						select: require('../static/icon/171select.png'),
-						badge: 12
+						badge: 0
 					},
 					{
 						icon: require("../static/icon/174.png"),
 						select: require('../static/icon/174select.png'),
 						text: "待办",
-						badge: 85
+						badge: 0
 					},
 					{
 						icon: require("../static/icon/173.png"),
@@ -65,8 +65,19 @@
 			}
 		},
 		created() {
+			this.countdata()
 		},
 		methods:{
+			countdata(){
+				this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
+					console.log(res)
+					this.tablist[1].badge = res.data.sensor_warn_count
+					this.tablist[2].badge = res.data.task_count
+					this.$store.commit('warn_count',res.data.sensor_warn_count)
+					this.$store.commit('task_count',res.data.task_count)
+					this.$store.commit('repater_warn_count',res.data.repater_warn_count)
+				})
+			},
 			switchTab(index){
 				let routepath;
 				this.$emit('click',index)
@@ -76,6 +87,7 @@
 					case 2: routepath = "../wait/wait"; break;
 					case 3: routepath = "../user/user"; break;
 				}
+				this.countdata()
 				uni.switchTab({
 					url:routepath,
 					fail(err) {

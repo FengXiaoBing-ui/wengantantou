@@ -2,7 +2,7 @@
 	<view class="index">
 		<headerTab title="中继器告警" @option="option" :record="record" :confirmed="true" @func="func" :garbage="garbage"></headerTab>
 		<view class="wrap">
-			<view class="list" v-if="isshow" v-for="(item,index) in warninglist" :key="index" @longtap="longtap(index)" @click="active(index)">
+			<view class="list" v-if="isshow" v-for="(item,index) in warninglist" :key="index" @longtap="longtap(index)" @click="active(index,item.id)">
 				<image v-if="item.active == 'active'" class="active" src="../../../static/icon/6979.png" mode=""></image>
 				<image v-if="operation && item.active == ''" class="active" src="../../../static/icon/2747.png" mode=""></image>
 				<view class="list-left">
@@ -70,29 +70,7 @@
 				operation: false,
 				more: "nomore",
 				isshow: true,
-				warninglist: [
-					{
-						title: "110kV丹诗文线-N4",
-						num: "中继器编号T5B464668444447",
-						states: "设备离线",
-						time: "2021-12-21 15:24:20",
-						active: ''
-					},
-					{
-						title: "110kV丹诗文线-N4",
-						num: "中继器编号T5B464668444447",
-						states: "电量低",
-						time: "2021-12-21 15:24:20",
-						active: ''
-					},
-					{
-						title: "110kV丹诗文线-N4",
-						num: "中继器编号T5B464668444447",
-						states: "设备离线",
-						time: "2021-12-21 15:24:20",
-						active: ''
-					},
-				]
+				warninglist: []
 			};
 		},
 		onReachBottom() {
@@ -103,7 +81,7 @@
 		},
 		methods:{
 			warningdata(type){
-				this.$api.postapi('/api/Alarmlog/sel_repeater_alarm_logs',{type:type,limit:4}).then(res => {
+				this.$api.postapi('/api/Repeaterlog/sel_repeater_alarm_logs',{type:type,limit:10}).then(res => {
 					console.log(res)
 					this.warninglist = res.data.data
 					this.warninglist.forEach(e => {
@@ -128,7 +106,7 @@
 					}
 				}
 			},
-			active(index) {
+			active(index,id) {
 				let arr = []
 				if (this.operation) {
 					if (this.warninglist[index].active == '') {
@@ -136,6 +114,10 @@
 					} else {
 						this.warninglist[index].active = '';
 					}
+				}else{
+					uni.navigateTo({
+						url:"../Confirmed/Confirmed?id="+id+'&index=1'
+					})
 				}
 				for (let i = 0; i < this.warninglist.length; i++) {
 					if(this.warninglist[i].active == ''){

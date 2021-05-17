@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App'
-import store from 'store/store.js'
+import store from './store/index.js'
 import tabBar from 'conponents/tabbar.vue'
 import headerTab from 'conponents/header-tab.vue'
 import api from 'api/api.js'

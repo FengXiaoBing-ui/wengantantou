@@ -186,7 +186,8 @@ export default {
 			indicatorStyle: `height: 50px;`,
 			people: null,
 			id: "",
-			type: ""
+			type: "",
+			sensor_id: ""
 		};
 	},
 	onLoad(option) {
@@ -194,6 +195,8 @@ export default {
 			let maker = JSON.parse(option.maker)
 			this.id = maker.id
 			this.type = maker.type
+			this.sensor_id = maker.sensor_id
+			console.log(maker)
 		}
 		if(option.id&&option.type){
 			this.id = option.id
@@ -215,7 +218,6 @@ export default {
 			}
 			arr[1] = this.month - 1;
 			arr[2] = this.day - 1;
-			console.log(arr)
 			return arr;
 		},
 		values: function(){
@@ -241,7 +243,8 @@ export default {
 					duty_master_id: this.people.id,
 					task_remark: this.content,
 					type: this.type,
-					alarm_id: this.id
+					alarm_id: this.id,
+					sensor_repeater_id:this.sensor_id
 				}
 			obj = JSON.stringify(obj)
 			this.$api.postapi('/api/pubtask/publish_warn_task',{
@@ -254,8 +257,8 @@ export default {
 						title:"提交成功"
 					})
 					setTimeout(() => {
-						uni.switchTab({
-							url:"../Confirmed/Confirmed"
+						uni.redirectTo({
+							url:"../warningprobe/warningprobe"
 						})
 					},500)
 				}

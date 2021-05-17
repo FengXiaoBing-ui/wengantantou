@@ -104,8 +104,24 @@
 				})
 			},
 			func(){
+				let arr = this.imglist.join(';')
+				console.log(arr)
 				this.$api.postapi('/api/pubtask/carry_task',{
-					
+					deal_remark: this.content,
+					id: this.id,
+					deal_imgs: arr
+				}).then(res => {
+					console.log(res)
+					if(res.data.code==1){
+						uni.showToast({
+							title:"提交成功"
+						})
+						setTimeout(() => {
+							uni.navigateBack({
+								delta:1
+							})
+						},500)
+					}
 				})
 			},
 			close(index){
