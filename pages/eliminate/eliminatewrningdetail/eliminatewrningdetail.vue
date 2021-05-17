@@ -1,45 +1,68 @@
 <template>
 	<view class="index">
 		<headerTab title="告警详情"></headerTab>
-		<view class="wrap">
+		<view class="wrap" v-if="alldata.device!=undefined">
 			<view class="task">
 				<text>任务单号</text>
-				<text>R210126001</text>
+				<text>{{ alldata.task_number }}</text>
 			</view>
 			<view class="basic">
 				<text class="title">设备信息</text>
 				<view class="list">
-					<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-						<text>{{ item.title }}</text>
-						<text>{{ item.text }}</text>
+					<view class="list-content">
+						<text>输电塔名称</text>
+						<text>{{ alldata.device.tagan }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>具体位置</text>
+						<text>{{ alldata.device.device_position }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>发生时间</text>
+						<text>{{ alldata.begintime_str }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备名称</text>
+						<text>{{ alldata.device.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备编号</text>
+						<text>{{ alldata.device.device_id }}</text>
 						<view></view>
 					</view>
 				</view>
 			</view>
 			
 			<view class="basic">
-				<text class="title">设备信息</text>
-				<view class="list">
+				<text class="title">告警信息</text>
+				<view class="list" v-if="alldata.alarm!=undefined">
 					<view class="list-content">
 						<text>告警类型</text>
-						<text>超温告警</text>
+						<text>{{ alldata.alarm.title }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>告警详情</text>
-						<text style="display: block;margin: 0;">告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+						<text style="display: block;margin: 0;">{{ alldata.alarm.remark }}</text>
 						<view></view>
 					</view>
-					<view class="list-content">
-						<text>当前值</text>
-						<text>53℃</text>
-						<view></view>
-					</view>
-					<view class="list-content">
-						<text>设定值</text>
-						<text>＞50℃</text>
-						<view></view>
-					</view>
+					<block v-if="alldata.type==0">
+						<view class="list-content">
+							<text>当前值</text>
+							<text>{{ alldata.device.now_temperature }}℃</text>
+							<view></view>
+						</view>
+						<view class="list-content">
+							<text>设定值</text>
+							<text>＞{{ alldata.device.warm_number }}℃</text>
+							<view></view>
+						</view>
+					</block>
+					
 				</view>
 			</view>
 			
@@ -48,17 +71,17 @@
 				<view class="list">
 					<view class="list-content">
 						<text>确认状态</text>
-						<text>未确认</text>
+						<text>{{ alldata.device.state_text }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>处理人</text>
-						<text>张绣三</text>
+						<text>{{ alldata.duty_master }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
-						<text>处理时间</text>
-						<text>2021-12-12</text>
+						<text>确认时间</text>
+						<text>{{ alldata.deal_time }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
@@ -76,29 +99,25 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "输电塔名称",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "具体位置",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "发生时间",
-						text: "2021-12-21 14:21:45"
-					},
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TEER864584522"
-					}
-				]
+				id: "",
+				alldata: {},
+				listcontent: []
 			};
+		},
+		onLoad(option) {
+			this.id = option.id
+			this.detaildata()
+		},
+		created() {
+			
+		},
+		methods:{
+			detaildata(){
+				this.$api.postapi('/api/pubtask/sel_task_detail',{id: this.id}).then(res => {
+					console.log(res)
+					this.alldata = res.data.data
+				})
+			}
 		}
 	}
 </script>

@@ -1,17 +1,37 @@
 <template>
 	<view class="index">
 		<headerTab title="告警详情"></headerTab>
-		<view class="wrap">
+		<view class="wrap" v-if="listcontent.device!=undefined">
 			<view class="task">
 				<text>任务单号</text>
-				<text>R210126001</text>
+				<text>listcontent.task_number</text>
 			</view>
 				<view class="basic">
 					<text class="title">设备信息</text>
 					<view class="list">
-						<view class="list-content" v-for="(item,index) in listcontent" :key="index">
-							<text>{{ item.title }}</text>
-							<text>{{ item.text }}</text>
+						<view class="list-content">
+							<text>输电塔名称</text>
+							<text>{{ listcontent.device.tagan }}</text>
+							<view class="botborder"></view>
+						</view>
+						<view class="list-content">
+							<text>具体位置</text>
+							<text>{{ listcontent.device.device_position }}</text>
+							<view class="botborder"></view>
+						</view>
+						<view class="list-content">
+							<text>发生时间</text>
+							<text>{{ listcontent.begintime_str }}</text>
+							<view class="botborder"></view>
+						</view>
+						<view class="list-content">
+							<text>设备名称</text>
+							<text>{{ listcontent.device.device_name }}</text>
+							<view class="botborder"></view>
+						</view>
+						<view class="list-content">
+							<text>设备编号</text>
+							<text>{{ listcontent.device.device_id }}</text>
 							<view class="botborder"></view>
 						</view>
 					</view>
@@ -22,22 +42,22 @@
 					<view class="list">
 						<view class="list-content">
 							<text>告警类型</text>
-							<text>超温告警</text>
+							<text>{{ listcontent.alarm.title }}</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>告警详情</text>
-							<text>告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+							<text>{{ listcontent.alarm.remark }}</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>当前值</text>
-							<text>53℃</text>
+							<text>{{ listcontent.device.now_temperature }}℃</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>设定值</text>
-							<text>>50℃</text>
+							<text>>{{ listcontent.device.warm_number }}℃</text>
 							<view class="botborder"></view>
 						</view>
 					</view>
@@ -48,17 +68,18 @@
 					<view class="list">
 						<view class="list-content">
 							<text>确认状态</text>
-							<text>已确认</text>
+							<text v-if="listcontent.alarm.isconfirm==0">已确认</text>
+							<text v-else>未确认</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>确认人</text>
-							<text>张绣三</text>
+							<text>{{ listcontent.duty_master }}</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>确认时间</text>
-							<text>2021-12-12</text>
+							<text>{{ listcontent.alarm.confirm_time }}</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
@@ -68,31 +89,24 @@
 						</view>
 						<view class="list-content">
 							<text>处理说明</text>
-							<text>处理说明的文字处理说明的文字处理说明的文字处理说明的文字</text>
+							<text>{{ listcontent.deal_remark }}</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>处理照片</text>
 							<view class="imglist">
-								<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2762.png" mode="aspectFill"></image>
-								<image src="../../../static/icon/2763.png" mode="aspectFill"></image>
+								<image v-for="item in listcontent.deal_imgs" :key="item" :src="item" mode="aspectFill"></image>
 							</view>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>处理人</text>
-							<text>火老四</text>
+							<text>{{ listcontent.duty_master }}</text>
 							<view class="botborder"></view>
 						</view>
 						<view class="list-content">
 							<text>处理时间</text>
-							<text>2021-12-28 18:32:21</text>
+							<text>{{ listcontent.deal_time }}</text>
 							<view class="botborder"></view>
 						</view>
 					</view>
@@ -105,25 +119,23 @@
 	export default {
 		data() {
 			return {
-				listcontent: [
-					{
-						title: "输电塔名称",
-						text: "110kV丹诗文线-N4"
-					},
-					{
-						title: "发生时间",
-						text: "2021-12-21 14:21:45"
-					},
-					{
-						title: "设备名称",
-						text: "温感探头"
-					},
-					{
-						title: "设备编号",
-						text: "TEER864584522"
-					}
-				]
+				listcontent: []
 			};
+		},
+		onLoad(option) {
+			this.id = option.id
+			this.detaildata()
+		},
+		created() {
+			
+		},
+		methods:{
+			detaildata(){
+				this.$api.postapi('/api/pubtask/sel_task_detail',{id: this.id}).then(res => {
+					console.log(res)
+					this.listcontent = res.data.data
+				})
+			}
 		}
 	}
 </script>

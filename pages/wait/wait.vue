@@ -18,7 +18,7 @@
 					</view>
 					<view class="text">
 						<text>探头待办</text>
-						<text>12</text>
+						<text>{{ sensor_task_count }}</text>
 					</view>
 				</view>
 				<view class="right" @click="missiondetailsubmit(1,'中继器待办')">
@@ -30,7 +30,7 @@
 					</view>
 					<view class="text">
 						<text>中继器待办</text>
-						<text>0</text>
+						<text>{{ repeater_task_coun }}</text>
 					</view>
 					
 				</view>
@@ -48,10 +48,13 @@
 			return {
 				currentTabIndex:2,
 				title: 'Hello',
-				
+				repeater_task_coun: "",
+				sensor_task_count: ""
 			}
 		},
 		onShow() {
+			this.repeater_task_coun = this.$store.state.count.repeater_task_coun
+			this.sensor_task_count = this.$store.state.count.sensor_task_count
 			uni.hideTabBar()
 		},
 		onLoad() {

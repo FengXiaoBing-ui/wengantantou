@@ -71,11 +71,10 @@
 			countdata(){
 				this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
 					console.log(res)
-					this.tablist[1].badge = res.data.sensor_warn_count
-					this.tablist[2].badge = res.data.task_count
-					this.$store.commit('warn_count',res.data.sensor_warn_count)
-					this.$store.commit('task_count',res.data.task_count)
-					this.$store.commit('repater_warn_count',res.data.repater_warn_count)
+					this.$store.commit('count',res.data)
+					this.tablist[1].badge = this.$store.state.count.sensor_warn_count
+					this.tablist[2].badge = this.$store.state.count.task_count
+					
 				})
 			},
 			switchTab(index){

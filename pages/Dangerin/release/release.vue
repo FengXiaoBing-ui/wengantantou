@@ -234,9 +234,7 @@ export default {
 	methods: {
 		sumbit(){
 			let newtime = this.msgyear+'-'+this.msgmonth +'-'+ this.msgday +' '+ this.hoursmsg +':'+ this.minutesmsg +':'+ this.secondmsg
-			newtime = new Date(newtime).getTime()
 			let oktime = this.msgyeartwo +'-'+ this.msgmonthtwo +'-'+ this.msgdaytwo +' '+ this.hoursmsgtwo +':'+ this.minutesmsgtwo +':'+ this.secondmsgtwo
-			oktime = new Date(oktime).getTime()
 			let obj = {
 					begintime_str: newtime,
 					endtime_str: oktime,

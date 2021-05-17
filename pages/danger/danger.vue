@@ -53,8 +53,8 @@
 			}
 		},
 		onShow() {
-			this.probecount = this.$store.state.sensor_warn_count
-			this.repater_warn_count = this.$store.state.repater_warn_count
+			this.probecount = this.$store.state.count.sensor_warn_count
+			this.repater_warn_count = this.$store.state.count.repater_warn_count
 			uni.hideTabBar()
 		},
 		onLoad() {

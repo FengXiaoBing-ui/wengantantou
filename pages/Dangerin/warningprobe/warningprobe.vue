@@ -64,7 +64,7 @@
 					<image v-else src="../../../static/icon/6979.png" mode=""></image>
 					<text>全选</text>
 				</view>
-				<view class="right" @click="sure">
+				<view class="right" @click="sure" v-if="isshow">
 					<image src="../../../static/icon/6932.png" mode=""></image>
 					<text>确认所选告警</text>
 				</view>
@@ -74,7 +74,8 @@
 				<view class="mycenter">
 					<image class="in" src="../../../static/icon/6913.png" mode=""></image>
 					<image class="out" src="../../../static/icon/6914.png" mode=""></image>
-					<text class="tishi">是否批量确认告警信息？</text>
+					<text class="tishi" v-if="!record">是否批量删除告警信息？</text>
+					<text class="tishi" v-else>是否批量确认告警信息？</text>
 					<view class="btn">
 						<view class="btn1" @click="alllistsure">是</view>
 						<view class="btn2" @click="close">否</view>
@@ -124,6 +125,11 @@ export default {
 				});
 		},
 		func() {
+			if(!this.record){
+				console.log("ok")
+				this.$refs.popup.open()
+				return false
+			}
 			this.wraptop = true;
 			this.confirmed = false;
 			this.operation = !this.operation;
@@ -144,7 +150,37 @@ export default {
 				}
 			});
 			ids = JSON.stringify(ids);
-			this.$api.postapi('/api/Alarmlog/confirm_choose_warnning', { ids: ids, login_id: uni.getStorageSync('loginId') }).then(res => {
+			if(!this.record){
+				this.$api.postapi('/api/Firealarm/del_alarms',{ids:ids,index:0}).then(res => {
+					console.log(res)
+					if(res.data.code==0){
+						uni.showToast({
+							title:"该数据还未处理，不能删除",
+							icon:"none"
+						})
+					}
+					if(res.data.code==1){
+						uni.showToast({
+							title:"删除成功"
+						})
+					}
+					this.wraptop = true;
+					this.confirmed = false;
+					this.operation = !this.operation;
+					if(!this.operation){
+						for (let i = 0; i < this.warninglist.length; i++) {
+							this.warninglist[i].active = '';
+							this.record = true;
+							this.wraptop = false;
+							this.confirmed = true;
+						}
+					}
+					this.warning(1);
+					this.$refs.popup.close()
+				})
+				return false
+			}
+			this.$api.postapi('/api/Alarmlog/confirm_choose_warnning', { ids: ids,index: 0, login_id: uni.getStorageSync('loginId') }).then(res => {
 				console.log(res);
 			});
 			for (let i = 0; i < this.warninglist.length; i++) {
