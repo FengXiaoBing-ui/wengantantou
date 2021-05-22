@@ -20,13 +20,13 @@
 		<view class="sureserch" v-if="sure">
 			<view class="serch_left">
 				<image src="../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<input type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
 			</view>
 		</view>
 		<view class="serch" v-if="screen">
 			<view class="serch_left">
 				<image src="../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<input type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
 			</view>
 			<view class="serch_right">
 				<image src="../static/icon/668.png" mode=""></image>
@@ -88,6 +88,9 @@
 			};
 		},
 		methods:{
+			serchdata(){
+				this.$emit('serchdata',this.keyword)
+			},
 			func(){
 				this.$emit('func')
 			},

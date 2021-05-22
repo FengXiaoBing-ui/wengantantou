@@ -5,7 +5,7 @@
 			<text class="title">{{ title }}</text>
 			<view class="serch">
 				<image src="../../../static/icon/6645.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入任务单号/内容/设备编号..." placeholder-class="place" />
+				<input confirm-type="search" @confirm="serchdata" type="text" value="" v-model="keyword" placeholder="请输入任务单号/内容/设备编号..." placeholder-class="place" />
 			</view>
 			<view class="screen">
 				<view class="list">
@@ -32,9 +32,12 @@
 				</view>
 				<view class="box-foot"></view>
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
+		
 		<text class="nodata" v-if="nodata">暂无数据...</text>
 		<image class="footimg" src="../../../static/icon/13.png" mode=""></image>
+		
 	</view>
 </template>
 
@@ -42,18 +45,30 @@
 	export default {
 		data() {
 			return {
+				more: "nomore",
+				type: 0,
 				index: "",
+				keyword: "",
 				nodata: false,
 				active: "待处理",
 				isshow: true,
 				currentTabIndex:2,
 				title: '',
 				list: ["待处理","处理中","已完成"],
-				warninglist: []
+				warninglist: [],
+				limit: 6
 			}
 		},
 		created() {
+			uni.showLoading({
+				title:"loadding..."
+			})
 			this.waitdata(0)
+		},
+		onReachBottom() {
+			this.limit += 4
+			this.more = 'loading'
+			this.waitdata(this.type)
 		},
 		onShow() {
 			uni.hideTabBar()
@@ -63,33 +78,54 @@
 			this.title = option.title
 		},
 		methods: {
+			serchdata(){
+				this.waitdata(this.type)
+			},
 			backpage(){
 				uni.navigateBack({
 					delta:1
 				})
 			},
 			activeoption(item,index){
+				this.type = index
 				this.active = item
 				this.waitdata(index)
 			},
 			waitdata(type){
-				uni.showLoading({
-					title:"loadding..."
-				})
-				this.$api.postapi('/api/pubtask/sel_tasks',{type:type,limit:8,index: this.index}).then(res => {
-					console.log(res.data)
-					if(res.data.code==0){
-						this.nodata = true
-					}else{
-						this.nodata = false
-						this.warninglist = res.data.data
-					}
-					uni.hideLoading()
-				})
+				if(this.keyword==""){
+					this.$api.postapi('/api/pubtask/sel_tasks',{type:type,limit:this.limit,index: this.index}).then(res => {
+						
+						if(this.limit>=res.data.count){
+							this.more = 'nomore'
+						}
+						if(res.data.code==0){
+							this.nodata = true
+						}else{
+							this.nodata = false
+							this.warninglist = res.data.data
+						}
+						uni.hideLoading()
+					})
+				}else{
+					this.$api.postapi('/api/pubtask/sel_tasks',{type:type,limit:this.limit,index: this.index,keyword:this.keyword}).then(res => {
+						
+						if(this.limit>=res.data.count){
+							this.more = 'nomore'
+						}
+						if(res.data.code==0){
+							this.nodata = true
+						}else{
+							this.nodata = false
+							this.warninglist = res.data.data
+						}
+						uni.hideLoading()
+					})
+				}
+				
 			},
 			jump(id){
 				this.$api.postapi('/api/pubtask/check_task',{id:id,loginId:uni.getStorageSync('loginId')}).then(res => {
-					console.log(res)
+					
 					const code = res.data.code
 					uni.navigateTo({
 						url: "../Missiondetails/Missiondetails?code="+code+'&id='+id
@@ -215,7 +251,7 @@
 		box-sizing: border-box;
 		position: relative;
 		top: 300rpx;
-		padding-bottom: 150rpx;
+		padding-bottom: 50rpx;
 		.list {
 			margin: 20rpx 0;
 			width: 100%;

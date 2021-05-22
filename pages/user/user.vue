@@ -47,7 +47,8 @@
 					},
 					{
 						title: "操作帮助",
-						img:require('../../static/icon/6982.png')
+						img:require('../../static/icon/6982.png'),
+						path:"../information/help/help"
 					},
 					{
 						title: "功能说明",

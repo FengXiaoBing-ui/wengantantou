@@ -8,32 +8,31 @@
 			</view>
 			<view class="serch">
 				<image src="../../../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
+				<input type="text" value="" confirm-type="search" @confirm="serchdata" v-model="keyword" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
 			</view>
 		</view>
 		<view class="wrap">
 			<view class="list" v-for="(item,index) in list" :key="index">
 				<view class="list-top">
-					<text>{{ item.title }}</text>
+					<text>{{ item.line_name }}</text>
 					<view class="line"></view>
 					<image v-if="item.isshow" @click="dropdown(item.isshow,index)" src="../../../static/icon/open.png" mode=""></image>
 					<image v-else @click="dropdown(item.isshow,index)" src="../../../static/icon/openbot.png" mode=""></image>
 				</view>
-				<view class="listcontent" v-for="(itemes,index) in item.arr" :key="index" v-if="item.isshow" @click="jump">
+				<view class="listcontent" v-for="(itemes,index) in item.tagan" :key="index" v-if="item.isshow" >
 					<view class="titletop">
 						<image src="../../../static/icon/6707.png" mode=""></image>
-						<text>{{ itemes.title }}</text>
+						<text>{{ itemes.tagan_name }}</text>
 					</view>
 					<view class="content-mid">
-						<view>A相</view>
-						<view>B相</view>
-						<view>C相</view>
+						<view v-for="itemthree in itemes.phase" :key="itemes.id" @click="jump(itemthree.phase_id,itemthree.phase_name)">{{ itemthree.phase_name }}</view>
 					</view>
 					
 					<view class="bordbot"></view>
 				</view>
 				
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -42,77 +41,47 @@
 	export default {
 		data() {
 			return {
-				
+				keyword: "",
+				limit: 20,
 				active: "",
-				list: [
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-				]
+				list: [],
+				more: "more"
 			};
 		},
+		onShow() {
+			this.pagodelist()
+		},
+		onLoad(option) {
+			
+		},
+		onReachBottom() {
+			this.more = "loading"
+			this.limit += 10
+			this.pagodelist()
+		},
 		methods:{
+			pagodelist(){
+				this.$api.postapi('/api/sensor/choose_tower',{limit:this.limit,keyword:this.keyword}).then(res => {
+					if(this.limit>=res.data.count){
+						this.more = "nomore"
+					}
+					this.list = res.data.data
+					this.list.forEach( e => {
+						e.isshow = false
+					})
+				})
+			},
+			serchdata(){
+				this.pagodelist()
+			},
 			backpage(){
 				uni.navigateBack({
 					delta:1
 				})
 			},
-			jump(){
+			jump(phase_id,phase_name){
 				uni.navigateTo({
-					url:"../location/location"
+					url:"../location/location?id="+phase_id+'&name='+phase_name
 				})
 			},
 			dropdown(isshow,index){

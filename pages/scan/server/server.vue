@@ -12,11 +12,11 @@
 			</view>
 		</view>
 		<view class="wrap">
-			<view class="list" v-for="(item,index) in list" :key="index" @click="choice(item.imgshow,index)">
+			<view class="list" v-for="(item,index) in list" :key="index" @click="choice(item,index)">
 				<view class="list-top">
 					<view class="list-top-left">
 						<image src="../../../static/icon/wifi.png" mode=""></image>
-						<text>{{ item.num }}</text>
+						<text>{{ item.url }}</text>
 					</view>
 					<view class="list-top-right">
 						<image v-if="active==index" src="../../../static/icon/choice.png" mode=""></image>
@@ -29,7 +29,7 @@
 				</view>
 				<view class="botborder"></view>
 			</view>
-			
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -38,33 +38,33 @@
 	export default {
 		data() {
 			return {
+				keyword: "",
 				active: -1,
-				list: [
-					{
-						imgshow: false,
-						num: "URL: https://echarts.apache.org",
-						ip: "IP：192.168.1.102",
-					},
-					{
-						imgshow: false,
-						num: "URL: https://echarts.apache.org",
-						ip: "IP：192.168.1.102",
-					},
-					{
-						imgshow: false,
-						num: "URL: https://echarts.apache.org",
-						ip: "IP：192.168.1.102",
-					},
-					{
-						imgshow: false,
-						num: "URL: https://echarts.apache.org",
-						ip: "IP：192.168.1.102",
-					},
-				]
+				list: [],
+				limit: 10,
+				more: "more"
 			};
 		},
+		onShow() {
+			this.serverdata()
+		},
+		onReachBottom() {
+			this.more = "loading"
+			this.limit += 10
+			this.serverdata()
+		},
 		methods:{
-			choice(img,index){
+			serverdata(){
+				this.$api.postapi('/api/repeater/sel_url_ip',{limit:this.limit,keyword:this.keyword}).then(res => {
+					console.log(res)
+					if(this.limit>=res.data.count){
+						this.more = "nomore"
+					}
+					this.list = res.data.data
+				})
+			},
+			choice(item,index){
+				this.$store.commit('activerepeater',item)
 				this.active = index
 				uni.navigateBack({
 					delta:1

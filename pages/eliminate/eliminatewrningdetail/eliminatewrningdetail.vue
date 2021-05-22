@@ -14,7 +14,7 @@
 						<text>{{ alldata.device.tagan }}</text>
 						<view></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="alldata.device.device_position">
 						<text>具体位置</text>
 						<text>{{ alldata.device.device_position }}</text>
 						<view></view>
@@ -26,12 +26,14 @@
 					</view>
 					<view class="list-content">
 						<text>设备名称</text>
-						<text>{{ alldata.device.device_name }}</text>
+						<text v-if="alldata.device.device_name">{{ alldata.device.device_name }}</text>
+						<text v-else>{{ alldata.device.repeater_name }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>设备编号</text>
-						<text>{{ alldata.device.device_id }}</text>
+						<text v-if="alldata.device.device_id">{{ alldata.device.device_id }}</text>
+						<text v-else>{{ alldata.device.repeater_id }}</text>
 						<view></view>
 					</view>
 				</view>

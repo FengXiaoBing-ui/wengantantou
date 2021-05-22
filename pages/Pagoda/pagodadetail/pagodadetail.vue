@@ -21,14 +21,14 @@
 			</view>
 			<view class="screen">
 				<view class="texttop">
-					<text @click="screenlist(item)" v-for="item in screen" :key="item">{{ item }} {{ item=='探头'?pagoinfo.sensor_all_count:pagoinfo.repeater_all_count }}{{ item=='探头'?'/'+pagoinfo.sensor_work_count:'' }}</text>
+					<text @click="screenlist(item)" v-for="item in screen" :key="item">{{ item }} {{ item=='探头'?pagoinfo.sensor_work_count:'' }}{{ item=='探头'?'/'+pagoinfo.sensor_all_count:pagoinfo.repeater_all_count }}</text>
 					<view :class="{'left':active=='探头','right':active=='中继器'}"></view>
 				</view>
 				<view class="borde"></view>
 				<view class="screenactive">
-					<view v-for="(item,index) in arr" :key="index" :class="item.show?'active':''" @click="option(item.show,index)">
+					<view v-for="(item,index) in arr" :key="index" :class="item.text==optionactive?'active':''" @click="option(item.text,index)">
 						<text>{{ item.text }}</text>
-						<image v-if="item.show" src="../../../static/icon/13926.png" mode=""></image>
+						<image v-if="item.text==optionactive" src="../../../static/icon/13926.png" mode=""></image>
 					</view>
 				</view>
 			</view>
@@ -111,7 +111,7 @@
 				</view>
 				<view class="botborder"></view>
 			</view>
-			<uni-load-more status="noMore"></uni-load-more>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -120,6 +120,11 @@
 	export default {
 		data() {
 			return {
+				limit: 4,
+				more: "nomore",
+				pstate: 0,
+				rstate:0,
+				optionactive: '全部',
 				location: "",
 				pagoinfo: {},
 				active: "探头",
@@ -130,44 +135,46 @@
 				arr: [],
 				screenactive: [
 					{
-						text: "全部",
-						show: false
+						text: "全部"
 					},
 					{
-						text: "电量低",
-						show: false
+						text: "电量低"
 					},
 					{
-						text: "已超温",
-						show: false
+						text: "已超温"
 					},
 					{
-						text: "高温",
-						show: false
+						text: "高温"
 					},
 					{
-						text: "已离线",
-						show: false
+						text: "已离线"
 					},
 				],
 				screenactivetwo: [
 					{
-						text: "全部",
-						show: false
+						text: "全部"
 					},
 					{
-						text: "电量低",
-						show: false
+						text: "电量低"
 					},
 					{
-						text: "已离线",
-						show: false
+						text: "已离线"
 					},
 				]
 			};
 		},
 		created() {
 			this.arr = this.screenactive
+		},
+		onReachBottom() {
+			this.more = "loading"
+			if(this.active=='探头'){
+				this.limit += 4
+				this.tantou()
+			}else{
+				this.limit += 4
+				this.zhongjiqi()
+			}
 		},
 		onLoad(option) {
 			this.detaillist(option.line_id,option.tagan_id)
@@ -181,14 +188,20 @@
 				})
 			},
 			tantou(){
-				this.$api.postapi('/api/tower/selSensorByTowerId',{tower_id:this.pagoinfo.tower_id,state:0}).then(res => {
+				this.$api.postapi('/api/tower/selSensorByTowerId',{tower_id:this.pagoinfo.tower_id,state:this.pstate,limit:this.limit}).then(res => {
 					console.log(11,res)
+					if(this.limit>=res.data.count){
+						this.more = "nomore"
+					}
 					this.probelist = res.data.data
 				})
 			},
 			zhongjiqi(){
-				this.$api.postapi('/api/tower/selRepeaterByTowerId',{tower_id:this.pagoinfo.tower_id,state:0}).then(res => {
+				this.$api.postapi('/api/tower/selRepeaterByTowerId',{tower_id:this.pagoinfo.tower_id,state:this.rstate,limit:this.limit}).then(res => {
 					console.log(22,res)
+					if(this.limit>=res.data.count){
+						this.more = "nomore"
+					}
 					this.mylist = res.data.data
 				})
 			},
@@ -207,6 +220,10 @@
 			},
 			screenlist(item){
 				this.active = item
+				this.optionactive = "全部"
+				this.pstate = 0
+				this.rstate = 0
+				this.limit = 4
 				if(this.active=='探头'){
 					this.arr = this.screenactive
 					this.tantou()
@@ -215,11 +232,14 @@
 					this.zhongjiqi()
 				}
 			},
-			option(show,index){
-				if(this.arr[index].show == false){
-					this.arr[index].show = true
+			option(text,index){
+				this.optionactive = text
+				if(this.active=='探头'){
+					this.pstate = index
+					this.tantou()
 				}else{
-					this.arr[index].show = false
+					this.rstate = index
+					this.zhongjiqi()
 				}
 			},
 			jump(id){

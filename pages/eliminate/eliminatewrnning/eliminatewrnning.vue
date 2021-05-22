@@ -26,6 +26,7 @@
 				</view>
 				<view class="box-foot"></view>
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 		
 	</view>
@@ -35,17 +36,28 @@
 	export default {
 		data() {
 			return {
+				more: "nomore",
 				active: "未处理",
-				warninglist: []
+				warninglist: [],
+				limit:6,
+				type:0
 			};
 		},
 		created() {
 			this.alldata(0)
 		},
+		onReachBottom() {
+			this.more = "loading"
+			this.limit += 4
+			this.alldata(this.type)
+		},
 		methods:{
 			alldata(type){
-				this.$api.postapi('/api/Firealarm/sel_all_alarm',{type: type,limit:10}).then(res => {
-					console.log(res)
+				this.$api.postapi('/api/Firealarm/sel_all_alarm',{type: type,limit:this.limit}).then(res => {
+					
+					if(this.limit>=res.data.count){
+						this.more = "nomore"
+					}
 					this.warninglist = res.data.data
 				})
 			},
@@ -61,14 +73,18 @@
 				}
 			},
 			option(v){
-				if(v=='待处理'){
+				
+				if(v =='待处理'){
 					v = '未处理'
+					this.type = 0
 					this.alldata(0)
+					this.active = v
 				}else{
+					this.type = 1
 					this.alldata(1)
 					this.active = v
 				}
-				
+				console.log(this.active)
 			}
 		}
 	}

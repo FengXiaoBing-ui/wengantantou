@@ -1,13 +1,13 @@
 <template>
 	<view class="index">
 		<headerTab title="告警详情"></headerTab>
-		<view class="wrap" v-if="listcontent.sensor_name!=undefined">
+		<view class="wrap" v-if="listcontent.device!=undefined">
 			<view class="basic">
 				<text class="title">设备信息</text>
 				<view class="list" >
 					<view class="list-content">
 						<text>输电塔名称</text>
-						<text>{{ listcontent.sensor_name.class_name }}</text>
+						<text>{{ listcontent.tower_name }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
@@ -17,12 +17,12 @@
 					</view>
 					<view class="list-content">
 						<text>设备名称</text>
-						<text>{{ listcontent.sensor_name.device_name }}</text>
+						<text>{{ listcontent.device.device_name }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>设备编号</text>
-						<text>{{ listcontent.sensor_name.device_id }}</text>
+						<text>{{ listcontent.device.device_id }}</text>
 						<view></view>
 					</view>
 				</view>
@@ -43,12 +43,12 @@
 					</view>
 					<view class="list-content">
 						<text>当前值</text>
-						<text>{{ listcontent.sensor_name.now_temperature }}℃</text>
+						<text>{{ listcontent.device.now_temperature }}℃</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>设定值</text>
-						<text>＞{{ listcontent.sensor_name.warm_number }}℃</text>
+						<text>＞{{ listcontent.device.warm_number }}℃</text>
 						<view></view>
 					</view>
 				</view>

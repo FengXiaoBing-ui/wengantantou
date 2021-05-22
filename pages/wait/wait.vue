@@ -30,7 +30,7 @@
 					</view>
 					<view class="text">
 						<text>中继器待办</text>
-						<text>{{ repeater_task_coun }}</text>
+						<text>{{ repeater_task_count }}</text>
 					</view>
 					
 				</view>
@@ -48,12 +48,12 @@
 			return {
 				currentTabIndex:2,
 				title: 'Hello',
-				repeater_task_coun: "",
+				repeater_task_count: "",
 				sensor_task_count: ""
 			}
 		},
 		onShow() {
-			this.repeater_task_coun = this.$store.state.count.repeater_task_coun
+			this.repeater_task_count = this.$store.state.count.repeater_task_count
 			this.sensor_task_count = this.$store.state.count.sensor_task_count
 			uni.hideTabBar()
 		},

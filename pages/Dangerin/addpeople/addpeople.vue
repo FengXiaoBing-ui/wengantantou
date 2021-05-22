@@ -37,14 +37,12 @@
 			active(item){
 				this.activelist = item
 				this.$forceUpdate()
-				
 			},
 			func(){
-				let arr = JSON.stringify(this.activelist)
-				var pages = getCurrentPages();
-				var prevPage = pages[pages.length - 2];
-				uni.navigateTo({
-					url:"../release/release?arr="+arr+'&maker='+JSON.stringify(prevPage.$vm.options)
+				let arr = this.activelist
+				this.$store.commit('people',arr)
+				uni.navigateBack({
+					delta:1
 				})
 			}
 		}

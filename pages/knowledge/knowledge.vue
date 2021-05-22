@@ -1,15 +1,14 @@
 <template>
 	<view class="index">
-		<headerTab title="升级记录"></headerTab>
+		<headerTab title="知识库"></headerTab>
 		<view class="wrap">
 			<view class="list" v-for="item in list" :key="item.id" @click="jump(item.id)">
 				<view class="textleft">
-					<text>版本{{ item.title }}</text>
+					<text>{{ item.title }}</text>
 					<text class="time">更新时间：{{ item.update_time }}</text>
 				</view>
-				
-				<image class="minright" src="../../../static/icon/minright.png" mode=""></image>
-				<image class="leftbord" src="../../../static/icon/vertical.png" mode=""></image>
+				<image class="minright" src="../../static/icon/minright.png" mode=""></image>
+				<image class="leftbord" src="../../static/icon/vertical.png" mode=""></image>
 			</view>
 			<uni-load-more status="nomore"></uni-load-more>
 		</view>
@@ -28,14 +27,14 @@
 		},
 		methods:{
 			upgrate(){
-				this.$api.postapi('/api/Fuc/sel_updates',{limit:4}).then(res => {
+				this.$api.postapi('/api/Fuc/sel_konwledge_base',{limit:4}).then(res => {
 					console.log(res)
 					this.list = res.data.data
 				})
 			},
 			jump(id){
 				uni.navigateTo({
-					url:"../upgradedetail/upgradedetail?id="+id+'&title='+'升级记录详情'
+					url:"../information/upgradedetail/upgradedetail?id="+id+'&title='+'知识库详情'
 				})
 			}
 		}

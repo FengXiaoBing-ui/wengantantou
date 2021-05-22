@@ -189,75 +189,15 @@ export default {
 			selectedMonth: new Date().getMonth(),
 			selectedDate: new Date().getDate(),
 			optiondata: ['数据', '图表'],
-			listcontent: [
-				{
-					title: "设备名称",
-					text: "中继器025441"
-				},
-				{
-					title: "设备编号",
-					text: "TT56456498464"
-				},
-				{
-					title: "型号",
-					text: "JYB-4089-E"
-				},
-				{
-					title: "工作环境",
-					text: "35kV-500kV"
-				},
-				{
-					title: "防护等级",
-					text: "IP65"
-				}
-			],
-			listcont: [
-				{
-					title: "负责公司",
-					text: "贵州大力新运营公司"
-				},
-				{
-					title: "运维班长",
-					text: "王有才"
-				}
-			],
-			installinfo: [
-				{
-					title: "中继器IP",
-					text: "192.168.0.4"
-				},
-				{
-					title: "4G卡号",
-					text: "18545584545"
-				},
-				{
-					title: "安装位置IP",
-					text: "110kV丹诗文线-N4"
-				},
-				{
-					title: "关联服务器IP",
-					http: "https//www.baidu.co...",
-					ip: "IP:192.168.0.4"
-				},
-				{
-					title: "安装情况说明",
-					text: "安装情况说明的文字安装情况说明的文字安装情况说明的文字"
-				},
-				{
-					title: "设备状态",
-					text: "使用中"
-				},
-				{
-					title: "使用情况",
-					text: "2020年12月21日投入使用，已使用30天2020年12月21日投入使用，已使用30天"
-				}
-			]
+			listcontent: [],
+			listcont: [],
+			installinfo: []
 		};
 	},
 	created() {},
 	onLoad(option) {
 		this.id = option.id
-		this.$api.postapi('/api/repeater/sel_repeater_detail',{id:option.id}).then(res => {
+		this.$api.postapi('/api/repeater/sel_repeater_detail',{id:option.id,loginId:uni.getStorageSync('loginId')}).then(res => {
 			console.log(res)
 			this.repeateinfo = res.data.data
 		})

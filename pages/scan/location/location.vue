@@ -12,19 +12,19 @@
 			</view>
 			<view class="redtext">
 				<image src="../../../static/icon/6707.png" mode=""></image>
-				<text>110kV丹诗文线N4塔杆 A相</text>
+				<text>{{ title }}</text>
 			</view>
 			<view class="record">
 				<view class="screen">
-					<text @click="anime(item)" :class="item == active ? 'activetext' : ''" v-for="item in option" :key="item">{{ item }}</text>
+					<text @click="anime(item.side_name)" :class="item.side_name == active ? 'activetext' : ''" v-for="item in list" :key="item.side_id">{{ item.side_name }}</text>
 					<view :class="{ activeleft: active == '大号侧', activemid: active == '小号侧'}"></view>
 				</view>
 			</view>
 		</view>
 		<view class="list-bigbox">
-			<view class="list" :class="choiceactive==index?'listto':''" v-for="(item,index) in list" :key="index" @click="choice(index)">
-				<text>{{ item.title }}</text>
-				<image v-if="choiceactive==index" :src="item.img" mode=""></image>
+			<view class="list" :class="choiceactive==index?'listto':''" v-for="(item,index) in inlist" :key="index" @click="choice(index)">
+				<text>{{ item.warefire_name }}</text>
+				<image v-if="choiceactive==index" :src="item.ware_picture" mode="aspectFit"></image>
 			</view>
 		</view>
 	</view>
@@ -34,46 +34,48 @@
 	export default {
 		data() {
 			return {
+				title: "",
+				phase_id: "",
 				choiceactive: -1,
 				active: "大号侧",
 				option: ["大号侧","小号侧"],
-				list: [
-					{
-						title:"单导线",
-						img:require("../../../static/icon/2554.png")
-					},
-					{
-						title:"上子导线",
-						img:require("../../../static/icon/2554.png")
-					},
-					{
-						title:"左上子导线",
-						img:require("../../../static/icon/2554.png")
-					},
-					{
-						title:"上子导线",
-						img:require("../../../static/icon/2554.png")
-					},
-					{
-						title:"左上子导线",
-						img:require("../../../static/icon/2554.png")
-					},
-					{
-						title:"上子导线",
-						img:require("../../../static/icon/2554.png")
-					},
-					{
-						title:"左上子导线",
-						img:require("../../../static/icon/2554.png")
-					},
-				]
+				list: [],
+				inlist:[],
+				phase_name: ""
 			};
 		},
+		onLoad(option) {
+			this.phase_name = option.name
+			this.phase_id = option.id
+			this.detailinfolist()
+		},
 		methods:{
+			detailinfolist(){
+				this.$api.postapi('/api/sensor/choose_warefire',{phase_id:this.phase_id}).then(res => {
+					console.log(res)
+					this.title = res.data.tower_position
+					this.list = res.data.data
+					this.inlist = this.list[0].warefire
+				})
+			},
 			anime(item){
 				this.active = item
+				if(item=='大号侧'){
+					this.inlist = this.list[0].warefire
+				}else{
+					this.inlist = this.list[1].warefire
+				}
 			},
 			sure(){
+				let obj = {
+					name: this.active,
+					gps:this.inlist[this.choiceactive].warefire_name,
+					id: this.inlist[this.choiceactive].warefire_id,
+					img: this.inlist[this.choiceactive].ware_picture,
+					phase_name: this.phase_name,
+					title: this.title
+				}
+				this.$store.commit('pagoda',obj)
 				uni.redirectTo({
 					url:"../choice/choice"
 				})
@@ -100,6 +102,7 @@
 	background-size: 100% 100%;
 	z-index: 9;
 	.headertitle{
+		padding: 20rpx 0;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

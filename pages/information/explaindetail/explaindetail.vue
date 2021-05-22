@@ -7,7 +7,7 @@
 				<view class="boxbord">
 					<image src="../../../static/icon/13967.png" mode=""></image>
 				</view>
-				<view style="color: #FFFFFF;">
+				<view class="content">
 					<rich-text :nodes="explain.content"></rich-text>
 				</view>
 			</view>
@@ -40,7 +40,7 @@
 	position: relative;
 	top: 168rpx;
 	box-sizing: border-box;
-	z-index: 1;
+	z-index: 99;
 	.box{
 		width: 100%;
 		border: 2rpx solid rgba(90, 232, 255,  0.5);
@@ -86,6 +86,10 @@
 				transform: translateX(-50%);
 				top: -14rpx;
 			}
+		}
+		.content{
+			overflow: hidden;
+			color: #FFFFFF;
 		}
 	}
 }

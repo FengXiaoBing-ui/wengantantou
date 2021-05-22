@@ -20,8 +20,8 @@
         "modules" : {
             "Bluetooth" : {},
             "Maps" : {},
-            "Push" : {},
-            "Geolocation" : {}
+            "Geolocation" : {},
+            "Push" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -60,14 +60,17 @@
                         "appkey_android" : "2256ff3a9699df46386eef47"
                     }
                 },
-                "push" : {},
+                "push" : {
+                    "unipush" : {}
+                },
                 "geolocation" : {
                     "amap" : {
                         "__platform__" : [ "ios", "android" ],
                         "appkey_ios" : "2256ff3a9699df46386eef47",
                         "appkey_android" : "2256ff3a9699df46386eef47"
                     }
-                }
+                },
+                "share" : {}
             }
         }
     },

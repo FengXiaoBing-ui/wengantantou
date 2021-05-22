@@ -23,6 +23,13 @@
 		},
 		methods:{
 			sumbit(){
+				if(this.content==""){
+					uni.showToast({
+						title:"内容不能为空",
+						icon:"none"
+					})
+					return false
+				}
 				this.$api.postapi('/api/User/feedback',{loginId: uni.getStorageSync('loginId'),content: this.content}).then(res => {
 					console.log(res)
 					if(res.data.code==1){

@@ -1,6 +1,6 @@
 <template>
 	<view class="index">
-		<headerTab title="升级记录"></headerTab>
+		<headerTab title="操作帮助"></headerTab>
 		<view class="wrap">
 			<view class="list" v-for="item in list" :key="item.id" @click="jump(item.id)">
 				<view class="textleft">
@@ -28,14 +28,14 @@
 		},
 		methods:{
 			upgrate(){
-				this.$api.postapi('/api/Fuc/sel_updates',{limit:4}).then(res => {
+				this.$api.postapi('/api/Fuc/sel_helper',{limit:4}).then(res => {
 					console.log(res)
 					this.list = res.data.data
 				})
 			},
 			jump(id){
 				uni.navigateTo({
-					url:"../upgradedetail/upgradedetail?id="+id+'&title='+'升级记录详情'
+					url:"../upgradedetail/upgradedetail?id="+id+'&title='+'帮助详情'
 				})
 			}
 		}

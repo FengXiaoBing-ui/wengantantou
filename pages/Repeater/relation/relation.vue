@@ -1,10 +1,10 @@
 <template>
 	<view class="probe">
-		<headerTab title="关联的探头 50"></headerTab>
+		<headerTab :title="'关联的探头 '+ count"></headerTab>
 		<view class="screen">
-			<view v-for="(item,index) in screenlist" :key="index" @click="screen(index)" :class="item.active=='active'?'active':''">
+			<view v-for="(item,index) in screenlist" :key="index" @click="screen(item.text,index)" :class="item.text==active?'active':''">
 				<text>{{ item.text }}</text>
-				<image v-if="item.active=='active'" src="../../../static/icon/13926.png" mode=""></image>
+				<image v-if="item.text==active" src="../../../static/icon/13926.png" mode=""></image>
 			</view>
 		</view>
 		<view class="probe-list">
@@ -59,76 +59,30 @@
 export default {
 	data() {
 		return {
+			count: "",
 			repeater_id: "",
 			screenlist: [
 				{
-					text: "全部",
-					active: ""
+					text: "全部"
 				},
 				{
-					text: "电量低",
-					active: ""
+					text: "电量低"
 				},
 				{
-					text: "已超温",
-					active: ""
+					text: "已超温"
 				},
 				{
-					text: "高温",
-					active: ""
+					text: "高温"
 				},
 				{
-					text: "已离线",
-					active: ""
+					text: "已离线"
 				},
 			],
 			more: "noMore",
 			keyword: '',
-			probelist: [
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '85',
-					temperature: '28',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '30',
-					temperature: '45',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '67',
-					temperature: '53',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '已离线',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '待激活',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '待激活',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				},
-				{
-					number: 'T5B464668444447',
-					state: '工作中',
-					electric: '33',
-					temperature: '23',
-					gps: '110kV丹诗文线-N4塔杆A相位大号侧下子导线'
-				}
-			]
+			probelist: [],
+			active: "全部",
+			state: 0
 		};
 	},
 	onReachBottom() {
@@ -140,17 +94,16 @@ export default {
 	},
 	methods: {
 		relation(){
-			this.$api.postapi('/api/repeater/selSensorByRepaterId',{repeater_id:this.repeater_id,state:0}).then(res => {
+			this.$api.postapi('/api/repeater/selSensorByRepaterId',{repeater_id:this.repeater_id,state:this.state}).then(res => {
 				console.log(res)
+				this.count = res.data.count
 				this.probelist = res.data.data
 			})
 		},
-		screen(index){
-			if(this.screenlist[index].active==""){
-				this.screenlist[index].active = "active"
-			}else{
-				this.screenlist[index].active = ""
-			}
+		screen(text,index){
+			this.active = text
+			this.state = index
+			this.relation()
 		},
 		jump(id){
 			uni.navigateTo({

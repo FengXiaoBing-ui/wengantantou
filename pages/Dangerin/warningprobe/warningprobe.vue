@@ -101,23 +101,30 @@ export default {
 			operation: false,
 			more: 'nomore',
 			isshow: true,
-			warninglist: []
+			warninglist: [],
+			limit:8,
+			type: 0
 		};
 	},
 	onReachBottom() {
+		this.limit += 8
+		this.warning(this.type);
 		this.more = 'loading';
 	},
 	created() {
-		this.warning(0);
+		this.warning(this.type);
 	},
 	methods: {
 		warning(type) {
 			this.$api
 				.postapi('/api/Alarmlog/sel_sensor_alarm_logs', {
 					type: type,
-					limit: 10
+					limit: this.limit
 				})
 				.then(res => {
+					if(this.limit>=res.data.count){
+						this.more = 'nomore'
+					}
 					this.warninglist = res.data.data;
 					for (let i = 0; i < this.warninglist.length; i++) {
 						this.warninglist[i].active = '';
@@ -280,10 +287,12 @@ export default {
 			this.garbage = true;
 			if (v == '待确认') {
 				this.isshow = true;
-				this.warning(0);
+				this.type = 0
+				this.warning(this.type);
 			} else {
 				this.isshow = false;
-				this.warning(1);
+				this.type = 1
+				this.warning(this.type);
 			}
 		}
 	}

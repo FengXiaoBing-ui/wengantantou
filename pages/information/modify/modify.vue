@@ -4,7 +4,7 @@
 		<view class="wrap">
 			<view class="modify-box">
 				<text>修改{{ title }}</text>
-				<input type="text" :value="text" v-model="text" />
+				<input type="text" v-model="textes" />
 			</view>
 		</view>
 	</view>
@@ -15,17 +15,26 @@
 		data() {
 			return {
 				title: "",
-				text: "",
+				textes: "",
 			};
 		},
 		onLoad(option) {
 			this.title = option.type
-			this.text = option.text
+			this.textes = option.text
 		},
 		methods:{
 			func(){
+				if(this.title=="电话"){
+					if(!(/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/).test(this.textes)){
+						uni.showToast({
+							title:"请输入正确的手机号",
+							icon:"none"
+						})
+						return false
+					}
+				}
 				this.$api.postapi('/api/user/upd_user',{
-					param: this.text,
+					param: this.textes,
 					type:this.title=='姓名'?0:1,
 					loginId:uni.getStorageSync('loginId')
 					}).then(res => {

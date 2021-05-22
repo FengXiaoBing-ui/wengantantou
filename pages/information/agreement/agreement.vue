@@ -4,7 +4,7 @@
 		<view class="wrap">
 			<view class="box">
 				<view class="title">
-					<text>版本{{ upgrade.title }}{{ upgrade.version_number }}</text>
+					<text>版本123</text>
 					<text>更新时间：{{ upgrade.update_time }}</text>
 				</view>
 				<rich-text style="color: #FFFFFF;" :nodes="upgrade.content"></rich-text>
@@ -18,12 +18,12 @@
 		data() {
 			return {
 				upgrade: {},
-				title: ""
+				title: "",
 			};
 		},
 		onLoad(option) {
 			this.title = option.title
-			this.$api.postapi('/api/Fuc/sel_updatge_detial',{id:option.id}).then(res => {
+			this.$api.postapi('/api/user/sel_pro_policy',{type:option.type}).then(res => {
 				console.log(res)
 				this.upgrade = res.data.data
 			})

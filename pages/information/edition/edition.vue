@@ -25,7 +25,7 @@
 				</view>
 			</view>
 			<view class="agreement">
-				<text>《用户协议》</text>和<text>《隐私政策》</text>
+				<text @click="agreement('用户协议',1)">《用户协议》</text>和<text @click="agreement('隐私政策',2)">《隐私政策》</text>
 			</view>
 		</view>
 	</view>
@@ -42,6 +42,11 @@
 			jump(){
 				uni.navigateTo({
 					url:"../upgradelist/upgradelist"
+				})
+			},
+			agreement(title,type){
+				uni.navigateTo({
+					url:"../agreement/agreement?title="+title+'&type='+type
 				})
 			}
 		}

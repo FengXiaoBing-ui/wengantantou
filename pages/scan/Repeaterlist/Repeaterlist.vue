@@ -4,19 +4,19 @@
 			<view style="height: 40rpx;"></view>
 			<view class="headertitle">
 				<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
-				<text>输电塔管理</text>
+				<text>选择中继器</text>
 			</view>
 			<view class="serch">
 				<image src="../../../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
+				<input type="text" confirm-type="search" @confirm="serchdata" v-model="keyword" value="" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
 			</view>
 		</view>
 		<view class="wrap">
-			<view class="list" v-for="(item,index) in list" :key="index" @click="choice(item.imgshow,index)">
+			<view class="list" v-for="(item,index) in list" :key="index" @click="choice(item,index)">
 				<view class="list-top">
 					<view class="list-top-left">
 						<image src="../../../static/icon/wifi.png" mode=""></image>
-						<text>{{ item.num }}</text>
+						<text>{{ item.repeater_id }}</text>
 					</view>
 					<view class="list-top-right">
 						<image v-if="active==index" src="../../../static/icon/choice.png" mode=""></image>
@@ -24,18 +24,18 @@
 				</view>
 				<view class="list-mid">
 					<view class="list-mid-left">
-						<text>{{ item.ip }}</text>
-						<text>{{ item.cardnumber }}</text>
-						<text>{{ item.gps }}</text>
+						<text>IP: {{ item.ip }}</text>
+						<text>4G卡号: {{ item.repeater_phone }}</text>
+						<text>位置: {{ item.tower_position }}</text>
 					</view>
 					<view class="list-mid-right">
 						<text>关联探头</text>
-						<text>50个</text>
+						<text>{{ item.temp_sensor_number }}个</text>
 					</view>
 				</view>
 				<view class="botborder"></view>
 			</view>
-			
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -44,52 +44,55 @@
 	export default {
 		data() {
 			return {
+				more: "nomore",
+				keyword: "",
+				limit: 6,
 				active: -1,
-				list: [
-					{
-						imgshow: false,
-						num: "编号T5B464668444447",
-						states: "工作中",
-						ip: "IP：192.168.1.102",
-						cardnumber: "4G卡号：18655458878",
-						gps: "位置：110kV丹诗文线-N4塔杆",
-						dianliang: "85"
-					},
-					{
-						imgshow: false,
-						num: "编号T5B464668444447",
-						states: "工作中",
-						ip: "IP：192.168.1.102",
-						cardnumber: "4G卡号：18655458878",
-						gps: "位置：110kV丹诗文线-N4塔杆",
-						dianliang: "28"
-					},
-					{
-						imgshow: false,
-						num: "编号T5B464668444447",
-						states: "已离线",
-						ip: "IP：192.168.1.102",
-						cardnumber: "4G卡号：18655458878",
-						gps: "位置：110kV丹诗文线-N4塔杆",
-						dianliang: "85"
-					},
-					{
-						imgshow: false,
-						num: "编号T5B464668444447",
-						states: "待激活",
-						ip: "IP：192.168.1.102",
-						cardnumber: "4G卡号：18655458878",
-						gps: "位置：110kV丹诗文线-N4塔杆",
-						dianliang: "85"
-					},
-				]
+				list: []
 			};
 		},
+		created() {
+			this.allrepeater()
+		},
+		onReachBottom() {
+			this.more = "loading"
+			this.limit += 6
+			this.allrepeater()
+		},
 		methods:{
-			choice(img,index){
+			serchdata(){
+				this.allrepeater()
+			},
+			allrepeater(){
+				if(this.keyword==" "){
+					this.$api.postapi('/api/repeater/selAllRepeater',{limit:this.limit,isall:1}).then(res => {
+						console.log(res)
+						if(this.limit>=res.data.count){
+							this.more = 'nomore'
+						}
+						this.list = res.data.data
+					})
+				}else{
+					this.$api.postapi('/api/repeater/selAllRepeater',{limit:this.limit,isall:1,keyword:this.keyword}).then(res => {
+						console.log(999,res)
+						if(this.limit>=res.data.count){
+							this.more = 'nomore'
+						}
+						this.list = res.data.data
+					})
+				}
+				this.$forceUpdate()
+			},
+			choice(item,index){
 				this.active = index
-				uni.navigateBack({
-					delta:1
+				let obj = {
+					name:item.repeater_name,
+					card:item.repeater_phone,
+					repeater_id: item.id
+				}
+				this.$store.commit('repeater',obj)
+				uni.redirectTo({
+					url:"../choice/choice"
 				})
 			},
 			backpage(){
@@ -109,7 +112,7 @@
 	height: 225rpx;
 	background-image: url(../../../static/icon/6972.png);
 	background-size: 100% 100%;
-	z-index: 9;
+	z-index: 99;
 	.serch{
 		width: 90%;
 		height: 72rpx;
@@ -159,7 +162,7 @@
 		margin-top: 188rpx;
 		padding: 34rpx;
 		box-sizing: border-box;
-		z-index: 99;
+		z-index: 9;
 		.list{
 			margin: 20rpx 0;
 			width: 100%;

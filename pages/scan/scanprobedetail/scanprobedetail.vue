@@ -8,15 +8,50 @@
 					<text>基本信息</text>
 				</view>
 				<view class="list">
-					<view class="list-content" v-for="(item, index) in listcontent" :key="index" @click="link(item.deviceId)">
-						<text>{{ item.title }}</text>
-						<text>{{ item.name }}</text>
+					<view class="list-content">
+						<text>设备名称</text>
+						<text>{{ listcontent.device_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>设备编号</text>
+						<text>{{ listcontent.device_id }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>型号</text>
+						<text>{{ listcontent.class_name }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>工作环境</text>
+						<text>{{ listcontent.work_environment }}</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>测量温度</text>
+						<text>{{ listcontent.measure_lower }}℃~{{ listcontent.measure_upper }}℃</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>正常温度</text>
+						<text>小于{{ listcontent.normal_upper }}℃</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>告警温度</text>
+						<text>{{ listcontent.early_warn_lower }}℃ ~ {{ listcontent.early_warn_upper }}℃</text>
+						<view></view>
+					</view>
+					<view class="list-content">
+						<text>超温温度</text>
+						<text>{{ listcontent.early_warn_upper }}℃以上</text>
 						<view></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
 				</view>
 			</view>
-			<view class="basic" v-if="type2">
+			<view class="basic" v-if="listcontent.state!=-1">
 					<view class="headtitle">
 						<image src="../../../static/icon/6709.png" mode=""></image>
 						<text>安装信息</text>
@@ -27,8 +62,8 @@
 							<view class="left">
 								<image src="../../../static/icon/wifi.png" mode=""></image>
 								<view class="wifi-right">
-									<text>S181664</text>
-									<text>卡号：192.168.0.4</text>
+									<text>{{ listcontent.repeater_name }}</text>
+									<text>卡号：{{ listcontent.repeater_ip }}</text>
 								</view>
 							</view>
 							<image class="right" src="../../../static/icon/minright.png" mode=""></image>
@@ -38,28 +73,28 @@
 							<view class="left">
 								<image src="../../../static/icon/6707.png" mode=""></image>
 								<view class="wifi-right">
-									<text>110kV丹诗文线-N4</text>
-									<text>位置：A相位-大号侧-单子导线</text>
+									<text>{{ listcontent.line_tagan_position }}</text>
+									<text>位置：{{ listcontent.detail_position }}</text>
 								</view>
 							</view>
 							<image class="right" src="../../../static/icon/minright.png" mode=""></image>
-							<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" src="../../../static/icon/13.png" mode="aspectFill"></image>
+							<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" :src="listcontent.ware_picture" mode="aspectFit"></image>
 							
 						</view>
 						<view class="list">
 							<view class="list-content">
 								<text>探头状态</text>
-								<text class="states">工作中</text>
+								<text class="states">{{ listcontent.state_text }}</text>
 								<view></view>
 							</view>
 							<view class="list-content">
 								<text>投入使用时间</text>
-								<text>2021年12月21日</text>
+								<text>{{ listcontent.run_time }}</text>
 								<view></view>
 							</view>
 							<view class="list-content">
 								<text>已使用</text>
-								<text>200天</text>
+								<text>{{ listcontent.run_day }}天</text>
 								<view></view>
 							</view>
 						</view>
@@ -67,7 +102,7 @@
 					</view>
 					
 				</view>
-			<view class="basic" v-if="type2">
+				<view class="basic" v-if="listcontent.state!=-1">
 					<view class="headtitle">
 						<image src="../../../static/icon/6712.png" mode=""></image>
 						<text>责任小组信息</text>
@@ -75,28 +110,28 @@
 					<view class="list">
 						<view class="list-content">
 							<text>运维专责</text>
-							<text>周大理</text>
+							<text>{{ listcontent.duty_admin }}</text>
 							<view></view>
 						</view>
 						<view class="list-content">
 							<text>运维班长</text>
-							<text>王有才</text>
+							<text>{{ listcontent.duty_master }}</text>
 							<view></view>
 						</view>
 						<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
 					</view>
 				</view>
 			
-			<view class="botbtn">
-				<view class="btnleft" @click="add">
+			<view class="botbtn" v-if="listcontent.state==-1">
+				<view class="btnleft" v-if="listcontent.is_collect==0" @click="add">
 					<image src="../../../static/icon/addtwo.png" mode=""></image>
-					<text>添加设备库</text>
+					<text>加入设备库</text>
 				</view>
-				<view class="btnright" @click="activation">
+				<view class="btnright" v-if="listcontent.is_collect==0" @click="activation">
 					<image src="../../../static/icon/15144.png" mode=""></image>
 					<text>激活设备</text>
 				</view>
-				<view class="bigbtn" v-if="type1" @click="activation">
+				<view class="bigbtn" v-if="listcontent.is_collect==1" @click="activation">
 					<image src="../../../static/icon/15144.png" mode=""></image>
 					<text>激活设备</text>
 				</view>
@@ -129,46 +164,25 @@
 export default {
 	data() {
 		return {
-			listcontent: [
-				{
-					title: "设备名称",
-					name: "温感探头"
-				},
-				{
-					title: "设备编号",
-					name: "TT56456498464"
-				},
-				{
-					title: "型号",
-					name: "JYB-4089-E"
-				},
-				{
-					title: "工作环境",
-					name: "35kV-500kV"
-				},
-				{
-					title: "测量温度",
-					name: "-55℃~+130℃"
-				},
-				{
-					title: "正常温度",
-					name: "小于30℃"
-				},
-				{
-					title: "告警温度",
-					name: "31℃~49℃"
-				},
-				{
-					title: "超温温度",
-					name: "50℃以上"
-				},
-			],
+			listcontent: {},
 			deviceIdStr: "",
 			type1: false,
-			type2: false
+			type2: false,
+			id:""
 		};
 	},
+	onLoad(option) {
+		this.id = option.id
+		this.$store.commit('probeid',this.id)
+		this.detailinfo(option.id)
+	},
 	methods:{
+		detailinfo(id){
+			this.$api.postapi('/api/Sensor/selSensorBaseDetial',{loginId:uni.getStorageSync('loginId'),id:id}).then(res => {
+				console.log(99,res)
+				this.listcontent = res.data.data
+			})
+		},
 		activation(){
 			uni.navigateTo({
 				url:"../choice/choice"
@@ -176,8 +190,11 @@ export default {
 		},
 		open(){
 			this.$refs.popup.close()
-			uni.redirectTo({
-				url:"../../index/index"
+			uni.switchTab({
+				url:"../../index/index",
+				fail(err) {
+					console.log(res)
+				}
 			})
 		},
 		back(){
@@ -187,22 +204,14 @@ export default {
 			})
 		},
 		add(){
-			this.$refs.popup.open()
+			this.$api.postapi('/api/Sensor/collect_sensor',{id:this.id,loginId:uni.getStorageSync('loginId')}).then(res => {
+				if(res.data.code==1){
+					this.$refs.popup.open()
+				}
+			})
 		},
-		link(deviceId){
-			// uni.createBLEConnection({
-			// 	deviceId:deviceId.toString(),
-			// 	success(res) {
-			// 		console.log(111,res)
-			// 		// uni.stopBluetoothDevicesDiscovery()
-			// 	},
-			// 	fail(err) {
-			// 		console.log('err',err)
-			// 	}
-			// })
-		},
-		},
-	}
+	},
+}
 </script>
 
 <style lang="less" scoped>
@@ -417,7 +426,7 @@ export default {
 				text{
 					&:nth-child(1){
 						display: inline-block;
-						width: 18%;
+						min-width: 20%;
 						font-size: 28rpx;
 						font-family: Source Han Sans CN;
 						font-weight: 400;

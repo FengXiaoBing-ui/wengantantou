@@ -47,9 +47,9 @@
 					<image @click="close" src="../../../static/icon/6708.png" mode=""></image>
 				</view>
 				<scroll-view  class="scroll" scroll-y="true" >
-					<view class="scroll-list" :class="activeto==item.line_name?'active':''" v-for="(item,index) in transmissionlist" :key="index" @click="activelist(item)">
+					<view class="scroll-list" :class="activeto==item.id?'active':''" v-for="(item,index) in transmissionlist" :key="index" @click="activelist(item)">
 						<text>{{item.line_name}}</text>
-						<image v-if="activeto==item.line_name" src="../../../static/icon/6963.png" mode=""></image>
+						<image v-if="activeto==item.id" src="../../../static/icon/6963.png" mode=""></image>
 					</view>
 				</scroll-view>
 				
@@ -64,9 +64,9 @@
 					<image @click="Pagodaclose" src="../../../static/icon/6708.png" mode=""></image>
 				</view>
 				<scroll-view class="scroll" scroll-y="true" >
-					<view class="scroll-list" :class="activeto==item.tagan_name?'active':''" v-for="(item,index) in Pagodalist" :key="index" @click="activePagodalist(item)">
+					<view class="scroll-list" :class="activeprobe==item.tagan_name?'active':''" v-for="(item,index) in Pagodalist" :key="index" @click="activePagodalist(item)">
 						<text>{{item.tagan_name}}</text>
-						<image v-if="activeto==item.tagan_name" src="../../../static/icon/6963.png" mode=""></image>
+						<image v-if="activeprobe==item.tagan_name" src="../../../static/icon/6963.png" mode=""></image>
 					</view>
 				</scroll-view>
 				
@@ -79,22 +79,16 @@
 	export default {
 		data() {
 			return {
-				indexes: -1,
+				indexes: 0,
+				isflag: false,
 				line_id: "",
 				tagan_id: "",
 				meesage: "选择输电线路",
 				msg: "选择塔杆号",
 				activeto: "",
-				isflag: false,
+				activeprobe: "",
 				transmissionlist: [],
-				Pagodalist: [
-					"N5",
-					"S82",
-					"N8/8",
-					"S821",
-					"S89486",
-					"N52",
-				],
+				Pagodalist: [],
 				keyword: "",
 				screenlist: [
 					{
@@ -113,11 +107,12 @@
 			};
 		},
 		created() {
-			this.allline()
+			this.queryline()
 		},
 		methods:{
-			allline(){
+			queryline(){
 				this.$api.postapi('/api/repeater/sel_all_line').then(res => {
+					console.log(res)
 					this.transmissionlist = res.data.data
 				})
 			},
@@ -128,28 +123,29 @@
 				this.indexes = index
 			},
 			activelist(item){
-				this.activeto = item.line_name
+				this.activeto = item.id
 				this.meesage = item.line_name
+				this.isflag = true
+				this.activeprobe = "选择塔杆号"
+				this.msg = "选择塔杆号"
 				this.line_id = item.id
 				this.$api.postapi('/api/repeater/selTaganByLineId',{line_id:item.id}).then(res => {
-					this.isflag = true
+					console.log(res)
 					this.Pagodalist = res.data.data
-					this.activeto = "选择塔杆号"
-					this.msg = "选择塔杆号"
 				})
 				this.$refs.popup.close()
 			},
 			activePagodalist(item){
-					this.activeto = item.tagan_name
-					this.msg = item.tagan_name
-					this.tagan_id = item.id
-					this.$refs.popuptwo.close()
+				this.activeprobe = item.tagan_name
+				this.msg = item.tagan_name
+				this.tagan_id = item.id
+				this.$refs.popuptwo.close()
 			},
 			close(){
 				this.$refs.popup.close()
 			},
 			Pagoda(){
-				if(this.isflag){
+				if(this.isflag==true){
 					this.$refs.popuptwo.open()
 				}
 			},
@@ -157,17 +153,16 @@
 				this.$refs.popuptwo.close()
 			},
 			jump(){
-				this.$api.postapi('/api/repeater/repeater_screen',{
+				let obj = {
 					state:this.indexes,
-					keyword: this.keyword,
-					line_id: this.line_id,
-					tagan_id: this.tagan_id
-				}).then(res => {
-					console.log(res)
+					keyword: this.keyword==''?'':this.keyword,
+					line_id: this.line_id==''?0:this.line_id,
+					tagan_id: this.tagan_id==''?0:this.tagan_id
+				}
+				obj = JSON.stringify(obj)
+				uni.navigateTo({
+					url: "../Repeaterlist/Repeaterlist?obj="+obj
 				})
-				// uni.navigateTo({
-				// 	url:"../Repeaterlist/Repeaterlist"
-				// })
 			}
 		}
 	}
@@ -176,7 +171,7 @@
 <style lang="less" scoped>
 .screen{
 	.screen_wrap{
-		margin-top: 148rpx;
+		margin-top: 168rpx;
 		padding: 30rpx 34rpx 0 34rpx;
 		box-sizing: border-box;
 		background: #033785;
@@ -240,6 +235,7 @@
 						margin: 1rpx;
 					}
 					input {
+						width: 100%;
 						text-align: start;
 						padding-left: 5rpx;
 						box-sizing: border-box;

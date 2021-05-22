@@ -8,21 +8,21 @@
 			</view>
 			<view class="serch">
 				<image src="../../../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
+				<input type="text" value="" confirm-type="search" @confirm="serchdata" v-model="keyword" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
 			</view>
 		</view>
 		<view class="wrap">
 			<view class="list" v-for="(item,index) in list" :key="index">
 				<view class="list-top">
-					<text>{{ item.title }}</text>
+					<text>{{ item.line_name }}</text>
 					<view class="line"></view>
 					<image v-if="item.isshow" @click="dropdown(item.isshow,index)" src="../../../static/icon/open.png" mode=""></image>
-					<image v-else @click="dropdown(item.isshow,index)" src="../../../static/icon/openbot.png" mode=""></image>
+					<image v-else @click="dropdown(item.isshow,index,item.line_name)" src="../../../static/icon/openbot.png" mode=""></image>
 				</view>
-				<view class="listcontent" v-for="(itemes,index) in item.arr" :key="index" v-if="item.isshow" @click="jump(index)">
+				<view class="listcontent" v-for="(itemes,index) in item.tagan" :key="index" v-if="item.isshow" @click="jump(index,itemes)">
 					<view class="titletop">
 						<image src="../../../static/icon/6707.png" mode=""></image>
-						<text>{{ itemes.title }}</text>
+						<text>{{ itemes.tagan_name }}</text>
 						<image v-if="indexes==index" class="activeimg" src="../../../static/icon/choice.png" mode=""></image>
 					</view>
 					
@@ -30,6 +30,7 @@
 				</view>
 				
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -40,84 +41,65 @@
 			return {
 				indexes: -1,
 				active: "",
-				list: [
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-					{
-						isshow: false,
-						title: "110kV丹诗文线",
-						arr: [
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							},
-							{
-								title: "N4塔杆",
-								num: "27/27"
-							}
-						]
-					},
-				]
+				list: [],
+				line_name: "",
+				limit: 20,
+				keyword: "",
+				more: "more"
 			};
 		},
+		onShow() {
+			this.pagodadata()
+		},
+		onReachBottom() {
+			this.more = "loading"
+			this.limit += 10
+			this.pagodadata()
+		},
 		methods:{
+			serchdata(){
+				this.limit = 20
+				this.pagodadata()
+			},
+			pagodadata(){
+				this.$api.postapi('/api/repeater/sel_repeater_install_position',{limit:this.limit,keyword:this.keyword}).then(res => {
+					console.log(res)
+					if(this.limit>=res.data.count){
+						this.more = 'nomore'
+					}
+					this.list = res.data.data
+					this.list.forEach( e => {
+						e.isshow = false
+					})
+				})
+			},
 			backpage(){
 				uni.navigateBack({
 					delta:1
 				})
 			},
-			jump(index){
+			jump(index,itemes){
+				this.line_name = this.line_name+'-'+itemes.tagan_name
+				let gps = {
+					id:itemes.id,
+					line_id:itemes.line_id,
+					line_name: this.line_name,
+					type: 0
+				}
+				this.$store.commit('activerepeater',gps)
 				this.indexes = index
-				uni.navigateTo({
-					url:"../activationrepeater/activationrepeater"
+				uni.navigateBack({
+					delta:1
 				})
 			},
-			dropdown(isshow,index){
+			dropdown(isshow,index,line_name){
 				if(this.list[index].isshow == false){
 					this.list[index].isshow = true
+					this.line_name = line_name
 				}else{
 					this.list[index].isshow = false
 				}
+				this.$forceUpdate()
 			}
 		}
 	}

@@ -621,6 +621,42 @@
             }
             
         }
+        ,{
+            "path" : "pages/information/help/help",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":false
+				}
+            }
+            
+        }
+        ,{
+            "path" : "pages/information/agreement/agreement",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":false
+				}
+            }
+            
+        }
+        ,{
+            "path" : "pages/knowledge/knowledge",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":false
+				}
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

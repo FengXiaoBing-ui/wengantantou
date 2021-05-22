@@ -8,7 +8,7 @@
 			</view>
 			<view class="serch">
 				<image src="../../../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
+				<input confirm-type="search" @confirm="searchdata" type="text" v-model="keyword" value="" placeholder="请输入线路名称和塔杆名称搜索..." placeholder-class="plac" />
 			</view>
 		</view>
 		<view class="wrap">
@@ -73,6 +73,7 @@
 				</view>
 				
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
 	</view>
 </template>
@@ -82,19 +83,39 @@
 		data() {
 			return {
 				active: "",
-				list: []
+				list: [],
+				limit:20,
+				more:"more",
+				keyword: "",
 			};
 		},
 		created() {
 			this.pagodalist()
 		},
+		onReachBottom() {
+			this.limit += 10
+			this.more = 'loading'
+			this.pagodalist()
+		},
 		methods:{
+			searchdata(){
+				this.limit = 20
+				this.pagodalist()
+			},
 			pagodalist(){
-				this.$api.postapi('/api/tower/selAllTower').then(res=> {
+				this.$api.postapi('/api/tower/selAllTower',{limit:this.limit,keyword:this.keyword==""?0:this.keyword,page:1}).then(res=> {
 					console.log(res)
-					this.list = res.data.data
-					for(let i = 0; i < this.list.length;i ++){
-						this.list[i].isshow = false
+					if(res.data.data.length>0){
+						if(this.limit>=res.data.count){
+							this.more = "nomore"
+						}
+						this.list = res.data.data
+						for(let i = 0; i < this.list.length;i ++){
+							this.list[i].isshow = false
+						}
+					}else{
+						this.more = "nomore"
+						this.list = []
 					}
 				})
 			},

@@ -1,14 +1,12 @@
 <template>
 	<view class="probe">
-		<headerTab title="探头列表" :screen="true" path="/screen/screen" @func="func"></headerTab>
-		
-		
+		<headerTab title="探头列表" :screen="true" path="/screen/screen" @func="func" @serchdata="serchdata"></headerTab>
 		<view class="probe-list">
 			<view class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump(item.id)">
 				<view class="probe-list-box-top" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
 					<view class="box-top-left">
 						<image src="../../../static/icon/6834.png" mode=""></image>
-						<text>编号{{ item.device_id }}</text>
+						<text>编号{{ item.device_id }}</text> 
 					</view>
 					<view class="box-top-right">
 						<image v-if="item.state_text == '工作中'" src="../../../static/icon/6833.png" mode=""></image>
@@ -18,10 +16,7 @@
 					</view>
 				</view>
 				<view class="electric" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
-					<view
-						class="electric-left"
-						:class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }"
-					>
+					<view class="electric-left" :class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }">
 						<view class="electric-num-left" :class="{ blue: item.power_number > 30, red: item.power_number <= 30 }" :style="{ width: item.power_number + '%' }"></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
@@ -45,8 +40,9 @@
 				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
-		<uni-load-more :status="more" :contentText="{contentrefresh:'正在加载中...'}"></uni-load-more>
+		
 		<image class="fixedimg" src="../../../static/icon/13.png" mode=""></image>
 	</view>
 </template>
@@ -55,39 +51,95 @@
 export default {
 	data() {
 		return {
-			more: "noMore",
+			limit: 8,
+			more: "more",
 			keyword: '',
-			probelist: []
+			probelist: [],
+			obj: {}
 		};
 	},
 	onReachBottom() {
 		this.more = "loading"
+		this.limit += 8
+		if(JSON.stringify(this.obj)=="{}"){
+			this.queryprobelist()
+		}else{
+			this.screen(this.obj)
+		}
+	},
+	onLoad(option) {
+		if(option.obj!=undefined){
+			let obj = JSON.parse(option.obj)
+			// if(obj.keyword==""){
+			// 	delete obj.keyword
+			// }
+			// if(obj.line_id==""){
+			// 	delete obj.line_id
+			// }
+			// if(obj.tagan_id==""){
+			// 	delete obj.tagan_id
+			// }
+			this.obj = obj
+			setTimeout(() => {
+				this.screen(obj)
+			},0)
+			
+		}else{
+			this.queryprobelist()
+		}
 	},
 	created() {
-		this.queryprobelist()
+		
 	},
 	methods: {
+		serchdata(keyword){
+			let obj = {
+				state:0,
+				keyword: keyword,
+				line_id: "",
+				tagan_id: ""
+			}
+			this.screen(obj)
+		},
+		screen(obj){
+			this.$api.postapi('/api/Sensor/sensor_screen',obj).then(res => {
+				if(this.limit>=res.data.count){
+					this.more = "nomore"
+				}
+				console.log(456,res)
+				if(res.data.code==0){
+					this.more = "nomore"
+					return false
+				}else{
+					this.probelist = res.data.data
+				}
+				
+			})
+		},
 		queryprobelist(){
-			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:6}).then(res => {
-				console.log(res)
+			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:this.limit}).then(res => {
+				if(this.limit>=res.data.count){
+					this.more = "nomore"
+				}
+				console.log(this.more)
 				this.probelist = res.data.data
 			})
 		},
 		func(){
 			uni.scanCode({
-			    onlyFromCamera: true,
 			    success: function (res) {
-					console.log(res)
 			        console.log('条码类型：' + res.scanType);
 			        console.log('条码内容：' + res.result);
-					uni.showModal({
-						title:'条码类型：' + res.scanType+'条码内容：' + res.result
-					})
-					setTimeout(() => {
+					let obj = JSON.parse(res.result)
+					if(obj.type==0){
 						uni.navigateTo({
-							url:"../../scan/scanprobedetail/scanprobedetail"
+							url:"../../scan/scanprobedetail/scanprobedetail?id="+obj.id
 						})
-					},1000)
+					}else{
+						uni.navigateTo({
+							url:"../../scan/scanRepeater/scanRepeater?id="+obj.id
+						})
+					}
 			    }
 			});
 		},
@@ -121,6 +173,13 @@ export default {
 		margin-top: 268rpx;
 		padding: 20rpx 36rpx;
 		box-sizing: border-box;
+		.nodata{
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			color: #FFFFFF;
+			transform: translate(-50%,-50%);
+		}
 		.probe-list-box {
 			width: 100%;
 			border: 2rpx solid rgba(90, 232, 255, 0.7);

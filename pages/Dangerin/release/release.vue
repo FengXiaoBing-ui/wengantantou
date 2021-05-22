@@ -191,22 +191,13 @@ export default {
 		};
 	},
 	onLoad(option) {
-		if(option.maker){
-			let maker = JSON.parse(option.maker)
-			this.id = maker.id
-			this.type = maker.type
-			this.sensor_id = maker.sensor_id
-			console.log(maker)
-		}
-		if(option.id&&option.type){
-			this.id = option.id
-			this.type = option.type
-		}
-		if(option.arr){
-			let arr = JSON.parse(option.arr)
-			this.people = arr
-		}
-		
+		this.$store.commit('parmes',option)
+	},
+	onShow() {
+		this.id = this.$store.state.parmes.id
+		this.type = this.$store.state.parmes.type
+		this.sensor_id = this.$store.state.parmes.sensor_id
+		this.people = this.$store.state.people
 	},
 	computed: {
 		value: function() {
@@ -227,7 +218,6 @@ export default {
 			arr[2] = this.minutes - 1;
 			arr[3] = this.second -1;
 			arr[4] = 0
-			console.log(arr)
 			return arr;
 		}
 	},
@@ -245,6 +235,7 @@ export default {
 					sensor_repeater_id:this.sensor_id
 				}
 			obj = JSON.stringify(obj)
+			console.log(obj)
 			this.$api.postapi('/api/pubtask/publish_warn_task',{
 				loginId:uni.getStorageSync('loginId'),
 				data: obj

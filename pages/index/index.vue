@@ -20,7 +20,7 @@
 					</view>
 					<view class="righttext">
 						<text>告警信息</text>
-						<text>12</text>
+						<text>{{ count }}</text>
 					</view>
 				</view>
 				<view class="menu-top-right" @click="wait">
@@ -30,7 +30,7 @@
 					</view>
 					<view class="righttext">
 						<text>我的待办</text>
-						<text>85</text>
+						<text>{{ waitcount }}</text>
 					</view>
 				</view>
 				<view class="menu-top-bot"></view>
@@ -52,6 +52,8 @@
 		data() {
 			return {
 				currentTabIndex:0,
+				count: '',
+				waitcount: "",
 				title: 'Hello',
 				keyword: "",
 				menulist: [
@@ -77,7 +79,8 @@
 					},
 					{
 						text: "知识库",
-						imgurl: require("../../static/icon/6813.png")
+						imgurl: require("../../static/icon/6813.png"),
+						path: "../knowledge/knowledge"
 					},
 					{
 						text: "数据查看",
@@ -88,6 +91,13 @@
 		},
 		onShow() {
 			uni.hideTabBar()
+			this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
+				console.log(res)
+				this.$store.commit('count',res.data)
+				this.count = this.$store.state.count.total_warn_count
+				this.waitcount = this.$store.state.count.task_count
+			})
+			
 		},
 		onLoad() {
 
@@ -98,23 +108,26 @@
 					url:"../login/login"
 				})
 			}
+			this.count = this.$store.state.count.total_warn_count
+			this.waitcount = this.$store.state.count.task_count
 		},
 		methods: {
 			Scancode(){
 				uni.scanCode({
-				    onlyFromCamera: true,
 				    success: function (res) {
 						console.log(res)
 				        console.log('条码类型：' + res.scanType);
 				        console.log('条码内容：' + res.result);
-						uni.showModal({
-							title:'条码类型：' + res.scanType+'条码内容：' + res.result
-						})
-						setTimeout(() => {
+						let obj = JSON.parse(res.result)
+						if(obj.type==0){
 							uni.navigateTo({
-								url:"../scan/scanprobedetail/scanprobedetail"
+								url:"../scan/scanprobedetail/scanprobedetail?id="+obj.id
 							})
-						},1000)
+						}else{
+							uni.navigateTo({
+								url:"../scan/scanRepeater/scanRepeater?id="+obj.id
+							})
+						}
 				    }
 				});
 			},

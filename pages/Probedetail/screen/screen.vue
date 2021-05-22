@@ -47,9 +47,9 @@
 					<image @click="close" src="../../../static/icon/6708.png" mode=""></image>
 				</view>
 				<scroll-view  class="scroll" scroll-y="true" >
-					<view class="scroll-list" :class="activeto==item.line_name?'active':''" v-for="(item,index) in transmissionlist" :key="index" @click="activelist(item)">
+					<view class="scroll-list" :class="activeto==item.id?'active':''" v-for="(item,index) in transmissionlist" :key="index" @click="activelist(item)">
 						<text>{{item.line_name}}</text>
-						<image v-if="activeto==item.line_name" src="../../../static/icon/6963.png" mode=""></image>
+						<image v-if="activeto==item.id" src="../../../static/icon/6963.png" mode=""></image>
 					</view>
 				</scroll-view>
 				
@@ -79,7 +79,7 @@
 	export default {
 		data() {
 			return {
-				indexes: -1,
+				indexes: 0,
 				isflag: false,
 				line_id: "",
 				tagan_id: "",
@@ -135,7 +135,7 @@
 				this.indexes = index
 			},
 			activelist(item){
-				this.activeto = item.line_name
+				this.activeto = item.id
 				this.meesage = item.line_name
 				this.isflag = true
 				this.activeprobe = "选择塔杆号"
@@ -165,13 +165,24 @@
 				this.$refs.popuptwo.close()
 			},
 			jump(){
-				this.$api.postapi('/api/TemperatureSensor/sensor_screen',{
-					state:this.indexes
-				}).then(res => {
-					console.log(res)
-				})
-				uni.navigateTo({
-					url:"../probe/probe"
+				if(this.line_id!=""){
+					if(this.tagan_id==""){
+						uni.showToast({
+							title:"选在输电线路后必须选择塔杆号",
+							icon:"none"
+						})
+						return false
+					}
+				}
+				let obj = {
+					state:this.indexes,
+					keyword: this.keyword==''?'':this.keyword,
+					line_id: this.line_id==''?'':this.line_id,
+					tagan_id: this.tagan_id==''?'':this.tagan_id
+				}
+				obj = JSON.stringify(obj)
+				uni.redirectTo({
+					url:"../probe/probe?obj="+obj
 				})
 			}
 		}
@@ -181,7 +192,7 @@
 <style lang="less" scoped>
 .screen{
 	.screen_wrap{
-		margin-top: 128rpx;
+		margin-top: 168rpx;
 		padding: 30rpx 34rpx 0 34rpx;
 		box-sizing: border-box;
 		background: #033785;
@@ -245,6 +256,7 @@
 						margin: 1rpx;
 					}
 					input {
+						width: 100%;
 						text-align: start;
 						padding-left: 5rpx;
 						box-sizing: border-box;

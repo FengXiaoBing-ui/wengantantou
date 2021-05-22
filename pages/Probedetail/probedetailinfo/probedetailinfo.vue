@@ -78,7 +78,7 @@
 							</view>
 						</view>
 						<image class="right" src="../../../static/icon/minright.png" mode=""></image>
-						<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" :src="listcontent.install_picture" mode="aspectFill"></image>
+						<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" :src="listcontent.ware_picture" mode="aspectFill"></image>
 						
 					</view>
 					<view class="list">

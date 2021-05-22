@@ -2,6 +2,15 @@
 export default {
 	onLaunch: function() {
 		console.log('App Launch');
+		// uni.subscribePush({
+		// 	provider: "unipush",
+  //           success: function(res) {
+  //               console.log("success:" + JSON.stringify(res));
+  //           },
+		// 	fail:function(err){
+		// 		console.log(err)
+		// 	}
+		// })
 	},
 	onShow: function() {
 		console.log('App Show');
@@ -65,7 +74,7 @@ uni-switch .uni-switch-input:before {
 }
 .uni-load-more {
 	position: relative;
-	z-index: 99999;
+	z-index: 999;
 }
 .uni-picker-view-mask {
 	top: 0;
