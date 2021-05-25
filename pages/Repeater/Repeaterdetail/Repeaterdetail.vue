@@ -25,7 +25,7 @@
 					<text>关联探头</text>
 					<text>{{ repeateinfo.temp_sensor_number }}个</text>
 				</view>
-				<view>
+				<view @click="repeaterjump">
 					<text>告警记录</text>
 					<text>{{ repeateinfo.warn_count }}条</text>
 				</view>
@@ -204,8 +204,15 @@ export default {
 	},
 	methods: {
 		jump(){
+			if(repeateinfo.temp_sensor_number>0){
+				uni.navigateTo({
+					url:"../relation/relation?id="+this.id
+				})
+			}
+		},
+		repeaterjump(){
 			uni.navigateTo({
-				url:"../relation/relation?id="+this.id
+				url:"../../Dangerin/warningRepeater/warningRepeater"
 			})
 		},
 		record(){

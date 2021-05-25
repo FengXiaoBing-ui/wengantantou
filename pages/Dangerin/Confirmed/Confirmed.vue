@@ -39,7 +39,7 @@
 			</view>
 			
 			<view class="basic">
-				<text class="title">设备信息</text>
+				<text class="title">告警信息</text>
 				<view class="list">
 					<view class="list-content">
 						<text>告警类型</text>
@@ -65,7 +65,7 @@
 			</view>
 			
 			<view class="basic">
-				<text class="title">设备信息</text>
+				<text class="title">处理情况</text>
 				<view class="list">
 					<view class="list-content">
 						<text>确认状态</text>

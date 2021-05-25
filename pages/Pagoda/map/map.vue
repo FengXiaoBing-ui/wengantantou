@@ -1,11 +1,12 @@
 <template>
 	<view>
 		<headerTab title="详细位置"></headerTab>
-		<map :style="{ width: '100%', height: appheight + 'px' }" :latitude="latitude" :enable-building="true" :longitude="longitude" :markers="covers" :show-compass="true"></map>
+		<map :style="{ width: '100%', height: appheight + 'px' }" @tap="tap" :latitude="latitude" :enable-building="true" :longitude="longitude" :markers="covers" :show-compass="true"></map>
 	</view>
 </template>
 
 <script>
+	import Map from '@/js_sdk/fx-openMap/openMap.js'
 export default {
 	data() {
 		return {
@@ -14,7 +15,8 @@ export default {
 			latitude: 0,
 			longitude: 0,
 			location: {},
-			covers: []
+			covers: [],
+			options: {}
 		};
 	},
 	created() {
@@ -34,15 +36,32 @@ export default {
 				this.location = this.location.split(',')
 				this.latitude = this.location[1]
 				this.longitude = this.location[0]
-				let covers = [
-					{
-						latitude: this.latitude,
-						longitude: this.longitude
+				uni.getLocation({
+					success: (response) => {
+						this.options.origin = {
+							latitude: response.latitude,
+							longitude: response.longitude,
+							name:"起点"
+						}
+						this.options.destination = {
+							latitude: this.latitude,
+							longitude: this.longitude,
+							name:"终点"
+						}
+						this.options.mode = "drive"
+						this.options.mapId = "map"
+						Map.routePlan(this.options)
 					}
-				]
-				this.covers = covers
+				})
+				
 			}
 		})
+		
+	},
+	methods:{
+		tap(){
+			Map.routePlan(this.options)
+		}
 	},
 	computed: {}
 };

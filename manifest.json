@@ -20,8 +20,7 @@
         "modules" : {
             "Bluetooth" : {},
             "Maps" : {},
-            "Geolocation" : {},
-            "Push" : {}
+            "Geolocation" : {}
         },
         /* 应用发布信息 */
         "distribute" : {

@@ -89,6 +89,9 @@
 				]
 			}
 		},
+		onBackPress(e) {
+			// return true
+		},
 		onShow() {
 			uni.hideTabBar()
 			this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
@@ -97,7 +100,6 @@
 				this.count = this.$store.state.count.total_warn_count
 				this.waitcount = this.$store.state.count.task_count
 			})
-			
 		},
 		onLoad() {
 

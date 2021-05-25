@@ -15,7 +15,7 @@
 				<text>{{ pagoinfo.line_name }} {{ pagoinfo.tagan_name }}</text>
 				<view class="gps" @click="jumpmap">
 					<image style="width: 50rpx;height: 50rpx;" src="../../../static/icon/Gps.png" mode=""></image>
-					<text>{{ pagoinfo.address }}</text>
+					<text>{{ pagoinfo.tower_position }}</text>
 					<image style="width: 14rpx;height: 17rpx;margin-left: 10rpx;" src="../../../static/icon/minright.png" mode=""></image>
 				</view>
 			</view>
@@ -120,6 +120,8 @@
 	export default {
 		data() {
 			return {
+				line_id:"",
+				tagan_id: "",
 				limit: 4,
 				more: "nomore",
 				pstate: 0,
@@ -177,6 +179,8 @@
 			}
 		},
 		onLoad(option) {
+			this.line_id = option.line_id
+			this.tagan_id = option.tagan_id
 			this.detaillist(option.line_id,option.tagan_id)
 		},
 		methods:{
@@ -188,7 +192,7 @@
 				})
 			},
 			tantou(){
-				this.$api.postapi('/api/tower/selSensorByTowerId',{tower_id:this.pagoinfo.tower_id,state:this.pstate,limit:this.limit}).then(res => {
+				this.$api.postapi('/api/tower/selSensorByTowerId',{line_id:this.line_id,tagan_id:this.tagan_id,state:this.pstate,limit:this.limit}).then(res => {
 					console.log(11,res)
 					if(this.limit>=res.data.count){
 						this.more = "nomore"
@@ -197,7 +201,7 @@
 				})
 			},
 			zhongjiqi(){
-				this.$api.postapi('/api/tower/selRepeaterByTowerId',{tower_id:this.pagoinfo.tower_id,state:this.rstate,limit:this.limit}).then(res => {
+				this.$api.postapi('/api/tower/selRepeaterByTowerId',{line_id:this.line_id,tagan_id:this.tagan_id,state:this.rstate,limit:this.limit}).then(res => {
 					console.log(22,res)
 					if(this.limit>=res.data.count){
 						this.more = "nomore"
@@ -215,7 +219,7 @@
 			},
 			jumpmap(){
 				uni.navigateTo({
-					url:"../map/map?loction="+this.pagoinfo.address
+					url:"../map/map?loction="+this.pagoinfo.tower_position
 				})
 			},
 			screenlist(item){
@@ -321,13 +325,16 @@
 			transform: translateX(-50%);
 			z-index: 999;
 			.gps{
+				width: 60%;
 				display: flex;
 				align-items: center;
+				justify-content: space-between;
 				margin-top: 9rpx;
 				image{
-					margin: 0 5rpx;
+					
 				}
 				text{
+					width: 90%;
 					font-size: 28rpx;
 					font-family: Source Han Sans CN;
 					font-weight: 400;

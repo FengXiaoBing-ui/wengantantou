@@ -125,7 +125,7 @@
 					<image src="../../../static/icon/6700.png" mode=""></image>
 					<text>执行任务</text>
 				</view>
-				<view class="right" @click="sumbitjump" v-if="mission.is_deal!=2">
+				<view class="right" @click="sumbitjump" v-if="mission.is_deal!=2&&code==1">
 					<image src="../../../static/icon/51444.png" mode=""></image>
 					<text>提交任务</text>
 				</view>

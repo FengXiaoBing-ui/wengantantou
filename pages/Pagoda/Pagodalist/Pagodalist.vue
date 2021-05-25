@@ -103,21 +103,58 @@
 				this.pagodalist()
 			},
 			pagodalist(){
-				this.$api.postapi('/api/tower/selAllTower',{limit:this.limit,keyword:this.keyword==""?0:this.keyword,page:1}).then(res=> {
-					console.log(res)
-					if(res.data.data.length>0){
-						if(this.limit>=res.data.count){
+				if(this.keyword == ""){
+					this.$api.postapi('/api/tower/selAllTower',{limit:this.limit}).then(res=> {
+						console.log(res)
+						if(res.data.code==0){
 							this.more = "nomore"
+							this.list = []
+						}else{
+							if(this.limit>=res.data.count){
+								this.more = "nomore"
+							}
+							let arr = []
+							for(let i = 0; i < this.list.length;i ++){
+								if(this.list[i].isshow == true){
+									arr.push(i)
+								}
+							}
+							this.list = res.data.data
+							for(let i = 0; i < this.list.length;i ++){
+								this.list[i].isshow = false
+								arr.forEach( e => {
+									this.list[e].isshow = true
+								})
+							}
 						}
-						this.list = res.data.data
-						for(let i = 0; i < this.list.length;i ++){
-							this.list[i].isshow = false
+					})
+				}else{
+					this.$api.postapi('/api/tower/selAllTower',{limit:this.limit,keyword:this.keyword}).then(res=> {
+						console.log(res)
+						if(res.data.code==0){
+							this.more = "nomore"
+							this.list = []
+						}else{
+							if(this.limit>=res.data.count){
+								this.more = "nomore"
+							}
+							let arr = []
+							for(let i = 0; i < this.list.length;i ++){
+								if(this.list[i].isshow == true){
+									arr.push(i)
+								}
+							}
+							this.list = res.data.data
+							for(let i = 0; i < this.list.length;i ++){
+								this.list[i].isshow = false
+								arr.forEach( e => {
+									this.list[e].isshow = true
+								})
+							}
 						}
-					}else{
-						this.more = "nomore"
-						this.list = []
-					}
-				})
+					})
+				}
+				
 			},
 			backpage(){
 				uni.navigateBack({
@@ -232,8 +269,8 @@
 				}
 			}
 			.line{
-				max-width: 100%;
-				min-width: 30%;
+				max-width: 80%;
+				min-width: 20%;
 				height: 0px;
 				border: 1rpx dotted #9EA5AE;
 				opacity: 1;

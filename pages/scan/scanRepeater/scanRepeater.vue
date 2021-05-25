@@ -152,6 +152,8 @@ export default {
 	},
 	onShow() {
 		this.repeater_detail();
+		this.$store.state.activerepeater.postion = {}
+		this.$store.state.activerepeater.server = {}
 	},
 	methods: {
 		repeater_detail(id) {
@@ -161,6 +163,8 @@ export default {
 			});
 		},
 		activation() {
+			this.$store.state.activerepeater.postion = ''
+			this.$store.state.activerepeater.server = ''
 			uni.navigateTo({
 				url: '../activationrepeater/activationrepeater'
 			});
@@ -173,6 +177,8 @@ export default {
 		},
 		back() {
 			this.$refs.popup.close();
+			this.$store.state.activerepeater.postion = ''
+			this.$store.state.activerepeater.server = ''
 			uni.navigateTo({
 				url: '../activationrepeater/activationrepeater'
 			});

@@ -17,12 +17,14 @@
 					</view>
 					<view class="list-content">
 						<text>设备名称</text>
-						<text>{{ implementdata.device.device_name }}</text>
+						<text v-if="implementdata.device.repeater_name">{{ implementdata.device.repeater_name }}</text>
+						<text v-if="implementdata.device.device_name">{{ implementdata.device.device_name }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
 						<text>设备编号</text>
-						<text>{{ implementdata.device.device_id }}</text>
+						<text v-if="implementdata.device.repeater_id">{{ implementdata.device.repeater_id }}</text>
+						<text v-if="implementdata.device.device_id">{{ implementdata.device.device_id }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">
@@ -30,7 +32,7 @@
 						<text>{{ implementdata.device.tagan }}</text>
 						<view class="botborder"></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="implementdata.type==0">
 						<text>设备位置</text>
 						<text>{{ implementdata.device.device_position }}</text>
 						<view class="botborder"></view>

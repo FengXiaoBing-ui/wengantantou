@@ -142,7 +142,7 @@
 		},
 		methods:{
 			info(){
-				this.$api.postapi('/api/Sensor/selSensorBaseDetial',{id:this.id}).then(res => {
+				this.$api.postapi('/api/Sensor/selSensorBaseDetial',{id:this.id,loginId:uni.getStorageSync('loginId')}).then(res => {
 					console.log(res)
 					this.listcontent = res.data.data
 				})

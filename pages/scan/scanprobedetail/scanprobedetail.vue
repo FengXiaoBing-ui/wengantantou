@@ -171,10 +171,16 @@ export default {
 			id:""
 		};
 	},
+	onShow() {
+		this.$store.state.pagoda = {}
+		this.$store.state.repeater = {}
+		console.log(789,this.$store.state.repeater)
+	},
 	onLoad(option) {
 		this.id = option.id
 		this.$store.commit('probeid',this.id)
 		this.detailinfo(option.id)
+		
 	},
 	methods:{
 		detailinfo(id){
