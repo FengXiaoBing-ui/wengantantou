@@ -98,7 +98,7 @@
 					</view>
 					<view class="list-content">
 						<text>处理说明</text>
-						<text>{{ mission.task_remark }}</text>
+						<text>{{ mission.deal_remark }}</text>
 						<view class="botborder"></view>
 					</view>
 					<view class="list-content">

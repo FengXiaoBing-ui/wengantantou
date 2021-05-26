@@ -6,7 +6,7 @@
 				<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
 				<text>输电塔详情</text>
 				<view class="sw">
-					<text>关闭告警x</text>
+					<text>关闭告警</text>
 					<switch :checked="checked" @change="switch1Change" color="#275e98" style="transform: scale(0.5,0.5);" />
 				</view>
 			</view>
@@ -76,7 +76,7 @@
 						<text class="num">{{ item.now_temperature?item.now_temperature+'%':'---' }}</text>
 					</view>
 				</view>
-				<text class="bot-text" :style="item.state == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
+				<text class="bot-text" :style="item.state == '已离线' ? 'opacity:0.4' : ''" v-if="item.tower_position">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
 			<view v-if="active=='中继器'" class="list" v-for="(item,indexes) in mylist" :key="indexes+10" @click="repeaterjump(item.id)">
@@ -459,6 +459,7 @@
 		background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
 		box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
 		margin-bottom: 20rpx;
+		padding-bottom: 20rpx;
 		position: relative;
 		.probe-list-box-top {
 			width: 100%;
@@ -589,7 +590,7 @@
 					left: 0;
 					top: 0;
 					height: 90rpx;
-					border-radius: 14rpx 0px 0px 14rpx;
+					border-radius: 14rpx;
 				}
 				.blue {
 					background: linear-gradient(90deg, rgba(127, 229, 127, 0.5) 0%, rgba(65, 201, 252, 0.5) 100%);
@@ -607,7 +608,6 @@
 			font-family: Source Han Sans CN;
 			font-weight: 400;
 			margin-top: 13rpx;
-			line-height: 40rpx;
 			color: #f6b532;
 			box-sizing: border-box;
 			overflow: hidden;
@@ -617,6 +617,7 @@
 		.box-foot {
 			position: absolute;
 			left: 50%;
+			bottom: -2rpx;
 			transform: translateX(-50%);
 			width: 114rpx;
 			height: 4rpx;
@@ -752,7 +753,7 @@
 				position: absolute;
 				left: 0;
 				height: 47rpx;
-				border-radius: 14rpx 0px 0px 14rpx;
+				border-radius: 14rpx;
 			}
 			
 			.blue{

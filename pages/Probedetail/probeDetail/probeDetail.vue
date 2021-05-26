@@ -22,7 +22,7 @@
 		<view class="detail">
 			<view class="probe-list-box">
 				<view class="box-left">
-					<view class="box-left-color" :style="{ width: '85%' }"></view>
+					<view class="box-left-color" :style="{ width: SensorBase.power_number+'%' }"></view>
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
 					<text class="num">{{ SensorBase.power_number }}%</text>
@@ -341,15 +341,15 @@ export default {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			box-sizing: border-box;
 			background: rgba(214, 242, 255, 0.15);
 			border: 1rpx solid #5bc8cb;
+			box-sizing: border-box;
 			.box-left-color {
 				position: absolute;
 				left: 0;
 				top: 0;
-				height: 94rpx;
-				border-radius: 14rpx 0px 0px 14rpx;
+				height: 92rpx;
+				border-radius: 14rpx;
 				background: linear-gradient(90deg, #7fe57f 0%, #41c9fc 100%);
 				opacity: 0.5;
 			}
@@ -414,15 +414,17 @@ export default {
 		.top {
 			display: flex;
 			justify-content: space-between;
+			flex-wrap: wrap;
 			margin-top: 24rpx;
 			padding-bottom: 18rpx;
 			border-bottom: 2rpx solid rgba(90, 232, 255, 0.5);
 			text {
 				&:nth-child(1) {
-					width: 30%;
+					width: 26%;
 					font-size: 28rpx;
 					font-family: Source Han Sans CN;
 					font-weight: 400;
+					line-height: 50rpx;
 					color: #ffffff;
 					opacity: 0.53;
 					display: flex;
@@ -438,6 +440,7 @@ export default {
 				}
 				&:nth-child(2) {
 					width: 70%;
+					margin-right: 10rpx;
 					font-size: 26rpx;
 					font-family: Source Han Sans CN;
 					font-weight: 400;
@@ -445,15 +448,6 @@ export default {
 					text-align: right;
 					display: flex;
 					align-items: center;
-					&::after {
-						content: '';
-						display: inline-block;
-						width: 15rpx;
-						height: 17rpx;
-						background-size: 100% 100%;
-						background-image: url(../../../static/icon/minright.png);
-						margin: 0 23rpx;
-					}
 				}
 			}
 		}

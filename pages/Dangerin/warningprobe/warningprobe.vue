@@ -116,6 +116,7 @@ export default {
 	},
 	methods: {
 		warning(type) {
+			let arr = []
 			this.$api
 				.postapi('/api/Alarmlog/sel_sensor_alarm_logs', {
 					type: type,
@@ -125,11 +126,20 @@ export default {
 					if(this.limit>=res.data.count){
 						this.more = 'nomore'
 					}
+					for (let i = 0; i < this.warninglist.length; i++) {
+						if(this.warninglist[i].active == 'active'){
+							arr.push(i)
+						}
+					}
 					this.warninglist = res.data.data;
 					for (let i = 0; i < this.warninglist.length; i++) {
 						this.warninglist[i].active = '';
+						arr.forEach( e => {
+							this.warninglist[e].active = 'active'
+						})
 					}
 				});
+				this.$forceUpdate()
 		},
 		func() {
 			if(!this.record){
@@ -139,6 +149,7 @@ export default {
 			}
 			this.wraptop = true;
 			this.confirmed = false;
+			this.activeall = true
 			this.operation = !this.operation;
 			if(!this.operation){
 				for (let i = 0; i < this.warninglist.length; i++) {
@@ -146,6 +157,7 @@ export default {
 					this.record = true;
 					this.wraptop = false;
 					this.confirmed = true;
+					this.activeall = true
 				}
 			}
 		},
@@ -197,6 +209,7 @@ export default {
 			this.record = true;
 			this.wraptop = false;
 			this.confirmed = true;
+			this.activeall = true
 			this.$refs.popup.close();
 		},
 		close() {
@@ -207,10 +220,24 @@ export default {
 			this.record = true;
 			this.wraptop = false;
 			this.confirmed = true;
+			this.activeall = true
 			this.$refs.popup.close();
 		},
 		sure() {
-			this.$refs.popup.open();
+			let x;
+			this.warninglist.forEach(e => {
+				if (e.active == 'active') {
+					x = true
+				}
+			});
+			if(x == true){
+				this.$refs.popup.open();
+				return false
+			}
+			uni.showToast({
+				title:"请先选择探头",
+				icon:"none"
+			})
 		},
 		allactive() {
 			this.activeall = !this.activeall;

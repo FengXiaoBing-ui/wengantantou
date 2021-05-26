@@ -99,13 +99,7 @@
 			serchdata(keyword){
 				this.keyword = keyword
 				this.limit = 6
-				let obj = {
-					state:0,
-					keyword: keyword,
-					line_id: 0,
-					tagan_id: 0
-				}
-				this.screen(obj)
+				this.repeaterlist()
 			},
 			jump(id){
 				uni.navigateTo({
@@ -113,8 +107,8 @@
 				})
 			},
 			repeaterlist(){
-				this.$api.postapi('/api/repeater/selAllRepeater',{limit:this.limit}).then(res => {
-					console.log(this.limit)
+				this.$api.postapi('/api/repeater/selAllRepeater',{limit:this.limit,keyword:this.keyword}).then(res => {
+					console.log(res)
 					if(this.limit>=res.data.count){
 						this.more = 'nomore'
 					}
@@ -285,7 +279,7 @@
 					position: absolute;
 					left: 0;
 					height: 50rpx;
-					border-radius: 14rpx 0px 0px 14rpx;
+					border-radius: 14rpx;
 				}
 				
 				.blue{

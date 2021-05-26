@@ -93,6 +93,11 @@
 			// return true
 		},
 		onShow() {
+			if(!uni.getStorageSync('loginId')){
+				uni.redirectTo({
+					url:"../login/login"
+				})
+			}
 			uni.hideTabBar()
 			this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
 				console.log(res)
@@ -105,11 +110,6 @@
 
 		},
 		created() {
-			if(!uni.getStorageSync('loginId')){
-				uni.redirectTo({
-					url:"../login/login"
-				})
-			}
 			this.count = this.$store.state.count.total_warn_count
 			this.waitcount = this.$store.state.count.task_count
 		},
@@ -187,7 +187,7 @@
 						margin: 1rpx;
 					}
 					input{
-						width: 100%;
+						width: 90%;
 						text-align: start;
 						padding-left: 5rpx;
 						box-sizing: border-box;

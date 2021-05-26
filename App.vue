@@ -26,6 +26,15 @@ export default {
 	page{
 		background: #033785;
 	}
+	uni-rich-text{
+		height: auto;
+		text{
+			color: rgb(255,255,255) !important;
+		}
+		span{
+			color: rgb(255,255,255) !important;
+		}
+	}
 body,
 html {
 	width: 100%;

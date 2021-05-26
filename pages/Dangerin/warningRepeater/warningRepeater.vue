@@ -102,7 +102,7 @@ export default {
 			more: 'nomore',
 			isshow: true,
 			warninglist: [],
-			limit: 6,
+			limit: 8,
 			type:0
 		};
 	},
@@ -116,6 +116,7 @@ export default {
 	},
 	methods: {
 		warning(type) {
+			let arr = []
 			this.$api
 				.postapi('/api/Repeaterlog/sel_repeater_alarm_logs', {
 					type: type,
@@ -126,9 +127,17 @@ export default {
 					if(this.limit>=res.data.count){
 						this.more = "nomore"
 					}
+					for (let i = 0; i < this.warninglist.length; i++) {
+						if(this.warninglist[i].active == 'active'){
+							arr.push(i)
+						}
+					}
 					this.warninglist = res.data.data;
 					for (let i = 0; i < this.warninglist.length; i++) {
 						this.warninglist[i].active = '';
+						arr.forEach( e => {
+							this.warninglist[e].active = 'active'
+						})
 					}
 				});
 		},
@@ -140,6 +149,7 @@ export default {
 			}
 			this.wraptop = true;
 			this.confirmed = false;
+			this.activeall = true
 			this.operation = !this.operation;
 			if(!this.operation){
 				for (let i = 0; i < this.warninglist.length; i++) {
@@ -147,11 +157,13 @@ export default {
 					this.record = true;
 					this.wraptop = false;
 					this.confirmed = true;
+					this.activeall = true
 				}
 			}
 		},
 		alllistsure() {
 			let ids = [];
+			this.activeall = true
 			this.warninglist.forEach(e => {
 				if (e.active == 'active') {
 					ids.push(e.id);
@@ -208,6 +220,7 @@ export default {
 			this.record = true;
 			this.wraptop = false;
 			this.confirmed = true;
+			this.activeall = true
 			this.$refs.popup.close();
 		},
 		sure() {

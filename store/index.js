@@ -15,7 +15,10 @@ const store = new Vuex.Store({
 			server: {}
 		},
 		probeid: "",
-		repeaterid: ""
+		repeaterid: "",
+		electric: 30,
+		temperatureyellow: 30,
+		temperaturered: 50
 	},
 	mutations:{
 		count(state,count){

@@ -100,10 +100,7 @@
 			},
 			screenjump(){
 				uni.navigateTo({
-					url:".."+this.path,
-					fail(err) {
-						console.log(err)
-					}
+					url:".."+this.path
 				})
 			},
 			backroute(){

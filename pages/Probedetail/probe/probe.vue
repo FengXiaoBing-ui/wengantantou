@@ -16,28 +16,28 @@
 					</view>
 				</view>
 				<view class="electric" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
-					<view class="electric-left" :class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }">
-						<view class="electric-num-left" :class="{ blue: item.power_number > 30, red: item.power_number <= 30 }" :style="{ width: item.power_number + '%' }"></view>
+					<view class="electric-left" :class="{ 'electric-left-blue': item.power_number > $store.state.electric, 'electric-left-red': item.power_number <= $store.state.electric, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }">
+						<view class="electric-num-left" :class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }" :style="{ width: item.power_number + '%' }"></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
-						<text class="num">{{ item.power_number?item.power_number+'%':'---' }}</text>
+						<text class="num">{{ item.state_text == '工作中'?item.power_number+'%':'---' }}</text>
 					</view>
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.now_temperature <= 30,
-							'electric-right-origin': item.now_temperature <= 50 && item.now_temperature > 30,
-							'electric-right-red': item.now_temperature > 50,
+							'electric-right-blue': item.now_temperature <= $store.state.temperatureyellow,
+							'electric-right-origin': item.now_temperature <= $store.state.temperaturered && item.now_temperature > $store.state.temperatureyellow,
+							'electric-right-red': item.now_temperature > $store.state.temperaturered,
 							'electric-left-no': item.state_text == '已离线',
 							'electric-left-lixian': item.state_text=='待激活'
 						}"
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.now_temperature?item.now_temperature+'%':'---' }}</text>
+						<text class="num">{{ item.state_text == '工作中'?item.now_temperature+'%':'---' }}</text>
 					</view>
 				</view>
-				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
+				<text class="bot-text" v-if="item.state_text != '待激活'" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
 			<uni-load-more :status="more"></uni-load-more>
@@ -93,13 +93,8 @@ export default {
 	},
 	methods: {
 		serchdata(keyword){
-			let obj = {
-				state:0,
-				keyword: keyword,
-				line_id: "",
-				tagan_id: ""
-			}
-			this.screen(obj)
+			this.keyword = keyword
+			this.queryprobelist()
 		},
 		screen(obj){
 			this.$api.postapi('/api/Sensor/sensor_screen',obj).then(res => {
@@ -117,7 +112,7 @@ export default {
 			})
 		},
 		queryprobelist(){
-			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:this.limit}).then(res => {
+			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:this.limit,keyword:this.keyword}).then(res => {
 				if(this.limit>=res.data.count){
 					this.more = "nomore"
 				}
@@ -186,6 +181,7 @@ export default {
 			background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
 			box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
 			margin-bottom: 20rpx;
+			padding-bottom: 20rpx;
 			position: relative;
 			.probe-list-box-top {
 				width: 100%;
@@ -316,7 +312,7 @@ export default {
 						left: 0;
 						top: 0;
 						height: 90rpx;
-						border-radius: 14rpx 0px 0px 14rpx;
+						border-radius: 14rpx;
 					}
 					.blue {
 						background: linear-gradient(90deg, rgba(127, 229, 127, 0.5) 0%, rgba(65, 201, 252, 0.5) 100%);
@@ -334,7 +330,6 @@ export default {
 				font-family: Source Han Sans CN;
 				font-weight: 400;
 				margin-top: 13rpx;
-				line-height: 40rpx;
 				color: #f6b532;
 				box-sizing: border-box;
 				overflow: hidden;
@@ -344,6 +339,7 @@ export default {
 			.box-foot {
 				position: absolute;
 				left: 50%;
+				bottom: -2rpx;
 				transform: translateX(-50%);
 				width: 114rpx;
 				height: 4rpx;

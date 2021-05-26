@@ -35,8 +35,21 @@
 			return {
 				username: "",
 				password: "",
-				isshow: false
+				isshow: false,
+				backButtonPress: 0
 			};
+		},
+		onBackPress(e) {
+			this.backButtonPress++
+			if(this.backButtonPress>=2){
+				plus.runtime.quit()
+			}else{
+				plus.nativeUI.toast('再次返回退出应用')
+			}
+			setTimeout(() => {
+				this.backButtonPress = 0
+			},1000)
+			return true
 		},
 		computed:{
 			appheight:function(){
@@ -69,6 +82,20 @@
 				uni.setStorageSync('username',this.username)
 				if(uni.getStorageSync('remember')){
 					uni.setStorageSync('password',this.password)
+				}
+				if(this.username == ""){
+					uni.showToast({
+						title:"请输入账号名",
+						icon:"none"
+					})
+					return false
+				}
+				if(this.password == ""){
+					uni.showToast({
+						title:"请输入密码",
+						icon:"none"
+					})
+					return false
 				}
 				this.$api.postapi('/api/admin/app_login',{
 					username: this.username,

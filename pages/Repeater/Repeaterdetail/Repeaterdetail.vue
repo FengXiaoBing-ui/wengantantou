@@ -450,7 +450,7 @@ export default {
 				height: 47rpx;
 				background: linear-gradient(90deg, #7FE57F 0%, #41C9FC 100%);
 				opacity: 0.5;
-				border-radius: 14rpx 0px 0px 14rpx;
+				border-radius: 14rpx;
 			}
 		}
 	}

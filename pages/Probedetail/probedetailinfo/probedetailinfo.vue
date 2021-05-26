@@ -15,12 +15,12 @@
 					</view>
 					<view class="list-content">
 						<text>设备编号</text>
-						<text>{{ listcontent.class_name }}</text>
+						<text>{{ listcontent.device_id }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>型号</text>
-						<text>{{ listcontent.repeater_id }}</text>
+						<text>{{ listcontent.class_name }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
@@ -35,17 +35,17 @@
 					</view>
 					<view class="list-content">
 						<text>正常温度</text>
-						<text>{{ listcontent.normal_lower }}-{{ listcontent.normal_upper }}</text>
+						<text>{{ listcontent.normal_lower }}℃-{{ listcontent.normal_upper }}℃</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>告警温度</text>
-						<text>{{ listcontent.warm_number }}</text>
+						<text>{{ listcontent.warm_number }}℃</text>
 						<view></view>
 					</view>
 					<view class="list-content">
 						<text>超温温度</text>
-						<text>{{ listcontent.early_warn_upper }}</text>
+						<text>{{ listcontent.early_warn_upper }}℃</text>
 						<view></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
@@ -66,7 +66,6 @@
 								<text>卡号：{{ listcontent.repeater_ip }}</text>
 							</view>
 						</view>
-						<image class="right" src="../../../static/icon/minright.png" mode=""></image>
 					</view>
 					<text class="orig">已绑定的输电塔</text>
 					<view class="wifi">
@@ -77,7 +76,6 @@
 								<text>位置：{{ listcontent.detail_position }}</text>
 							</view>
 						</view>
-						<image class="right" src="../../../static/icon/minright.png" mode=""></image>
 						<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" :src="listcontent.ware_picture" mode="aspectFill"></image>
 						
 					</view>

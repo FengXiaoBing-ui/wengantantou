@@ -67,7 +67,6 @@
 									<text>IP：{{ listcontent.repearter_ip }}</text>
 								</view>
 							</view>
-							<image class="right" src="../../../static/icon/minright.png" mode=""></image>
 						</view>
 						<view class="list-content">
 							<text>安装情况说明</text>

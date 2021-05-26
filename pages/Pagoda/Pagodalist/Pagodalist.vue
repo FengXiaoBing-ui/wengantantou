@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<view class="headtab">
-			<view style="height: 40rpx;"></view>
+			<view style="height: 80rpx;"></view>
 			<view class="headertitle">
 				<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
 				<text>输电塔管理</text>
@@ -240,6 +240,7 @@
 	box-sizing: border-box;
 	z-index: 1;
 	.list{
+		margin-bottom: 20rpx;
 		.list-top{
 			display: flex;
 			align-items: center;

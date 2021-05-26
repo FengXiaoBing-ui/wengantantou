@@ -90,6 +90,9 @@
 			padding: 30rpx 0;
 			padding-right: 31rpx;
 			border-bottom: 1rpx solid rgba(90, 232, 255, 0.5);
+			&:last-child{
+				border: none;
+			}
 			.lefttext{
 				font-size: 28rpx;
 				font-family: Source Han Sans CN;

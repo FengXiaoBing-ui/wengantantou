@@ -187,7 +187,7 @@
 			}
 			.line{
 				max-width: 100%;
-				min-width: 30%;
+				min-width: 25%;
 				height: 0px;
 				border: 1rpx dotted #9EA5AE;
 				opacity: 1;

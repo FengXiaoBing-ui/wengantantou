@@ -7,7 +7,7 @@
 					<text>版本123</text>
 					<text>更新时间：{{ upgrade.update_time }}</text>
 				</view>
-				<rich-text style="color: #FFFFFF;" :nodes="upgrade.content"></rich-text>
+				<rich-text style="color: #FFFFFF;height: auto;" :nodes="upgrade.content"></rich-text>
 			</view>
 		</view>
 	</view>
@@ -40,7 +40,7 @@
 	z-index: 1;
 	.box{
 		width: 100%;
-		height: 1048rpx;
+		height: auto;
 		border: 2rpx solid rgba(90, 232, 255, 0.5);
 		background: linear-gradient(180deg, rgba(65, 201, 252, 0.5) 0%, rgba(28, 84, 184, 0.5) 100%);
 		box-shadow: 2rpx 4rpx 10rpx rgba(90, 232, 255, 0.5);

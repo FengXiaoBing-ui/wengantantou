@@ -53,6 +53,12 @@
 				btnshow: false
 			};
 		},
+		onBackPress(e) {
+			uni.redirectTo({
+				url:"../scanprobedetail/scanprobedetail?id="+this.$store.state.probeid
+			})
+			return true
+		},
 		onLoad(option) {
 			
 			this.reap = this.$store.state.repeater

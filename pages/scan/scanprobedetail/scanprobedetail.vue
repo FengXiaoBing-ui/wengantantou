@@ -66,7 +66,6 @@
 									<text>卡号：{{ listcontent.repeater_ip }}</text>
 								</view>
 							</view>
-							<image class="right" src="../../../static/icon/minright.png" mode=""></image>
 						</view>
 						<text class="orig">已绑定的输电塔</text>
 						<view class="wifi">
@@ -77,7 +76,6 @@
 									<text>位置：{{ listcontent.detail_position }}</text>
 								</view>
 							</view>
-							<image class="right" src="../../../static/icon/minright.png" mode=""></image>
 							<image style="width: 569rpx;height: 319rpx;margin-top: 45rpx;" :src="listcontent.ware_picture" mode="aspectFit"></image>
 							
 						</view>
@@ -171,6 +169,12 @@ export default {
 			id:""
 		};
 	},
+	onBackPress(e) {
+		uni.switchTab({
+			url:"../../index/index"
+		})
+		return true
+	},
 	onShow() {
 		this.$store.state.pagoda = {}
 		this.$store.state.repeater = {}
@@ -180,7 +184,6 @@ export default {
 		this.id = option.id
 		this.$store.commit('probeid',this.id)
 		this.detailinfo(option.id)
-		
 	},
 	methods:{
 		detailinfo(id){
