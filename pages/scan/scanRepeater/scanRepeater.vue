@@ -144,6 +144,12 @@ export default {
 			id: ''
 		};
 	},
+	onBackPress() {
+		uni.switchTab({
+			url:"../../index/index"
+		})
+		return true
+	},
 	onLoad(option) {
 		this.id = option.id;
 		this.$store.commit('repeaterid', this.id);
@@ -162,8 +168,8 @@ export default {
 			});
 		},
 		activation() {
-			this.$store.state.activerepeater.postion = ''
-			this.$store.state.activerepeater.server = ''
+			this.$store.state.activerepeater.postion = {}
+			this.$store.state.activerepeater.server = {}
 			uni.navigateTo({
 				url: '../activationrepeater/activationrepeater'
 			});

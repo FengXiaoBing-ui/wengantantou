@@ -9,17 +9,17 @@
 						<text>{{ item.repeater_id }}</text>
 					</view>
 					<view class="list-top-right">
-						<image v-if="item.states=='工作中'" src="../../../static/icon/6833.png" mode=""></image>
-						<image v-if="item.states=='待激活'" src="../../../static/icon/6837.png" mode=""></image>
-						<image v-if="item.states=='已离线'" src="../../../static/icon/6832.png" mode=""></image>
+						<image v-if="item.state_text=='工作中'" src="../../../static/icon/6833.png" mode=""></image>
+						<image v-if="item.state_text=='待激活'" src="../../../static/icon/6837.png" mode=""></image>
+						<image v-if="item.state_text=='已离线'" src="../../../static/icon/6832.png" mode=""></image>
 						<text>{{ item.state_text }}</text>
 					</view>
 				</view>
 				<view class="list-mid">
 					<view class="list-mid-left">
-						<text>IP: {{ item.ip }}</text>
-						<text>4G卡号: {{ item.repeater_phone }}</text>
-						<text>位置: {{ item.tower_position }}</text>
+						<text>IP: {{ item.state_text=='待激活'?'- - -':item.ip }}</text>
+						<text>4G卡号: {{ item.state_text=='待激活'?'- - -':item.repeater_phone }}</text>
+						<text>位置: {{ item.state_text=='待激活'?'- - -':item.tower_position }}</text>
 					</view>
 					<view class="list-mid-right">
 						<text>关联探头</text>
@@ -28,9 +28,9 @@
 				</view>
 				<view class="list-bot" :class="{'borderred':item.electric_quality<=30,'borderblue':item.electric_quality>30}">
 					<image src="../../../static/icon/6820.png" mode=""></image>
-					<text>电量</text>
-					<text>{{ item.electric_quality }}%</text>
-					<view class="background" :class="{'blue':item.electric_quality>30,'red':item.electric_quality<=30}" :style="{width: item.electric_quality+'%'}"></view>
+					<text>电量 </text>
+					<text> {{ item.state_text=='工作中'?(item.electric_quality+'%'):'- - -' }}</text>
+					<view class="background" :class="{'blue':item.electric_quality>30,'red':item.electric_quality<=30}" :style="{width: item.state_text=='工作中'?(item.electric_quality+'%'):0}"></view>
 				</view>
 				<view class="botborder"></view>
 			</view>
@@ -49,6 +49,12 @@
 				obj: {},
 				more: "more"
 			};
+		},
+		onBackPress() {
+			uni.switchTab({
+				url:"../../index/index"
+			})
+			return true
 		},
 		created() {
 		},
@@ -259,6 +265,7 @@
 				margin: 0 auto;
 				background: rgba(214, 242, 255, 0.15);
 				border-radius: 14rpx;
+				overflow: hidden;
 				display: flex;
 				justify-content: center;
 				align-items: center;
@@ -279,7 +286,7 @@
 					position: absolute;
 					left: 0;
 					height: 50rpx;
-					border-radius: 14rpx;
+					border-radius: 14rpx 0 0 14rpx;
 				}
 				
 				.blue{

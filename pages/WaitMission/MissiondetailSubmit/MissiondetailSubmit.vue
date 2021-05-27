@@ -121,7 +121,6 @@
 						uni.hideLoading()
 					})
 				}
-				
 			},
 			jump(id){
 				this.$api.postapi('/api/pubtask/check_task',{id:id,loginId:uni.getStorageSync('loginId')}).then(res => {

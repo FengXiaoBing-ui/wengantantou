@@ -14,7 +14,9 @@
 			<text>编号{{ repeateinfo.repeater_id }}</text>
 			<text>型号：{{ repeateinfo.class }}</text>
 			<view class="states">
-				<image src="../../../static/icon/6833.png" mode=""></image>
+				<image v-if="repeateinfo.state_text=='工作中'" src="../../../static/icon/6833.png" mode=""></image>
+				<image v-if="repeateinfo.state_text=='待激活'" src="../../../static/icon/6837.png" mode=""></image>
+				<image v-if="repeateinfo.state_text=='已离线'" src="../../../static/icon/6832.png" mode=""></image>
 				<text>{{ repeateinfo.state_text }}</text>
 			</view>
 		</view>
@@ -27,15 +29,15 @@
 				</view>
 				<view @click="repeaterjump">
 					<text>告警记录</text>
-					<text>{{ repeateinfo.warn_count }}条</text>
+					<text style="color: #FF7672;">{{ repeateinfo.warn_count }}条</text>
 				</view>
 			</view>
 			<view class="electric">
-				<view class="electric-box">
+				<view class="electric-box" :class="repeateinfo.electric_quality<30?'electric-box-red':''">
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
-					<text style="font-weight: bold;">{{ repeateinfo.repeater_power }}%</text>
-					<view class="process" :style="{width: repeateinfo.repeater_power+'%'}"></view>
+					<text style="font-weight: bold;">{{ repeateinfo.state_text=='工作中'?(repeateinfo.electric_quality+'%'):'- - -' }}</text>
+					<view class="process" :class="repeateinfo.electric_quality<30?'red':''" :style="{width: repeateinfo.state_text=='工作中'?repeateinfo.electric_quality+'%':0}"></view>
 				</view>
 			</view>
 			<view class="basic">
@@ -88,7 +90,7 @@
 					<text>安装信息</text>
 				</view>
 				<view class="list">
-					<view class="list-content">
+					<view class="list-content" v-if="repeateinfo.state_text=='工作中'">
 						<view class="nowrap">
 							<text>中继器IP</text>
 							<text>{{ repeateinfo.ip }}</text>
@@ -96,21 +98,21 @@
 						
 						<view class="borderbot"></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="repeateinfo.state_text=='工作中'">
 						<view class="nowrap">
 							<text>4G卡号</text>
 							<text>{{ repeateinfo.repeater_phone }}</text>
 						</view>
 						<view class="borderbot"></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="repeateinfo.state_text=='工作中'">
 						<view class="nowrap">
 							<text>安装位置</text>
 							<text>{{ repeateinfo.tower_position }}</text>
 						</view>
 						<view class="borderbot"></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="repeateinfo.state_text=='工作中'">
 						<view class="nowrap">
 							<text>关联服务器</text>
 							<view class="nowrap-box">
@@ -123,7 +125,7 @@
 						</view>
 						<view class="borderbot"></view>
 					</view>
-					<view class="list-content">
+					<view class="list-content" v-if="repeateinfo.state_text=='工作中'">
 						<view class="nowrap">
 							<text>安装情况说明</text>
 							<text >{{ repeateinfo.install_detail }}</text>
@@ -204,7 +206,7 @@ export default {
 	},
 	methods: {
 		jump(){
-			if(repeateinfo.temp_sensor_number>0){
+			if(this.repeateinfo.temp_sensor_number>0){
 				uni.navigateTo({
 					url:"../relation/relation?id="+this.id
 				})
@@ -427,6 +429,7 @@ export default {
 			border: 1rpx solid #5BC8CB;
 			opacity: 1;
 			border-radius: 14rpx;
+			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -448,10 +451,18 @@ export default {
 				position: absolute;
 				left: 0;
 				height: 47rpx;
+				border-radius: 14rpx 0 0 14rpx;
 				background: linear-gradient(90deg, #7FE57F 0%, #41C9FC 100%);
 				opacity: 0.5;
-				border-radius: 14rpx;
 			}
+			.red{
+				opacity: 1;
+				background: rgba(214, 242, 255, 1);
+				background: linear-gradient(270deg, #F44336 0%, #700C0C 100%);
+			}
+		}
+		.electric-box-red{
+			border: 2rpx solid #F44336;
 		}
 	}
 	.basic{

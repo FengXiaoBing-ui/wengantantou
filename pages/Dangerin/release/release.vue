@@ -197,7 +197,11 @@ export default {
 		this.id = this.$store.state.parmes.id
 		this.type = this.$store.state.parmes.type
 		this.sensor_id = this.$store.state.parmes.sensor_id
-		this.people = this.$store.state.people
+		if(JSON.stringify(this.$store.state.people)=='{}'){
+			this.people = null
+		}else{
+			this.people = this.$store.state.people
+		}
 	},
 	computed: {
 		value: function() {

@@ -57,18 +57,18 @@
 					<text>安装信息</text>
 				</view>
 				<view class="list">
-					<text class="orig">已绑定的中继器</text>
-					<view class="wifi">
+					<text class="orig" v-if="listcontent.state_text=='工作中'">已绑定的中继器</text>
+					<view class="wifi" v-if="listcontent.state_text=='工作中'">
 						<view class="left">
 							<image src="../../../static/icon/wifi.png" mode=""></image>
 							<view class="wifi-right">
-								<text>{{ listcontent.repeater_name }}</text>
+								<text>{{ listcontent.state_text }}</text>
 								<text>卡号：{{ listcontent.repeater_ip }}</text>
 							</view>
 						</view>
 					</view>
-					<text class="orig">已绑定的输电塔</text>
-					<view class="wifi">
+					<text class="orig" v-if="listcontent.state_text=='工作中'">已绑定的输电塔</text>
+					<view class="wifi" v-if="listcontent.state_text=='工作中'">
 						<view class="left">
 							<image src="../../../static/icon/6707.png" mode=""></image>
 							<view class="wifi-right">
@@ -82,7 +82,7 @@
 					<view class="list">
 						<view class="list-content">
 							<text>探头状态</text>
-							<text class="states">{{ listcontent.state_text }}</text>
+							<text :class="{'statesword':listcontent.state_text=='工作中','stateswait':listcontent.state_text=='待激活','statesout':listcontent.state_text=='已离线'}">{{ listcontent.state_text }}</text>
 							<view></view>
 						</view>
 						<view class="list-content">
@@ -258,7 +258,7 @@
 						left: 0;
 					}
 					.list-content{
-						.states{
+						.statesword{
 							position: relative;
 							left: 50rpx;
 							&::before{
@@ -271,6 +271,38 @@
 								width: 53rpx;
 								height: 53rpx;
 								background-image: url(../../../static/icon/6833.png);
+								background-size: 100% 100%;
+							}
+						}
+						.stateswait{
+							position: relative;
+							left: 50rpx;
+							&::before{
+								content: '';
+								display: inline-block;
+								position: absolute;
+								top: 50%;
+								left: -50rpx;
+								transform: translateY(-50%);
+								width: 53rpx;
+								height: 53rpx;
+								background-image: url(../../../static/icon/6837.png);
+								background-size: 100% 100%;
+							}
+						}
+						.statesout{
+							position: relative;
+							left: 50rpx;
+							&::before{
+								content: '';
+								display: inline-block;
+								position: absolute;
+								top: 50%;
+								left: -50rpx;
+								transform: translateY(-50%);
+								width: 53rpx;
+								height: 53rpx;
+								background-image: url(../../../static/icon/6832.png);
 								background-size: 100% 100%;
 							}
 						}

@@ -14,27 +14,44 @@
 			<text>编号{{ SensorBase.device_id }}</text>
 			<text>型号：{{ SensorBase.class_name }}</text>
 			<view class="states">
-				<image src="../../../static/icon/6833.png" mode=""></image>
+				<image v-if="SensorBase.state_text == '工作中'" src="../../../static/icon/6833.png" mode=""></image>
+				<image v-if="SensorBase.state_text == '待激活'" src="../../../static/icon/6837.png" mode=""></image>
+				<image v-if="SensorBase.state_text == '已离线'" src="../../../static/icon/6832.png" mode=""></image>
 				<text>{{ SensorBase.state_text }}</text>
 			</view>
 		</view>
 
 		<view class="detail">
 			<view class="probe-list-box">
-				<view class="box-left">
-					<view class="box-left-color" :style="{ width: SensorBase.power_number+'%' }"></view>
+				<view class="box-left" :class="SensorBase.power_number <= $store.state.electric&&SensorBase.state_text=='工作中' ? 'box-left-red' : ''">
+					<view
+						:class="{ 'box-left-color': SensorBase.power_number > $store.state.electric, red: SensorBase.power_number <= $store.state.electric&&SensorBase.state_text=='工作中' }"
+						:style="{ width: SensorBase.power_number + '%' }"
+					></view>
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
-					<text class="num">{{ SensorBase.power_number }}%</text>
+					<text class="num">{{ SensorBase.state_text=='工作中'?(SensorBase.power_number+'%'):'- - -' }}</text>
 				</view>
-				<view class="box-right">
+				<view
+					class="box-right"
+					:class="{
+						'box-right-blue': SensorBase.now_temperature <= $store.state.temperatureyellow && SensorBase.state_text == '工作中',
+						'box-right-yellow':
+							SensorBase.now_temperature <= $store.state.temperaturered &&
+							SensorBase.now_temperature > $store.state.temperatureyellow &&
+							SensorBase.state_text == '工作中',
+						'box-right-red': SensorBase.now_temperature > $store.state.temperaturered && SensorBase.state_text == '工作中',
+						'electric-left-no': SensorBase.state_text == '已离线',
+						'electric-left-lixian': SensorBase.state_text == '待激活'
+					}"
+				>
 					<image src="../../../static/icon/6823.png" mode=""></image>
 					<text>温度</text>
-					<text class="num">{{ SensorBase.now_temperature }}℃</text>
+					<text class="num">{{ SensorBase.state_text=='工作中'?(SensorBase.now_temperature+'℃'):'- - -' }}</text>
 				</view>
 			</view>
 			<view class="box-mid">
-				<view class="top">
+				<view class="top" v-if="SensorBase.tower_position">
 					<text>安装位置</text>
 					<text>{{ SensorBase.tower_position }}</text>
 				</view>
@@ -57,7 +74,9 @@
 					<view class="midcalendar">
 						<image src="../../../static/icon/day.png" mode=""></image>
 						<text>
-							{{ selectedYear }}-{{ selectedMonth + 1 < 10 ? '0' + (selectedMonth + 1) : selectedMonth + 1 }}-{{ selectedDate < 10 ? '0' + selectedDate : selectedDate }}
+							{{ selectedYear }}-{{ selectedMonth + 1 < 10 ? '0' + (selectedMonth + 1) : selectedMonth + 1 }}-{{
+								selectedDate < 10 ? '0' + selectedDate : selectedDate
+							}}
 						</text>
 					</view>
 					<view class="btnright" @click="handleNextMonth"><image src="../../../static/icon/139211.png" mode=""></image></view>
@@ -80,16 +99,30 @@
 						v-for="(item, index) in timetemperature"
 						:key="index"
 					>
-						<text class="leftbord" :class="{ textwhite: item.record_value < 37, textorigin: item.record_value >= 37 && item.record_value < 50, textred: item.record_value >= 50 }">{{ item.time_cycle }}</text>
-						<text :class="{ textwhite: item.record_value < 37, textorigin: item.record_value >= 37 && item.record_value < 50, textred: item.record_value >= 50 }">{{ item.record_value }}</text>
+						<text
+							class="leftbord"
+							:class="{ textwhite: item.record_value < 37, textorigin: item.record_value >= 37 && item.record_value < 50, textred: item.record_value >= 50 }"
+						>
+							{{ item.time_cycle }}
+						</text>
+						<text :class="{ textwhite: item.record_value < 37, textorigin: item.record_value >= 37 && item.record_value < 50, textred: item.record_value >= 50 }">
+							{{ item.record_value }}
+						</text>
 						<view class="bordbot"></view>
 					</view>
 				</view>
-				
+
 				<view class="charts-box" v-else>
-				  <qiun-data-charts type="line" canvasId="scrolllineid" :opts="{enableScroll:true,xAxis:{scrollShow:true,itemCount:6,disableGrid:true}}" :chartData="chartsDataLine4" :ontouch="true" :canvas2d="true"/>
+					<qiun-data-charts
+						type="line"
+						canvasId="scrolllineid"
+						:opts="{ enableScroll: true, xAxis: { scrollShow: true, itemCount: 6, disableGrid: true } }"
+						:chartData="chartsDataLine4"
+						:ontouch="true"
+						:canvas2d="true"
+					/>
 				</view>
-				
+
 				<image class="botimg" src="../../../static/icon/15.png" mode=""></image>
 			</view>
 		</view>
@@ -100,7 +133,7 @@
 export default {
 	data() {
 		return {
-			id: "",
+			id: '',
 			SensorBase: {},
 			active: '数据',
 			checked: false,
@@ -108,68 +141,71 @@ export default {
 			selectedMonth: new Date().getMonth(),
 			selectedDate: new Date().getDate(),
 			chartsDataLine4: {
-					"categories": [],
-					"series": [{
-						"name": "温度",
-						"data": []
-					}]
-				},
+				categories: [],
+				series: [
+					{
+						name: '温度',
+						data: []
+					}
+				]
+			},
 			optiondata: ['数据', '图表'],
 			timetemperature: []
 		};
 	},
 	created() {},
-	computed: {
-	},
+	computed: {},
 	onLoad(option) {
-		this.id = option.id
-		this.$api.postapi('/api/Sensor/selSensorDetail',{id:this.id,loginId:uni.getStorageSync('loginId')}).then(res => {
-			console.log(res)
-			this.SensorBase = res.data.data
-		})
+		this.id = option.id;
+		this.$api.postapi('/api/Sensor/selSensorDetail', { id: this.id, loginId: uni.getStorageSync('loginId') }).then(res => {
+			// console.log(res);
+			this.SensorBase = res.data.data;
+		});
 		// let year = new Date().getTime((this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDate))
-		this.temp_records()
-		
+		this.temp_records();
 	},
 	methods: {
-		temp_records(id){
-			let year = this.selectedYear+'-'+(this.selectedMonth+1)+'-'+this.selectedDate
-			this.$api.postapi('/api/Sensor/sel_temp_records',{
-				id:this.id,
-				date: year,
-				limit:4
-			}).then(res => {
-				// console.log(res)
-				if(res.data.code==0){
-					this.timetemperature = []
-					this.chartsDataLine4 = {
-						"categories": [],
-						"series": [{
-							"name": "温度",
-							"data": []
-						}]
+		temp_records(id) {
+			let year = this.selectedYear + '-' + (this.selectedMonth + 1) + '-' + this.selectedDate;
+			this.$api
+				.postapi('/api/Sensor/sel_temp_records', {
+					id: this.id,
+					date: year,
+					limit: 20
+				})
+				.then(res => {
+					console.log(res)
+					if (res.data.code == 0) {
+						this.timetemperature = [];
+						this.chartsDataLine4 = {
+							categories: [],
+							series: [
+								{
+									name: '温度',
+									data: []
+								}
+							]
+						};
+						return false;
 					}
-					return false
-				}
-				this.timetemperature = res.data.data
-				for(var i = 0;i < this.timetemperature.length;i ++){
-					this.chartsDataLine4.categories.push(this.timetemperature[i].time_cycle)
-					this.chartsDataLine4.series[0].data.push(this.timetemperature[i].record_value)
-					console.log(this.chartsDataLine4)
-				}
-				
-			})
-			this.$forceUpdate()
+					this.timetemperature = res.data.data;
+					for (var i = 0; i < this.timetemperature.length; i++) {
+						this.chartsDataLine4.categories.push(this.timetemperature[i].time_cycle);
+						this.chartsDataLine4.series[0].data.push(this.timetemperature[i].record_value);
+						console.log(this.chartsDataLine4);
+					}
+				});
+			this.$forceUpdate();
 		},
-		record(){
+		record() {
 			uni.navigateTo({
-				url:"../AlarmLog/AlarmLog?id="+this.SensorBase.id
-			})
+				url: '../AlarmLog/AlarmLog?id=' + this.SensorBase.id
+			});
 		},
-		jumpdetail(){
+		jumpdetail() {
 			uni.navigateTo({
-				url:"../probedetailinfo/probedetailinfo?id="+this.id
-			})
+				url: '../probedetailinfo/probedetailinfo?id=' + this.id
+			});
 		},
 		option(item) {
 			this.active = item;
@@ -189,14 +225,14 @@ export default {
 			}
 			this.selectedDate--;
 			if (this.selectedDate < 1) {
-				this.selectedMonth--; 
+				this.selectedMonth--;
 				if (this.selectedMonth < 0) {
 					this.selectedYear--;
 					this.selectedMonth = 11;
 				}
 				this.selectedDate = daysInMonth[this.selectedMonth];
 			}
-			this.temp_records()
+			this.temp_records();
 		},
 		handleNextMonth() {
 			let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -205,14 +241,14 @@ export default {
 			}
 			this.selectedDate++;
 			if (this.selectedDate > daysInMonth[this.selectedMonth]) {
-				this.selectedMonth++; 
+				this.selectedMonth++;
 				if (this.selectedMonth > 11) {
 					this.selectedYear++;
 					this.selectedMonth = 0;
 				}
 				this.selectedDate = 1;
 			}
-			this.temp_records()
+			this.temp_records();
 		}
 	}
 };
@@ -298,8 +334,8 @@ export default {
 		margin-top: 28rpx;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		width: 145rpx;
+		justify-content: space-around;
+		width: 150rpx;
 		height: 50rpx;
 		background: rgba(2, 31, 75, 0.6);
 		border-radius: 23rpx;
@@ -340,18 +376,29 @@ export default {
 			position: relative;
 			display: flex;
 			align-items: center;
+			overflow: hidden;
 			justify-content: center;
 			background: rgba(214, 242, 255, 0.15);
 			border: 1rpx solid #5bc8cb;
 			box-sizing: border-box;
+			overflow: hidden;
 			.box-left-color {
 				position: absolute;
 				left: 0;
 				top: 0;
 				height: 92rpx;
-				border-radius: 14rpx;
+				border-radius: 0;
 				background: linear-gradient(90deg, #7fe57f 0%, #41c9fc 100%);
 				opacity: 0.5;
+			}
+			.red {
+				position: absolute;
+				left: 0;
+				top: 0;
+				height: 92rpx;
+				border-radius: 0;
+				opacity: 1;
+				background: linear-gradient(270deg, rgba(244, 67, 54, 0.9) 0%, rgba(112, 12, 12, 0.9) 100%);
 			}
 			image {
 				width: 50rpx;
@@ -373,6 +420,10 @@ export default {
 				z-index: 999;
 			}
 		}
+		.box-left-red {
+			background: rgba(244, 67, 54, 0.17);
+			border: 1rpx solid #f44336;
+		}
 		.box-right {
 			width: 317rpx;
 			height: 94rpx;
@@ -381,7 +432,6 @@ export default {
 			align-items: center;
 			justify-content: center;
 			box-sizing: border-box;
-			background: linear-gradient(180deg, rgba(255, 252, 230, 0.35) 0%, rgba(65, 201, 252, 0.35) 100%);
 			image {
 				width: 50rpx;
 				height: 50rpx;
@@ -401,6 +451,23 @@ export default {
 				color: #ffffff;
 				z-index: 999;
 			}
+		}
+		.box-right-blue {
+			background: linear-gradient(180deg, rgba(255, 252, 230, 0.35) 0%, rgba(65, 201, 252, 0.35) 100%);
+		}
+		.box-right-yellow {
+			background: linear-gradient(180deg, rgba(219, 229, 127, 0.7) 0%, #f86c10 100%);
+			opacity: 0.65;
+		}
+		.box-right-red {
+			background: linear-gradient(180deg, #f44336 0%, #710105 100%);
+			opacity: 0.9;
+		}
+		.electric-left-lixian {
+			background: rgba(214, 242, 255, 0.15);
+		}
+		.electric-left-no {
+			background: rgba(214, 242, 255, 0.2);
 		}
 	}
 	.box-mid {
@@ -557,7 +624,7 @@ export default {
 		.charts-box {
 			width: 100%;
 			height: 600rpx;
-			background: #FFFFFF;
+			background: #ffffff;
 		}
 		.toptitle {
 			width: 100%;

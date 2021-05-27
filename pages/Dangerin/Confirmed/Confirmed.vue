@@ -117,6 +117,7 @@
 		},
 		onShow() {
 			this.confirmed()
+			this.$store.state.people = {}
 		},
 		methods:{
 			confirmed(){

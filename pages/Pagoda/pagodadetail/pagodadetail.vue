@@ -37,7 +37,7 @@
 	
 		<view class="wrap">
 			<view v-if="active=='探头'" class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump(item.id)">
-				<view class="probe-list-box-top" :style="item.state == '已离线' ? 'opacity:0.4' : ''">
+				<view class="probe-list-box-top" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
 					<view class="box-top-left">
 						<image src="../../../static/icon/6834.png" mode=""></image>
 						<text>编号{{ item.device_id }}</text>
@@ -51,10 +51,10 @@
 						<text v-if="item.state_text=='待激活'">待激活</text>
 					</view>
 				</view>
-				<view class="electric" :style="item.state == 4 ? 'opacity:0.4' : ''">
+				<view class="electric" :style="item.state_text == 4 ? 'opacity:0.4' : ''">
 					<view
 						class="electric-left"
-						:class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state == '已离线','electric-left-lixian': item.state=='待激活' }"
+						:class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }"
 					>
 						<view class="electric-num-left" :class="{ blue: item.power_number > 30, red: item.power_number <= 30 }" :style="{ width: item.power_number + '%' }"></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
@@ -67,8 +67,8 @@
 							'electric-right-blue': item.now_temperature <= 30,
 							'electric-right-origin': item.now_temperature <= 50 && item.now_temperature > 30,
 							'electric-right-red': item.now_temperature > 50,
-							'electric-left-no': item.state == '已离线',
-							'electric-left-lixian': item.state=='待激活'
+							'electric-left-no': item.state_text == '已离线',
+							'electric-left-lixian': item.state_text=='待激活'
 						}"
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
@@ -76,7 +76,7 @@
 						<text class="num">{{ item.now_temperature?item.now_temperature+'%':'---' }}</text>
 					</view>
 				</view>
-				<text class="bot-text" :style="item.state == '已离线' ? 'opacity:0.4' : ''" v-if="item.tower_position">位置：{{ item.tower_position }}</text>
+				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''" v-if="item.tower_position">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
 			<view v-if="active=='中继器'" class="list" v-for="(item,indexes) in mylist" :key="indexes+10" @click="repeaterjump(item.id)">
@@ -86,9 +86,9 @@
 						<text>{{ item.repeater_id }}</text>
 					</view>
 					<view class="list-top-right">
-						<image v-if="item.state=='工作中'" src="../../../static/icon/6833.png" mode=""></image>
-						<image v-if="item.state=='待激活'" src="../../../static/icon/6837.png" mode=""></image>
-						<image v-if="item.state=='已离线'" src="../../../static/icon/6832.png" mode=""></image>
+						<image v-if="item.state_text=='工作中'" src="../../../static/icon/6833.png" mode=""></image>
+						<image v-if="item.state_text=='待激活'" src="../../../static/icon/6837.png" mode=""></image>
+						<image v-if="item.state_text=='已离线'" src="../../../static/icon/6832.png" mode=""></image>
 						<text>{{ item.state_text }}</text>
 					</view>
 				</view>

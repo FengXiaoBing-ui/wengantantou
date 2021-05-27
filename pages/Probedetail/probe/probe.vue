@@ -6,7 +6,7 @@
 				<view class="probe-list-box-top" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
 					<view class="box-top-left">
 						<image src="../../../static/icon/6834.png" mode=""></image>
-						<text>编号{{ item.device_id }}</text> 
+						<text>编号{{ item.device_id }}</text>
 					</view>
 					<view class="box-top-right">
 						<image v-if="item.state_text == '工作中'" src="../../../static/icon/6833.png" mode=""></image>
@@ -16,25 +16,37 @@
 					</view>
 				</view>
 				<view class="electric" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
-					<view class="electric-left" :class="{ 'electric-left-blue': item.power_number > $store.state.electric, 'electric-left-red': item.power_number <= $store.state.electric, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }">
-						<view class="electric-num-left" :class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }" :style="{ width: item.power_number + '%' }"></view>
+					<view
+						class="electric-left"
+						:class="{
+							'electric-left-blue': item.power_number > $store.state.electric&&item.state_text == '工作中',
+							'electric-left-red': item.power_number <= $store.state.electric&&item.state_text == '工作中',
+							'electric-left-no': item.state_text == '已离线',
+							'electric-left-lixian': item.state_text == '待激活'
+						}"
+					>
+						<view
+							class="electric-num-left"
+							:class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }"
+							:style="{ width: item.state_text == '工作中'?(item.power_number + '%'):0 }"
+						></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
-						<text class="num">{{ item.state_text == '工作中'?item.power_number+'%':'---' }}</text>
+						<text class="num">{{ item.state_text == '工作中' ? item.power_number + '%' : '---' }}</text>
 					</view>
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.now_temperature <= $store.state.temperatureyellow,
-							'electric-right-origin': item.now_temperature <= $store.state.temperaturered && item.now_temperature > $store.state.temperatureyellow,
-							'electric-right-red': item.now_temperature > $store.state.temperaturered,
+							'electric-right-blue': item.now_temperature <= $store.state.temperatureyellow&&item.state_text == '工作中',
+							'electric-right-origin': item.now_temperature <= $store.state.temperaturered && item.now_temperature > $store.state.temperatureyellow&&item.state_text == '工作中',
+							'electric-right-red': item.now_temperature > $store.state.temperaturered&&item.state_text == '工作中',
 							'electric-left-no': item.state_text == '已离线',
-							'electric-left-lixian': item.state_text=='待激活'
+							'electric-left-lixian': item.state_text == '待激活'
 						}"
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.state_text == '工作中'?item.now_temperature+'%':'---' }}</text>
+						<text class="num">{{ item.state_text == '工作中' ? (item.now_temperature + '℃') : '---' }}</text>
 					</view>
 				</view>
 				<text class="bot-text" v-if="item.state_text != '待激活'" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
@@ -42,7 +54,7 @@
 			</view>
 			<uni-load-more :status="more"></uni-load-more>
 		</view>
-		
+
 		<image class="fixedimg" src="../../../static/icon/13.png" mode=""></image>
 	</view>
 </template>
@@ -52,24 +64,30 @@ export default {
 	data() {
 		return {
 			limit: 8,
-			more: "more",
+			more: 'more',
 			keyword: '',
 			probelist: [],
 			obj: {}
 		};
 	},
+	onBackPress() {
+		uni.switchTab({
+			url:"../../index/index"
+		})
+		return true
+	},
 	onReachBottom() {
-		this.more = "loading"
-		this.limit += 8
-		if(JSON.stringify(this.obj)=="{}"){
-			this.queryprobelist()
-		}else{
-			this.screen(this.obj)
+		this.more = 'loading';
+		this.limit += 8;
+		if (JSON.stringify(this.obj) == '{}') {
+			this.queryprobelist();
+		} else {
+			this.screen(this.obj);
 		}
 	},
 	onLoad(option) {
-		if(option.obj!=undefined){
-			let obj = JSON.parse(option.obj)
+		if (option.obj != undefined) {
+			let obj = JSON.parse(option.obj);
 			// if(obj.keyword==""){
 			// 	delete obj.keyword
 			// }
@@ -79,74 +97,69 @@ export default {
 			// if(obj.tagan_id==""){
 			// 	delete obj.tagan_id
 			// }
-			this.obj = obj
+			this.obj = obj;
 			setTimeout(() => {
-				this.screen(obj)
-			},0)
-			
-		}else{
-			this.queryprobelist()
+				this.screen(obj);
+			}, 0);
+		} else {
+			this.queryprobelist();
 		}
 	},
-	created() {
-		
-	},
+	created() {},
 	methods: {
-		serchdata(keyword){
-			this.keyword = keyword
-			this.queryprobelist()
+		serchdata(keyword) {
+			this.keyword = keyword;
+			this.queryprobelist();
 		},
-		screen(obj){
-			this.$api.postapi('/api/Sensor/sensor_screen',obj).then(res => {
-				if(this.limit>=res.data.count){
-					this.more = "nomore"
+		screen(obj) {
+			this.$api.postapi('/api/Sensor/sensor_screen', obj).then(res => {
+				if (this.limit >= res.data.count) {
+					this.more = 'nomore';
 				}
-				console.log(456,res)
-				if(res.data.code==0){
-					this.more = "nomore"
-					return false
-				}else{
-					this.probelist = res.data.data
+				console.log(456, res);
+				if (res.data.code == 0) {
+					this.more = 'nomore';
+					return false;
+				} else {
+					this.probelist = res.data.data;
 				}
-				
-			})
-		},
-		queryprobelist(){
-			this.$api.postapi('/api/Sensor/sel_all_sensor',{limit:this.limit,keyword:this.keyword}).then(res => {
-				if(this.limit>=res.data.count){
-					this.more = "nomore"
-				}
-				console.log(this.more)
-				this.probelist = res.data.data
-			})
-		},
-		func(){
-			uni.scanCode({
-			    success: function (res) {
-			        console.log('条码类型：' + res.scanType);
-			        console.log('条码内容：' + res.result);
-					let obj = JSON.parse(res.result)
-					if(obj.type==0){
-						uni.navigateTo({
-							url:"../../scan/scanprobedetail/scanprobedetail?id="+obj.id
-						})
-					}else{
-						uni.navigateTo({
-							url:"../../scan/scanRepeater/scanRepeater?id="+obj.id
-						})
-					}
-			    }
 			});
 		},
-		jump(id){
-			uni.navigateTo({
-				url:"../probeDetail/probeDetail?id="+id
-			})
+		queryprobelist() {
+			this.$api.postapi('/api/Sensor/sel_all_sensor', { limit: this.limit, keyword: this.keyword }).then(res => {
+				if (this.limit >= res.data.count) {
+					this.more = 'nomore';
+				}
+				this.probelist = res.data.data;
+			});
 		},
-		screenjump(){
+		func() {
+			uni.scanCode({
+				success: function(res) {
+					console.log('条码类型：' + res.scanType);
+					console.log('条码内容：' + res.result);
+					let obj = JSON.parse(res.result);
+					if (obj.type == 0) {
+						uni.navigateTo({
+							url: '../../scan/scanprobedetail/scanprobedetail?id=' + obj.id
+						});
+					} else {
+						uni.navigateTo({
+							url: '../../scan/scanRepeater/scanRepeater?id=' + obj.id
+						});
+					}
+				}
+			});
+		},
+		jump(id) {
 			uni.navigateTo({
-				url:"../screen/screen"
-			})
+				url: '../probeDetail/probeDetail?id=' + id
+			});
+		},
+		screenjump() {
+			uni.navigateTo({
+				url: '../screen/screen'
+			});
 		}
 	}
 };
@@ -157,7 +170,7 @@ export default {
 	background: #033785;
 	z-index: -999;
 	margin-top: 148rpx;
-	.fixedimg{
+	.fixedimg {
 		width: 100%;
 		position: fixed;
 		bottom: 0;
@@ -168,12 +181,12 @@ export default {
 		margin-top: 268rpx;
 		padding: 20rpx 36rpx;
 		box-sizing: border-box;
-		.nodata{
+		.nodata {
 			position: fixed;
 			left: 50%;
 			top: 50%;
-			color: #FFFFFF;
-			transform: translate(-50%,-50%);
+			color: #ffffff;
+			transform: translate(-50%, -50%);
 		}
 		.probe-list-box {
 			width: 100%;
@@ -228,7 +241,7 @@ export default {
 				display: flex;
 				justify-content: space-evenly;
 				align-items: center;
-				.electric-left-lixian{
+				.electric-left-lixian {
 					background: rgba(214, 242, 255, 0.15);
 				}
 				.electric-left-no {
@@ -283,6 +296,7 @@ export default {
 					opacity: 1;
 					border-radius: 14rpx;
 					position: relative;
+					overflow: hidden;
 					display: flex;
 					align-items: center;
 					justify-content: center;
@@ -312,7 +326,7 @@ export default {
 						left: 0;
 						top: 0;
 						height: 90rpx;
-						border-radius: 14rpx;
+						border-radius: 14rpx 0 0 14rpx;
 					}
 					.blue {
 						background: linear-gradient(90deg, rgba(127, 229, 127, 0.5) 0%, rgba(65, 201, 252, 0.5) 100%);

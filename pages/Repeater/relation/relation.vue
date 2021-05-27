@@ -43,7 +43,7 @@
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.now_temperature?item.now_temperature+'%':'---' }}</text>
+						<text class="num">{{ item.now_temperature?item.now_temperature+'℃':'---' }}</text>
 					</view>
 				</view>
 				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>

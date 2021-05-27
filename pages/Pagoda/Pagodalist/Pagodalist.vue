@@ -183,7 +183,7 @@
 	position: fixed;
 	top: 0;
 	width: 100%;
-	height: 225rpx;
+	height: 260rpx;
 	background-image: url(../../../static/icon/6972.png);
 	background-size: 100% 100%;
 	z-index: 9;
@@ -234,7 +234,7 @@
 }
 .wrap{
 	position: relative;
-	top: 225rpx;
+	top: 245rpx;
 	width: 100%;
 	padding: 24rpx 34rpx;
 	box-sizing: border-box;
