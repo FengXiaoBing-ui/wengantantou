@@ -4,9 +4,9 @@
 			<image class="topimg" src="../../static/icon/6791.png" mode=""></image>
 			<image class="titleimg" src="../../static/icon/title.png" mode=""></image>
 			<view class="serch">
-				<view class="serch_left">
+				<view class="serch_left" @click="serchall">
 					<image src="../../static/icon/serch.png" mode=""></image>
-					<input type="text" value="" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+					<input type="text" disabled="disabled" value="" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
 				</view>
 				<view class="serch_right" @click="Scancode">
 					<image src="../../static/icon/scan.png" mode=""></image>
@@ -114,6 +114,11 @@
 			this.waitcount = this.$store.state.count.task_count
 		},
 		methods: {
+			serchall(){
+				uni.navigateTo({
+					url:"../serchall/serchall"
+				})
+			},
 			Scancode(){
 				uni.scanCode({
 				    success: function (res) {

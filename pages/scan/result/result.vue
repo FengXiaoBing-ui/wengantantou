@@ -32,12 +32,12 @@
 		methods:{
 			open(){
 				uni.redirectTo({
-					url:"../choice/choice"
+					url:"../../Probedetail/probe/probe"
 				})
 			},
 			back(){
 				uni.redirectTo({
-					url:"../choice/choice"
+					url:"../../Probedetail/probe/probe"
 				})
 			}
 		}

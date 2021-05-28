@@ -120,6 +120,7 @@
 						:chartData="chartsDataLine4"
 						:ontouch="true"
 						:canvas2d="true"
+						@scrollRight="scrollRight"
 					/>
 				</view>
 
@@ -134,6 +135,8 @@ export default {
 	data() {
 		return {
 			id: '',
+			limit: 8,
+			page: 1,
 			SensorBase: {},
 			active: '数据',
 			checked: false,
@@ -150,10 +153,17 @@ export default {
 				]
 			},
 			optiondata: ['数据', '图表'],
-			timetemperature: []
+			timetemperature: [],
+			debouncefunc: "",
+			count: 0,
+			num:1,
 		};
 	},
-	created() {},
+	created() {
+	},
+	onShow() {
+		
+	},
 	computed: {},
 	onLoad(option) {
 		this.id = option.id;
@@ -165,13 +175,16 @@ export default {
 		this.temp_records();
 	},
 	methods: {
+		
+		scrollRight(e){
+			
+		},
 		temp_records(id) {
 			let year = this.selectedYear + '-' + (this.selectedMonth + 1) + '-' + this.selectedDate;
 			this.$api
-				.postapi('/api/Sensor/sel_temp_records', {
+				.postapi('/api/Sensor/selAllTempRecord', {
 					id: this.id,
-					date: year,
-					limit: 20
+					date: year
 				})
 				.then(res => {
 					console.log(res)
@@ -189,13 +202,17 @@ export default {
 						return false;
 					}
 					this.timetemperature = res.data.data;
+					let arr = []
+					let arrtwo = []
 					for (var i = 0; i < this.timetemperature.length; i++) {
-						this.chartsDataLine4.categories.push(this.timetemperature[i].time_cycle);
-						this.chartsDataLine4.series[0].data.push(this.timetemperature[i].record_value);
-						console.log(this.chartsDataLine4);
+						arr.push(this.timetemperature[i].time_cycle);
+						arrtwo.push(this.timetemperature[i].record_value);
 					}
+					this.chartsDataLine4.categories = arr
+					this.chartsDataLine4.series[0].data = arrtwo
+					this.$forceUpdate();
 				});
-			this.$forceUpdate();
+			
 		},
 		record() {
 			uni.navigateTo({
@@ -616,7 +633,7 @@ export default {
 	.box-bot {
 		margin-top: 20rpx;
 		width: 100%;
-		height: 903rpx;
+		min-height: 900rpx;
 		border: 2px solid rgba(90, 232, 255, 0.5);
 		background: linear-gradient(180deg, rgba(65, 201, 252, 0.5) 0%, rgba(28, 84, 184, 0.5) 100%);
 		box-shadow: 2px 4px 10px rgba(90, 232, 255, 0.8);

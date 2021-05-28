@@ -45,7 +45,7 @@
 					</view>
 					<view class="list-content">
 						<text>超温温度</text>
-						<text>{{ listcontent.early_warn_upper }}℃</text>
+						<text>{{ listcontent.over_temperature }}℃</text>
 						<view></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
