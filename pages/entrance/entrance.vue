@@ -25,7 +25,7 @@
 				return windowheight
 			}
 		},
-		created() {
+		onShow() {
 			if(uni.getStorageSync('entrance')){
 				uni.redirectTo({
 					url:"../login/login"

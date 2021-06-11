@@ -1,7 +1,7 @@
 <script>
 export default {
 	onLaunch: function() {
-		console.log('App Launch');
+		// console.log('App Launch');
 		// uni.subscribePush({
 		// 	provider: "unipush",
   //           success: function(res) {
@@ -11,6 +11,31 @@ export default {
 		// 		console.log(err)
 		// 	}
 		// })
+		plus.push.addEventListener("click",function(message){
+			
+		})
+		plus.push.addEventListener('receive',function(message){
+			console.log(222,message)
+		})
+		const clientInfo = plus.push.getClientInfo()
+		console.log(12,clientInfo)
+		  // const _self = this;
+		  // //监听系统通知栏消息点击事件  
+		  // plus.push.addEventListener('click', function(message) { 
+		  //  //处理点击消息的业务逻辑代码
+		  //   console.log(message);
+		  //       plus.nativeUI.toast('click:'+JSON.stringify(message)); 
+		  //   //plus.nativeUI.toast('push click');  
+		  //   _self._handlePush(message);  
+		  // }, false);  
+		  // //监听接收透传消息事件  
+		  // plus.push.addEventListener('receive', function(message) {  
+		  //   console.log(message);
+		  //       plus.nativeUI.toast('receive:'+JSON.stringify(message)); 
+		  //   //处理透传消息的业务逻辑代码  
+		  //   //plus.nativeUI.toast('push receive');  
+		  //   _self._handlePush(message);  
+		  // }, false);
 	},
 	onShow: function() {
 		console.log('App Show');

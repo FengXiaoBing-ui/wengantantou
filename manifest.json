@@ -1,5 +1,5 @@
 {
-    "name" : "appdemo",
+    "name" : "温感探头",
     "appid" : "__UNI__2DB4C47",
     "description" : "",
     "versionName" : "1.0.0",
@@ -7,6 +7,7 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
+        "schemes" : "runtest",
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -20,7 +21,8 @@
         "modules" : {
             "Bluetooth" : {},
             "Maps" : {},
-            "Geolocation" : {}
+            "Geolocation" : {},
+            "Push" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -55,8 +57,8 @@
                 "ad" : {},
                 "maps" : {
                     "amap" : {
-                        "appkey_ios" : "2256ff3a9699df46386eef47",
-                        "appkey_android" : "2256ff3a9699df46386eef47"
+                        "appkey_ios" : "3ee959ed97e1957d912320ef604cac84",
+                        "appkey_android" : "3ee959ed97e1957d912320ef604cac84"
                     }
                 },
                 "push" : {
@@ -65,8 +67,8 @@
                 "geolocation" : {
                     "amap" : {
                         "__platform__" : [ "ios", "android" ],
-                        "appkey_ios" : "2256ff3a9699df46386eef47",
-                        "appkey_android" : "2256ff3a9699df46386eef47"
+                        "appkey_ios" : "3ee959ed97e1957d912320ef604cac84",
+                        "appkey_android" : "3ee959ed97e1957d912320ef604cac84"
                     }
                 },
                 "share" : {}

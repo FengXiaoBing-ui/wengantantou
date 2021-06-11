@@ -19,7 +19,7 @@
 						<view class="imgborder"></view>
 					</view>
 					<view class="righttext">
-						<text>告警信息</text>
+						<text>我的告警</text>
 						<text>{{ count }}</text>
 					</view>
 				</view>
@@ -93,10 +93,17 @@
 			// return true
 		},
 		onShow() {
+			if(!uni.getStorageSync('entrance')){
+				uni.redirectTo({
+					url:"../entrance/entrance"
+				})
+				return false
+			}
 			if(!uni.getStorageSync('loginId')){
 				uni.redirectTo({
 					url:"../login/login"
 				})
+				return false
 			}
 			uni.hideTabBar()
 			this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {

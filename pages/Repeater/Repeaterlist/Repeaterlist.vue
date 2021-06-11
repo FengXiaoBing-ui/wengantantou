@@ -2,7 +2,7 @@
 	<view class="index">
 		<headerTab title="中继器列表" @serchdata="serchdata" :screen="true" path="/screen/screen" @func="func"></headerTab>
 		<view class="wrap">
-			<view class="list" v-for="(item,index) in list" :key="index" @click="jump(item.id)">
+			<view class="list" :class="item.state_text=='已离线'?'listopacity':''" v-for="(item,index) in list" :key="index" @click="jump(item.id)">
 				<view class="list-top">
 					<view class="list-top-left">
 						<image src="../../../static/icon/wifi.png" mode=""></image>
@@ -156,6 +156,9 @@
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%,-50%);
+		}
+		.listopacity{
+			opacity: 0.5;
 		}
 		.list{
 			margin: 20rpx 0;

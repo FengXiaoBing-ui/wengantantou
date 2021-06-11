@@ -47,8 +47,8 @@
 					})
 					return false
 				}
-				this.$api.postapi('/api/user/upd_new_pwd',{loginId:uni.getStorageSync('loginid'),pwd: this.newpassword}).then(res => {
-					console.log(res)
+				this.$api.postapi('/api/user/upd_new_pwd',{loginId:uni.getStorageSync('loginId'),pwd: this.newpassword}).then(res => {
+					
 					if(res.data.code==1){
 						uni.navigateTo({
 							url:"../modifycompleted/modifycompleted"

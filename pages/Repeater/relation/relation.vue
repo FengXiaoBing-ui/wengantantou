@@ -24,33 +24,42 @@
 				<view class="electric" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
 					<view
 						class="electric-left"
-						:class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }"
+						:class="{
+							'electric-left-blue': item.power_number > $store.state.electric&&item.state_text == '工作中',
+							'electric-left-red': item.power_number <= $store.state.electric&&item.state_text == '工作中',
+							'electric-left-no': item.state_text == '已离线',
+							'electric-left-lixian': item.state_text == '待激活'
+						}"
 					>
-						<view class="electric-num-left" :class="{ blue: item.power_number > 30, red: item.power_number <= 30 }" :style="{ width: item.power_number + '%' }"></view>
+						<view
+							class="electric-num-left"
+							:class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }"
+							:style="{ width: item.state_text == '工作中'?(item.power_number + '%'):0 }"
+						></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
-						<text class="num">{{ item.power_number?item.power_number+'%':'---' }}</text>
+						<text class="num">{{ item.state_text == '工作中' ? item.power_number + '%' : '---' }}</text>
 					</view>
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.now_temperature <= 30,
-							'electric-right-origin': item.now_temperature <= 50 && item.now_temperature > 30,
-							'electric-right-red': item.now_temperature > 50,
+							'electric-right-blue': item.now_temperature <= $store.state.temperatureyellow&&item.state_text == '工作中',
+							'electric-right-origin': item.now_temperature <= $store.state.temperaturered && item.now_temperature > $store.state.temperatureyellow&&item.state_text == '工作中',
+							'electric-right-red': item.now_temperature > $store.state.temperaturered&&item.state_text == '工作中',
 							'electric-left-no': item.state_text == '已离线',
-							'electric-left-lixian': item.state_text=='待激活'
+							'electric-left-lixian': item.state_text == '待激活'
 						}"
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.now_temperature?item.now_temperature+'℃':'---' }}</text>
+						<text class="num">{{ item.state_text == '工作中' ? (item.now_temperature + '℃') : '---' }}</text>
 					</view>
 				</view>
-				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
+				<text class="bot-text" v-if="item.state_text != '待激活'" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
 			</view>
+			<uni-load-more :status="more"></uni-load-more>
 		</view>
-		<uni-load-more :status="more" :contentText="{contentrefresh:'正在加载中...'}"></uni-load-more>
 		<image class="fixedimg" src="../../../static/icon/13.png" mode=""></image>
 	</view>
 </template>
@@ -78,7 +87,8 @@ export default {
 					text: "已离线"
 				},
 			],
-			more: "noMore",
+			more: "more",
+			limit: 8,
 			keyword: '',
 			probelist: [],
 			active: "全部",
@@ -86,17 +96,22 @@ export default {
 		};
 	},
 	onReachBottom() {
+		this.limit += 6
 		this.more = "loading"
+		this.relation()
 	},
 	onLoad(option) {
 		this.repeater_id = option.id
+		this.count = option.num
 		this.relation()
 	},
 	methods: {
 		relation(){
-			this.$api.postapi('/api/repeater/selSensorByRepaterId',{repeater_id:this.repeater_id,state:this.state}).then(res => {
+			this.$api.postapi('/api/repeater/selSensorByRepaterId',{repeater_id:this.repeater_id,state:this.state,limit:this.limit}).then(res => {
 				console.log(res)
-				this.count = res.data.count
+				if(this.limit>=res.data.count){
+					this.more = "nomore"
+				}
 				this.probelist = res.data.data
 			})
 		},
@@ -182,15 +197,23 @@ export default {
 		z-index: -1;
 	}
 	.probe-list {
-		margin-top: 260rpx;
+		margin-top: 268rpx;
 		padding: 20rpx 36rpx;
 		box-sizing: border-box;
+		.nodata {
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			color: #ffffff;
+			transform: translate(-50%, -50%);
+		}
 		.probe-list-box {
 			width: 100%;
 			border: 2rpx solid rgba(90, 232, 255, 0.7);
 			background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
 			box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
 			margin-bottom: 20rpx;
+			padding-bottom: 20rpx;
 			position: relative;
 			.probe-list-box-top {
 				width: 100%;
@@ -237,7 +260,7 @@ export default {
 				display: flex;
 				justify-content: space-evenly;
 				align-items: center;
-				.electric-left-lixian{
+				.electric-left-lixian {
 					background: rgba(214, 242, 255, 0.15);
 				}
 				.electric-left-no {
@@ -292,6 +315,7 @@ export default {
 					opacity: 1;
 					border-radius: 14rpx;
 					position: relative;
+					overflow: hidden;
 					display: flex;
 					align-items: center;
 					justify-content: center;
@@ -321,7 +345,7 @@ export default {
 						left: 0;
 						top: 0;
 						height: 90rpx;
-						border-radius: 14rpx 0px 0px 14rpx;
+						border-radius: 14rpx 0 0 14rpx;
 					}
 					.blue {
 						background: linear-gradient(90deg, rgba(127, 229, 127, 0.5) 0%, rgba(65, 201, 252, 0.5) 100%);
@@ -339,7 +363,6 @@ export default {
 				font-family: Source Han Sans CN;
 				font-weight: 400;
 				margin-top: 13rpx;
-				line-height: 40rpx;
 				color: #f6b532;
 				box-sizing: border-box;
 				overflow: hidden;
@@ -349,6 +372,7 @@ export default {
 			.box-foot {
 				position: absolute;
 				left: 50%;
+				bottom: -2rpx;
 				transform: translateX(-50%);
 				width: 114rpx;
 				height: 4rpx;

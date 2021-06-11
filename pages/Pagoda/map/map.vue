@@ -1,12 +1,20 @@
 <template>
 	<view>
 		<headerTab title="详细位置"></headerTab>
-		<map :style="{ width: '100%', height: appheight + 'px' }" @tap="tap" :latitude="latitude" :enable-building="true" :longitude="longitude" :markers="covers" :show-compass="true"></map>
+		<map
+			:style="{ width: '100%', height: appheight + 'px' }"
+			@click="tap"
+			:latitude="latitude"
+			:enable-building="true"
+			:longitude="longitude"
+			:markers="covers"
+			:show-compass="true"
+		></map>
 	</view>
 </template>
 
 <script>
-	import Map from '@/js_sdk/fx-openMap/openMap.js'
+import Map from '../../../js_sdk/fx-openMap/openMap.js';
 export default {
 	data() {
 		return {
@@ -19,48 +27,77 @@ export default {
 			options: {}
 		};
 	},
-	created() {
-		
-	},
+	created() {},
 	onLoad(option) {
 		uni.request({
-			url:"https://restapi.amap.com/v3/geocode/geo?parameters",
-			method:"GET",
-			data:{
-				key:'5fc47fa889ee50c06189c4f9326145f5',
+			url: 'https://restapi.amap.com/v3/geocode/geo?parameters',
+			method: 'GET',
+			data: {
+				key: '5fc47fa889ee50c06189c4f9326145f5',
 				address: option.loction
 			},
-			success:(res) => {
-				console.log(res)
-				this.location = res.data.geocodes[0].location
-				this.location = this.location.split(',')
-				this.latitude = this.location[1]
-				this.longitude = this.location[0]
+			success: res => {
+				console.log('ojbk',res);
+				this.location = res.data.geocodes[0].location;
+				this.location = this.location.split(',');
+				this.latitude = this.location[1];
+				this.longitude = this.location[0];
+				plus.geolocation.getCurrentPosition( (position) => {
+					console.log(79864563,position)
+				},(e) => {
+					console.log(e)
+				})
 				uni.getLocation({
 					success: (response) => {
+						console.log(response)
 						this.options.origin = {
 							latitude: response.latitude,
 							longitude: response.longitude,
-							name:"起点"
-						}
+							name: '起点'
+						};
 						this.options.destination = {
 							latitude: this.latitude,
 							longitude: this.longitude,
-							name:"终点"
-						}
-						this.options.mode = "drive"
-						this.options.mapId = "map"
-						Map.routePlan(this.options)
+							name: '终点'
+						};
+						this.options.mode = 'drive';
+						this.options.mapId = 'map';
+						console.log(this.options.mode)
+						let amapuri = "amapuri://route/plan/?sourceApplication=uniapp&slat="+this.options.origin.latitude+"&slon="+this.options.origin.longitude+"&sname="+this.options.originName+"&dlat="+this.options.destination.latitude+"&dlon="+this.options.destination.longitude+"&dname="+this.options.destinationName+"&t=0";
+						let qqmapDefault =
+							'https://apis.map.qq.com/uri/v1/routeplan?type=drive&from=起点&fromcoord=' +
+							this.options.origin.latitude +
+							',' +
+							this.options.origin.longitude +
+							'&to=终点&tocoord=' +
+							this.options.destination.latitude +
+							',' +
+							this.options.destination.longitude +
+							'&policy=1';
+							Map.routePlan(this.options);
+						// window.location.href = encodeURI(amapuri);
+						// plus.runtime.openURL(encodeURI(qqmapDefault))
+						// plus.runtime.openURL(encodeURI(qqmapDefault),errorCB => {
+						// 	uni.showToast({
+						// 		title:errorCB
+						// 	})
+						// },identity => {
+						// 	uni.showToast({
+						// 		title:identity
+						// 	})
+						// });
+					},
+					fail(err) {
+						console.log(err)
 					}
-				})
-				
+				});
 			}
-		})
-		
+		});
 	},
-	methods:{
-		tap(){
-			Map.routePlan(this.options)
+	methods: {
+		tap() {
+			console.log(this.options)
+			Map.routePlan(this.options);
 		}
 	},
 	computed: {}

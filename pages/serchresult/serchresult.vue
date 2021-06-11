@@ -77,7 +77,7 @@
 		</view>
 		
 		<view class="wrap" v-if="active == '中继器'">
-			<view class="list" v-for="(item,index) in probelist" :key="index" @click="repjump(item.id)">
+			<view class="list" :class="item.state_text=='已离线'?'listopacity':''" v-for="(item,index) in probelist" :key="index" @click="repjump(item.id)">
 				<view class="list-top">
 					<view class="list-top-left">
 						<image src="../../static/icon/wifi.png" mode=""></image>
@@ -555,6 +555,9 @@ export default {
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%,-50%);
+		}
+		.listopacity{
+			opacity: 0.5;
 		}
 		.list{
 			margin: 20rpx 0;

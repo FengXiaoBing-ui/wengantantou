@@ -60,6 +60,7 @@
 			},
 			anime(item){
 				this.active = item
+				this.choiceactive = -1
 				if(item=='大号侧'){
 					this.inlist = this.list[0].warefire
 				}else{
@@ -97,7 +98,7 @@
 	position: fixed;
 	top: 0;
 	width: 100%;
-	height: 286rpx;
+	height: 306rpx;
 	background-image: url(../../../static/icon/6972.png);
 	background-size: 100% 100%;
 	z-index: 9;

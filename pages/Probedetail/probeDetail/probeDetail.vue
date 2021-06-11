@@ -114,6 +114,7 @@
 
 				<view class="charts-box" v-else>
 					<qiun-data-charts
+						v-if="showline"
 						type="line"
 						canvasId="scrolllineid"
 						:opts="{ enableScroll: true, xAxis: { scrollShow: true, itemCount: 6, disableGrid: true } }"
@@ -140,6 +141,7 @@ export default {
 			SensorBase: {},
 			active: '数据',
 			checked: false,
+			showline: false,
 			selectedYear: new Date().getFullYear(),
 			selectedMonth: new Date().getMonth(),
 			selectedDate: new Date().getDate(),
@@ -180,6 +182,7 @@ export default {
 			
 		},
 		temp_records(id) {
+			this.showline = false
 			let year = this.selectedYear + '-' + (this.selectedMonth + 1) + '-' + this.selectedDate;
 			this.$api
 				.postapi('/api/Sensor/selAllTempRecord', {
@@ -211,6 +214,7 @@ export default {
 					this.chartsDataLine4.categories = arr
 					this.chartsDataLine4.series[0].data = arrtwo
 					this.$forceUpdate();
+					this.showline = true
 				});
 			
 		},
@@ -249,6 +253,7 @@ export default {
 				}
 				this.selectedDate = daysInMonth[this.selectedMonth];
 			}
+			
 			this.temp_records();
 		},
 		handleNextMonth() {

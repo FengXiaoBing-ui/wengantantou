@@ -5,7 +5,7 @@
 			<view class="serch-input">
 				<view class="serch">
 					<image src="../../static/icon/serch.png" mode=""></image>
-					<input confirm-type="search" @confirm="searchdata" type="text" value="" v-model="keyword" />
+					<input confirm-type="search" @confirm="searchdata" type="text" value="" placeholder-style="color:#fff;opacity: 0.6;" placeholder="请输入关键字搜索" v-model="keyword" />
 				</view>
 				<text class="serch-text" @click="searchdata">搜索</text>
 			</view>

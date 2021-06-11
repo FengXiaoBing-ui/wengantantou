@@ -36,50 +36,59 @@
 		
 	
 		<view class="wrap">
-			<view v-if="active=='探头'" class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump(item.id)">
-				<view class="probe-list-box-top" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
-					<view class="box-top-left">
-						<image src="../../../static/icon/6834.png" mode=""></image>
-						<text>编号{{ item.device_id }}</text>
+			<view class="probe-list" v-if="active=='探头'">
+				<view class="probe-list-box" v-for="(item, index) in probelist" :key="index" @click="jump(item.id)">
+					<view class="probe-list-box-top" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
+						<view class="box-top-left">
+							<image src="../../../static/icon/6834.png" mode=""></image>
+							<text>编号{{ item.device_id }}</text>
+						</view>
+						<view class="box-top-right">
+							<image v-if="item.state_text == '工作中'" src="../../../static/icon/6833.png" mode=""></image>
+							<image v-if="item.state_text == '已离线'" src="../../../static/icon/6832.png" mode=""></image>
+							<image v-if="item.state_text == '待激活'" src="../../../static/icon/6837.png" mode=""></image>
+							<text>{{ item.state_text }}</text>
+						</view>
 					</view>
-					<view class="box-top-right">
-						<image v-if="item.state != 4&&item.state!= -1" src="../../../static/icon/6833.png" mode=""></image>
-						<image v-if="item.state == 4" src="../../../static/icon/6832.png" mode=""></image>
-						<image v-if="item.state == -1" src="../../../static/icon/6837.png" mode=""></image>
-						<text v-if="item.state_text!='已离线'&&item.state_text!='待激活'">工作中</text>
-						<text v-if="item.state_text=='已离线'">已离线</text>
-						<text v-if="item.state_text=='待激活'">待激活</text>
+					<view class="electric" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">
+						<view
+							class="electric-left"
+							:class="{
+								'electric-left-blue': item.power_number > $store.state.electric&&item.state_text == '工作中',
+								'electric-left-red': item.power_number <= $store.state.electric&&item.state_text == '工作中',
+								'electric-left-no': item.state_text == '已离线',
+								'electric-left-lixian': item.state_text == '待激活'
+							}"
+						>
+							<view
+								class="electric-num-left"
+								:class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }"
+								:style="{ width: item.state_text == '工作中'?(item.power_number + '%'):0 }"
+							></view>
+							<image src="../../../static/icon/6820.png" mode=""></image>
+							<text>电量</text>
+							<text class="num">{{ item.state_text == '工作中' ? item.power_number + '%' : '---' }}</text>
+						</view>
+						<view
+							class="electric-right"
+							:class="{
+								'electric-right-blue': item.now_temperature <= $store.state.temperatureyellow&&item.state_text == '工作中',
+								'electric-right-origin': item.now_temperature <= $store.state.temperaturered && item.now_temperature > $store.state.temperatureyellow&&item.state_text == '工作中',
+								'electric-right-red': item.now_temperature > $store.state.temperaturered&&item.state_text == '工作中',
+								'electric-left-no': item.state_text == '已离线',
+								'electric-left-lixian': item.state_text == '待激活'
+							}"
+						>
+							<image src="../../../static/icon/6823.png" mode=""></image>
+							<text>温度</text>
+							<text class="num">{{ item.state_text == '工作中' ? (item.now_temperature + '℃') : '---' }}</text>
+						</view>
 					</view>
+					<text class="bot-text" v-if="item.state_text != '待激活'" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
+					<view class="box-foot"></view>
 				</view>
-				<view class="electric" :style="item.state_text == 4 ? 'opacity:0.4' : ''">
-					<view
-						class="electric-left"
-						:class="{ 'electric-left-blue': item.power_number > 30, 'electric-left-red': item.power_number <= 30, 'electric-left-no': item.state_text == '已离线','electric-left-lixian': item.state_text=='待激活' }"
-					>
-						<view class="electric-num-left" :class="{ blue: item.power_number > 30, red: item.power_number <= 30 }" :style="{ width: item.power_number + '%' }"></view>
-						<image src="../../../static/icon/6820.png" mode=""></image>
-						<text>电量</text>
-						<text class="num">{{ item.power_number?item.power_number+'%':'---' }}</text>
-					</view>
-					<view
-						class="electric-right"
-						:class="{
-							'electric-right-blue': item.now_temperature <= 30,
-							'electric-right-origin': item.now_temperature <= 50 && item.now_temperature > 30,
-							'electric-right-red': item.now_temperature > 50,
-							'electric-left-no': item.state_text == '已离线',
-							'electric-left-lixian': item.state_text=='待激活'
-						}"
-					>
-						<image src="../../../static/icon/6823.png" mode=""></image>
-						<text>温度</text>
-						<text class="num">{{ item.now_temperature?item.now_temperature+'%':'---' }}</text>
-					</view>
-				</view>
-				<text class="bot-text" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''" v-if="item.tower_position">位置：{{ item.tower_position }}</text>
-				<view class="box-foot"></view>
 			</view>
-			<view v-if="active=='中继器'" class="list" v-for="(item,indexes) in mylist" :key="indexes+10" @click="repeaterjump(item.id)">
+			<view class="list" :class="item.state_text=='已离线'?'listopacity':''" v-if="active=='中继器'" v-for="(item,index) in mylist" :key="index" @click="jump(item.id)">
 				<view class="list-top">
 					<view class="list-top-left">
 						<image src="../../../static/icon/wifi.png" mode=""></image>
@@ -94,20 +103,20 @@
 				</view>
 				<view class="list-mid">
 					<view class="list-mid-left">
-						<text>IP:  {{ item.ip }}</text>
-						<text>4G卡号:  {{ item.repeater_phone }}</text>
-						<text>位置:  {{ item.tower_position }}</text>
+						<text>IP: {{ item.state_text=='待激活'?'- - -':item.ip }}</text>
+						<text>4G卡号: {{ item.state_text=='待激活'?'- - -':item.repeater_phone }}</text>
+						<text>位置: {{ item.state_text=='待激活'?'- - -':item.tower_position }}</text>
 					</view>
 					<view class="list-mid-right">
 						<text>关联探头</text>
-						<text>{{ item.sensor_count }}个</text>
+						<text>{{ item.temp_sensor_number }}个</text>
 					</view>
 				</view>
-				<view class="list-bot" :class="{'borderred':item.repeater_power<=30,'borderblue':item.repeater_power>30}">
+				<view class="list-bot" :class="{'borderred':item.electric_quality<=30,'borderblue':item.electric_quality>30}">
 					<image src="../../../static/icon/6820.png" mode=""></image>
-					<text>电量</text>
-					<text>{{ item.repeater_power }}%</text>
-					<view class="background" :class="{'blue':item.repeater_power>30,'red':item.repeater_power<=30}" :style="{width: item.repeater_power+'%'}"></view>
+					<text>电量 </text>
+					<text> {{ item.state_text=='工作中'?(item.electric_quality+'%'):'- - -' }}</text>
+					<view class="background" :class="{'blue':item.electric_quality>30,'red':item.electric_quality<=30}" :style="{width: item.state_text=='工作中'?(item.electric_quality+'%'):0}"></view>
 				</view>
 				<view class="botborder"></view>
 			</view>
@@ -218,6 +227,7 @@
 				})
 			},
 			jumpmap(){
+				
 				uni.navigateTo({
 					url:"../map/map?loction="+this.pagoinfo.tower_position
 				})
@@ -448,182 +458,196 @@
 		}
 	}
 	.wrap{
-	padding: 0 34rpx 100rpx 34rpx;
+	padding: 0 34rpx 50rpx 34rpx;
 	box-sizing: border-box;
 	position: relative;
 	top: 660rpx;
 	z-index: 1;
-	.probe-list-box {
-		width: 100%;
-		border: 2rpx solid rgba(90, 232, 255, 0.7);
-		background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
-		box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
-		margin-bottom: 20rpx;
-		padding-bottom: 20rpx;
-		position: relative;
-		.probe-list-box-top {
-			width: 100%;
-			height: 53rpx;
-			background: linear-gradient(90deg, #021f4b 0%, #093765 100%);
-			opacity: 0.6;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 0 20rpx;
-			box-sizing: border-box;
-			.box-top-right {
-				display: flex;
-				align-items: center;
-				image {
-					width: 53rpx;
-					height: 53rpx;
-				}
-				text {
-					font-size: 28rpx;
-					font-family: Source Han Sans CN;
-					font-weight: 400;
-					color: #ffffff;
-				}
-			}
-			.box-top-left {
-				display: flex;
-				align-items: center;
-				image {
-					width: 26rpx;
-					height: 26rpx;
-				}
-				text {
-					font-size: 28rpx;
-					font-family: Source Han Sans CN;
-					font-weight: 400;
-					color: #ffffff;
-					margin-left: 6rpx;
-				}
-			}
-		}
-		.electric {
-			margin-top: 21rpx;
-			display: flex;
-			justify-content: space-evenly;
-			align-items: center;
-			.electric-left-lixian{
-				background: rgba(214, 242, 255, 0.15);
-			}
-			.electric-left-no {
-				background: rgba(214, 242, 255, 0.2);
-			}
-			.electric-right-blue {
-				background: linear-gradient(180deg, rgba(255, 252, 230, 0.35) 0%, rgba(65, 201, 252, 0.35) 100%);
-			}
-			.electric-right-origin {
-				background: linear-gradient(180deg, rgba(219, 229, 127, 0.7) 0%, rgba(248, 108, 16, 0.7) 100%);
-			}
-			.electric-right-red {
-				background: linear-gradient(180deg, rgba(244, 67, 54, 0.9) 0%, rgba(113, 1, 5, 0.9) 100%);
-			}
-			.electric-right {
-				width: 317rpx;
-				height: 94rpx;
-				border-radius: 14rpx;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				box-sizing: border-box;
-				image {
-					width: 50rpx;
-					height: 50rpx;
-				}
-				.num {
-					font-size: 32rpx;
-					font-family: Roboto;
-					font-weight: bold;
-					color: #ffffff;
-					margin-left: 10rpx;
-				}
-				text {
-					font-size: 28rpx;
-					font-family: Source Han Sans CN;
-					font-weight: 400;
-					color: #ffffff;
-				}
-			}
-			.electric-left-red {
-				background: rgba(244, 67, 54, 0.17);
-				border: 1px solid rgba(244, 67, 54, 0.5);
-			}
-			.electric-left-blue {
-				background: rgba(214, 242, 255, 0.15);
-				border: 1rpx solid #5bc8cb;
-			}
-			.electric-left {
-				width: 317rpx;
-				height: 94rpx;
-				opacity: 1;
-				border-radius: 14rpx;
-				position: relative;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				box-sizing: border-box;
-				image {
-					width: 50rpx;
-					height: 50rpx;
-					z-index: 999;
-				}
-				.num {
-					font-size: 32rpx;
-					font-family: Roboto;
-					font-weight: bold;
-					color: #ffffff;
-					z-index: 999;
-					margin-left: 10rpx;
-				}
-				text {
-					font-size: 28rpx;
-					font-family: Source Han Sans CN;
-					font-weight: 400;
-					color: #ffffff;
-					z-index: 999;
-				}
-				.electric-num-left {
-					position: absolute;
-					left: 0;
-					top: 0;
-					height: 90rpx;
-					border-radius: 14rpx;
-				}
-				.blue {
-					background: linear-gradient(90deg, rgba(127, 229, 127, 0.5) 0%, rgba(65, 201, 252, 0.5) 100%);
-				}
-				.red {
-					background: linear-gradient(270deg, rgba(244, 67, 54, 0.9) 0%, rgba(112, 12, 12, 0.9) 100%);
-				}
-			}
-		}
-		.bot-text {
-			display: inline-block;
-			width: 100%;
-			padding: 0 20rpx;
-			font-size: 26rpx;
-			font-family: Source Han Sans CN;
-			font-weight: 400;
-			margin-top: 13rpx;
-			color: #f6b532;
-			box-sizing: border-box;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-		.box-foot {
-			position: absolute;
+	.probe-list {
+		box-sizing: border-box;
+		.nodata {
+			position: fixed;
 			left: 50%;
-			bottom: -2rpx;
-			transform: translateX(-50%);
-			width: 114rpx;
-			height: 4rpx;
-			background: #54d6ff;
-			box-shadow: 0px 0px 8rpx #9ef2ff;
+			top: 50%;
+			color: #ffffff;
+			transform: translate(-50%, -50%);
 		}
+		.probe-list-box {
+			width: 100%;
+			border: 2rpx solid rgba(90, 232, 255, 0.7);
+			background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
+			box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
+			margin-bottom: 20rpx;
+			padding-bottom: 20rpx;
+			position: relative;
+			.probe-list-box-top {
+				width: 100%;
+				height: 53rpx;
+				background: linear-gradient(90deg, #021f4b 0%, #093765 100%);
+				opacity: 0.6;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0 20rpx;
+				box-sizing: border-box;
+				.box-top-right {
+					display: flex;
+					align-items: center;
+					image {
+						width: 53rpx;
+						height: 53rpx;
+					}
+					text {
+						font-size: 28rpx;
+						font-family: Source Han Sans CN;
+						font-weight: 400;
+						color: #ffffff;
+					}
+				}
+				.box-top-left {
+					display: flex;
+					align-items: center;
+					image {
+						width: 26rpx;
+						height: 26rpx;
+					}
+					text {
+						font-size: 28rpx;
+						font-family: Source Han Sans CN;
+						font-weight: 400;
+						color: #ffffff;
+						margin-left: 6rpx;
+					}
+				}
+			}
+			.electric {
+				margin-top: 21rpx;
+				display: flex;
+				justify-content: space-evenly;
+				align-items: center;
+				.electric-left-lixian {
+					background: rgba(214, 242, 255, 0.15);
+				}
+				.electric-left-no {
+					background: rgba(214, 242, 255, 0.2);
+				}
+				.electric-right-blue {
+					background: linear-gradient(180deg, rgba(255, 252, 230, 0.35) 0%, rgba(65, 201, 252, 0.35) 100%);
+				}
+				.electric-right-origin {
+					background: linear-gradient(180deg, rgba(219, 229, 127, 0.7) 0%, rgba(248, 108, 16, 0.7) 100%);
+				}
+				.electric-right-red {
+					background: linear-gradient(180deg, rgba(244, 67, 54, 0.9) 0%, rgba(113, 1, 5, 0.9) 100%);
+				}
+				.electric-right {
+					width: 317rpx;
+					height: 94rpx;
+					border-radius: 14rpx;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					box-sizing: border-box;
+					image {
+						width: 50rpx;
+						height: 50rpx;
+					}
+					.num {
+						font-size: 32rpx;
+						font-family: Roboto;
+						font-weight: bold;
+						color: #ffffff;
+						margin-left: 10rpx;
+					}
+					text {
+						font-size: 28rpx;
+						font-family: Source Han Sans CN;
+						font-weight: 400;
+						color: #ffffff;
+					}
+				}
+				.electric-left-red {
+					background: rgba(244, 67, 54, 0.17);
+					border: 1px solid rgba(244, 67, 54, 0.5);
+				}
+				.electric-left-blue {
+					background: rgba(214, 242, 255, 0.15);
+					border: 1rpx solid #5bc8cb;
+				}
+				.electric-left {
+					width: 317rpx;
+					height: 94rpx;
+					opacity: 1;
+					border-radius: 14rpx;
+					position: relative;
+					overflow: hidden;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					box-sizing: border-box;
+					image {
+						width: 50rpx;
+						height: 50rpx;
+						z-index: 999;
+					}
+					.num {
+						font-size: 32rpx;
+						font-family: Roboto;
+						font-weight: bold;
+						color: #ffffff;
+						z-index: 999;
+						margin-left: 10rpx;
+					}
+					text {
+						font-size: 28rpx;
+						font-family: Source Han Sans CN;
+						font-weight: 400;
+						color: #ffffff;
+						z-index: 999;
+					}
+					.electric-num-left {
+						position: absolute;
+						left: 0;
+						top: 0;
+						height: 90rpx;
+						border-radius: 14rpx 0 0 14rpx;
+					}
+					.blue {
+						background: linear-gradient(90deg, rgba(127, 229, 127, 0.5) 0%, rgba(65, 201, 252, 0.5) 100%);
+					}
+					.red {
+						background: linear-gradient(270deg, rgba(244, 67, 54, 0.9) 0%, rgba(112, 12, 12, 0.9) 100%);
+					}
+				}
+			}
+			.bot-text {
+				display: inline-block;
+				width: 100%;
+				padding: 0 20rpx;
+				font-size: 26rpx;
+				font-family: Source Han Sans CN;
+				font-weight: 400;
+				margin-top: 13rpx;
+				color: #f6b532;
+				box-sizing: border-box;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			.box-foot {
+				position: absolute;
+				left: 50%;
+				bottom: -2rpx;
+				transform: translateX(-50%);
+				width: 114rpx;
+				height: 4rpx;
+				background: #54d6ff;
+				box-shadow: 0px 0px 8rpx #9ef2ff;
+			}
+		}
+	}
+	.listopacity{
+		opacity: 0.5;
 	}
 	.list{
 		margin: 20rpx 0;
@@ -729,10 +753,11 @@
 		}
 		.list-bot{
 			width: 94%;
-			height: 47rpx;
+			height: 50rpx;
 			margin: 0 auto;
 			background: rgba(214, 242, 255, 0.15);
 			border-radius: 14rpx;
+			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -752,8 +777,8 @@
 			.background{
 				position: absolute;
 				left: 0;
-				height: 47rpx;
-				border-radius: 14rpx;
+				height: 50rpx;
+				border-radius: 14rpx 0 0 14rpx;
 			}
 			
 			.blue{

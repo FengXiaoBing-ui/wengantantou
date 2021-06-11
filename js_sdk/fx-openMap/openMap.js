@@ -51,6 +51,7 @@ function openMapByAndroid(origin, destination,mode) {
 	if(origin){
 		qqmapDefault = "https://apis.map.qq.com/uri/v1/routeplan?type="+mode+"&from="+originName+"&fromcoord="+origin.latitude+","+origin.longitude+"&to="+destinationName+"&tocoord="+destination.latitude+","+destination.longitude+"&policy=1";
 	}
+	
 	// #ifdef APP-PLUS
 	plus.nativeUI.actionSheet(
 		{
@@ -387,6 +388,7 @@ function openURL(url,downLoadUrl) {
 	window.location.href= encodeURI(url);
 	var startTime = Date.now();
 	var endTime = 0;
+	console.log("fhjdsol")
 	var t= setTimeout(()=>{
 		 endTime = Date.now() - startTime;
 		 if(endTime>=2000&&!(document.hidden || document.webkitHidden)){
@@ -451,7 +453,7 @@ export default {
 	/* 路程规划 */
 	routePlan(options,type="gcj02") {
 		let _origin = options.origin,_destination = options.destination,_mode = options.mode?options.mode:"drive";
-		
+		console.log(456,options.origin)
 		if(type.toLowerCase() == "wgs84"){
 			if(options.origin){
 				_origin.latitude = gcj_encrypt(options.origin.latitude, options.origin.longitude).lat

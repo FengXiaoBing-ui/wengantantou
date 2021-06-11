@@ -23,7 +23,7 @@
 
 		<view class="wrap">
 			<view class="option">
-				<view @click="jump">
+				<view @click="jump(repeateinfo.temp_sensor_number)">
 					<text>关联探头</text>
 					<text>{{ repeateinfo.temp_sensor_number }}个</text>
 				</view>
@@ -205,10 +205,10 @@ export default {
 		})
 	},
 	methods: {
-		jump(){
+		jump(num){
 			if(this.repeateinfo.temp_sensor_number>0){
 				uni.navigateTo({
-					url:"../relation/relation?id="+this.id
+					url:"../relation/relation?id="+this.id+'&num='+num
 				})
 			}
 		},
