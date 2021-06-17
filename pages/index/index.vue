@@ -107,7 +107,6 @@
 			}
 			uni.hideTabBar()
 			this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
-				console.log(res)
 				this.$store.commit('count',res.data)
 				this.count = this.$store.state.count.total_warn_count
 				this.waitcount = this.$store.state.count.task_count
@@ -117,6 +116,7 @@
 
 		},
 		created() {
+			
 			this.count = this.$store.state.count.total_warn_count
 			this.waitcount = this.$store.state.count.task_count
 		},

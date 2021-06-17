@@ -33,7 +33,7 @@ export default {
 			url: 'https://restapi.amap.com/v3/geocode/geo?parameters',
 			method: 'GET',
 			data: {
-				key: '5fc47fa889ee50c06189c4f9326145f5',
+				key: '8a4d1f66f7dc12d82ebbc4a77533e929',
 				address: option.loction
 			},
 			success: res => {

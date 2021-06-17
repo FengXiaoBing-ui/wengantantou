@@ -5,7 +5,8 @@
 			<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
 			<text>探头详细信息</text>
 			<view class="sw">
-				<text>接受警告</text>
+				<text v-if="SensorBase.is_recieve_alarm==1">接受警告</text>
+				<text v-else>关闭告警</text>
 				<switch :checked="checked" @change="switch1Change" color="#275e98" style="transform: scale(0.5,0.5);" />
 			</view>
 		</view>
@@ -140,7 +141,7 @@ export default {
 			page: 1,
 			SensorBase: {},
 			active: '数据',
-			checked: false,
+			checked: uni.getStorageSync('unipush'),
 			showline: false,
 			selectedYear: new Date().getFullYear(),
 			selectedMonth: new Date().getMonth(),
@@ -170,8 +171,9 @@ export default {
 	onLoad(option) {
 		this.id = option.id;
 		this.$api.postapi('/api/Sensor/selSensorDetail', { id: this.id, loginId: uni.getStorageSync('loginId') }).then(res => {
-			// console.log(res);
+			console.log(res);
 			this.SensorBase = res.data.data;
+			this.checked = this.SensorBase.is_recieve_alarm == 1?true:false
 		});
 		// let year = new Date().getTime((this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDate))
 		this.temp_records();
@@ -233,6 +235,24 @@ export default {
 		},
 		switch1Change(e) {
 			this.checked = e.detail.value;
+			if(this.checked){
+				this.SensorBase.is_recieve_alarm = 1
+			}else{
+				this.SensorBase.is_recieve_alarm = 0
+			}
+			
+			this.$api.postapi('/api/sensor/change_alarm_state',{
+				loginId:uni.getStorageSync('loginId'),
+				is_recieve_alarm:this.SensorBase.is_recieve_alarm,
+				sensor_id:this.id
+			}).then(res => {
+				if(res.data.code==1){
+					uni.showToast({
+						title:this.SensorBase.is_recieve_alarm==1?"该探头已设置接收推送消息！":"该探头已设置不在接收推送消息！",
+						icon:"none"
+					})
+				}
+			})
 		},
 		backpage() {
 			uni.navigateBack({

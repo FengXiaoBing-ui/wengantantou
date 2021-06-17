@@ -57,8 +57,8 @@
                 "ad" : {},
                 "maps" : {
                     "amap" : {
-                        "appkey_ios" : "3ee959ed97e1957d912320ef604cac84",
-                        "appkey_android" : "3ee959ed97e1957d912320ef604cac84"
+                        "appkey_ios" : "377ee2a7850f311dbf8626c14ac8009e",
+                        "appkey_android" : "377ee2a7850f311dbf8626c14ac8009e"
                     }
                 },
                 "push" : {
@@ -67,8 +67,8 @@
                 "geolocation" : {
                     "amap" : {
                         "__platform__" : [ "ios", "android" ],
-                        "appkey_ios" : "3ee959ed97e1957d912320ef604cac84",
-                        "appkey_android" : "3ee959ed97e1957d912320ef604cac84"
+                        "appkey_ios" : "377ee2a7850f311dbf8626c14ac8009e",
+                        "appkey_android" : "377ee2a7850f311dbf8626c14ac8009e"
                     }
                 },
                 "share" : {}

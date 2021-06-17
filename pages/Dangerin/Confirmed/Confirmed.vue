@@ -51,7 +51,7 @@
 						<text>{{ listcontent.remark }}</text>
 						<view></view>
 					</view>
-					<view class="list-content"  v-if="listcontent.device">
+					<view class="list-content" v-if="listcontent.device">
 						<text>当前值</text>
 						<text>{{ listcontent.device.now_temperature }}℃</text>
 						<view></view>
@@ -75,12 +75,12 @@
 					</view>
 					<view class="list-content" v-if="listcontent.isconfirm==1">
 						<text>确认人</text>
-						<text >张绣三</text>
+						<text >{{ listcontent.duty_user_name }}</text>
 						<view></view>
 					</view>
 					<view class="list-content" v-if="listcontent.isconfirm==1">
 						<text>确认时间</text>
-						<text >2021-12-25 15:32:21</text>
+						<text >{{ listcontent.confirm_time }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">
@@ -116,13 +116,13 @@
 			this.confirmed()
 		},
 		onShow() {
-			this.confirmed()
 			this.$store.state.people = {}
 		},
 		methods:{
 			confirmed(){
+				
 				this.$api.postapi('/api/Alarmlog/sel_sensor_alarm_detail',{id:this.id,index:this.index}).then(res => {
-					console.log(res)
+					console.log('myID：',res.data)
 					this.listcontent = res.data.data
 				})
 			},

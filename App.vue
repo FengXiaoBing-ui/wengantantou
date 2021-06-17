@@ -1,4 +1,6 @@
 <script>
+	var sensor_id = '';
+	var type = '';
 export default {
 	onLaunch: function() {
 		// console.log('App Launch');
@@ -18,20 +20,23 @@ export default {
 		});
 		plus.push.setAutoNotification(true);
 		const _self = this;
-		var sensor_id = '';
-		var type = '';
+		
 		//监听接收透传消息事件
 		plus.push.addEventListener(
 			'receive',
 			function(message) {
 				console.log(111, message);
+				
 				let options = { cover: false, sound: 'system', title: message.title};
+				
 				sensor_id = message.payload.sensor_id;
 				type = message.payload.type;
+				
 				let obj = {
-					sensor_id:id,
+					sensor_id:sensor_id,
 					type:type
 				}
+				
 				plus.push.createMessage(message.content,obj, options);
 				//     plus.nativeUI.toast('receive:'+JSON.stringify(message));
 				// //处理透传消息的业务逻辑代码
@@ -51,14 +56,14 @@ export default {
 						uni.navigateTo({
 							url: '/pages/Dangerin/Confirmed/Confirmed?id=' + message.payload.sensor_id + '&index=0'
 						});
-					},500)
+					},1000)
 				}
 				if (message.payload.type == 1) {
 					setTimeout(() => {
 						uni.redirectTo({
 							url: '/pages/Dangerin/Confirmed/Confirmed?id=' + message.payload.sensor_id + '&index=1'
 						});
-					},500)
+					},1000)
 				}
 			},
 			false

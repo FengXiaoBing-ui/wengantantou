@@ -5,7 +5,7 @@
 			<view class="logo">
 				<image src="../../../static/icon/logo.png" mode=""></image>
 				<text>无线温度探头监测预警平台</text>
-				<view class="edition">V 1.0.2</view>
+				<view class="edition">V {{ version }}</view>
 			</view>
 			<view class="box">
 				<view class="list" @click="jump">
@@ -16,7 +16,7 @@
 					<image src="../../../static/icon/minright.png" mode=""></image>
 				</view>
 				<view class="bord"></view>
-				<view class="list">
+				<view class="list" @click="edition">
 					<view class="list-left">
 						<image src="../../../static/icon/6982.png" mode=""></image>
 						<text>检查更新</text>
@@ -35,8 +35,11 @@
 	export default {
 		data() {
 			return {
-				
+				version: ""
 			};
+		},
+		created() {
+			this.version = plus.runtime.version
 		},
 		methods:{
 			jump(){
@@ -47,6 +50,12 @@
 			agreement(title,type){
 				uni.navigateTo({
 					url:"../agreement/agreement?title="+title+'&type='+type
+				})
+			},
+			edition(){
+				uni.showToast({
+					title:'版本: V '+ plus.runtime.version,
+					icon:"none"
 				})
 			}
 		}

@@ -72,10 +72,10 @@
 							<view class="item" v-for="(item, index) in 24" :key="index">{{ item }}</view>
 						</picker-view-column>
 						<picker-view-column>
-							<view class="item" v-for="(item, index) in 60" :key="index">{{ item }}</view>
+							<view class="item" v-for="(item, index) in 59" :key="index">{{ item }}</view>
 						</picker-view-column>
 						<picker-view-column>
-							<view class="item" v-for="(item, index) in 60" :key="index">{{ item }}</view>
+							<view class="item" v-for="(item, index) in 59" :key="index">{{ item }}</view>
 						</picker-view-column>
 						<picker-view-column><view></view></picker-view-column>
 					</picker-view>

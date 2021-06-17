@@ -5,7 +5,8 @@
 			<image @click="backpage" src="../../../static/icon/left.png" mode=""></image>
 			<text>中继器详细</text>
 			<view class="sw">
-				<text>关闭告警</text>
+				<text v-if="repeateinfo.is_recieve_alarm==1">接收告警</text>
+				<text v-else>关闭告警</text>
 				<switch :checked="checked" @change="switch1Change" color="#275e98" style="transform: scale(0.5,0.5);" />
 			</view>
 		</view>
@@ -186,7 +187,7 @@ export default {
 			id: "",
 			repeateinfo: {},
 			active: '数据',
-			checked: false,
+			checked: '',
 			selectedYear: new Date().getFullYear(),
 			selectedMonth: new Date().getMonth(),
 			selectedDate: new Date().getDate(),
@@ -202,6 +203,7 @@ export default {
 		this.$api.postapi('/api/repeater/sel_repeater_detail',{id:option.id,loginId:uni.getStorageSync('loginId')}).then(res => {
 			console.log(res)
 			this.repeateinfo = res.data.data
+			this.checked = this.repeateinfo.is_recieve_alarm == 1?true:false
 		})
 	},
 	methods: {
@@ -232,6 +234,23 @@ export default {
 		},
 		switch1Change(e) {
 			this.checked = e.detail.value;
+			if(this.checked){
+				this.repeateinfo.is_recieve_alarm = 1
+			}else{
+				this.repeateinfo.is_recieve_alarm = 0
+			}
+			this.$api.postapi('/api/sensor/change_alarm_state',{
+				loginId:uni.getStorageSync('loginId'),
+				is_recieve_alarm:this.repeateinfo.is_recieve_alarm,
+				sensor_id:this.id
+			}).then(res => {
+				if(res.data.code==1){
+					uni.showToast({
+						title:this.repeateinfo.is_recieve_alarm==1?"该中继器已设置接收推送消息！":"该中继器已设置不在接收推送消息！",
+						icon:"none"
+					})
+				}
+			})
 		},
 		backpage() {
 			uni.navigateBack({
