@@ -681,6 +681,18 @@
             }
             
         }
+        ,{
+            "path" : "pages/seeData/seedata/seedata",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":false
+				}
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

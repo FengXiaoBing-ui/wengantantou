@@ -84,7 +84,8 @@
 					},
 					{
 						text: "数据查看",
-						imgurl: require("../../static/icon/6815.png")
+						imgurl: require("../../static/icon/6815.png"),
+						path: "../seeData/seedata/seedata"
 					},
 				]
 			}
