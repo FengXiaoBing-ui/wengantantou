@@ -41,7 +41,7 @@
 	padding: 0 34rpx;
 	box-sizing: border-box;
 	position: relative;
-	z-index: 9;
+	z-index: 10;
 	.headerimg{
 		margin-top: 200rpx;
 		background-image: url(../../../static/icon/7055.png);

@@ -689,7 +689,8 @@
                 "enablePullDownRefresh": false,
 				"app-plus":{
 					"titleNView":false
-				}
+                }
+                
             }
             
         }
