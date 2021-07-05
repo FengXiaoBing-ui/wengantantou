@@ -16,7 +16,13 @@ uni.getSystemInfo({
 		Vue.prototype.appheight = e.windowHeight
 	}
 })
-
+Vue.prototype.$plusExtends = fn => {
+  if (window.plus) {
+    setTimeout(fn, 0)
+  } else {
+    document.addEventListener('plusready', fn, false)
+  }
+}
 App.mpType = 'app'
 
 const app = new Vue({

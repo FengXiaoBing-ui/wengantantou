@@ -694,6 +694,30 @@
             }
             
         }
+        ,{
+            "path" : "pages/seeData/StatisticsProbe/StatisticsProbe",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":false
+				}
+            }
+            
+        }
+        ,{
+            "path" : "pages/seeData/repeaterStatistics/repeaterStatistics",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"app-plus":{
+					"titleNView":false
+				}
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
