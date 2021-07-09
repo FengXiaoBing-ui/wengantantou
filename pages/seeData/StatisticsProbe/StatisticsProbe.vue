@@ -37,6 +37,12 @@
 				</view>
 				<view class="right">
 					<image class="panel" src="../../../static/icon/14441.png" mode=""></image>
+					<view class="circle">
+					  <view class="circle-left"></view>
+					  <view class="circle-right"></view>
+					  <view class="circle-bottom-left"></view>
+					  <view class="circle-bottom-right"></view>
+					</view>
 				</view>
 			</view>
 			<view class="bot_list">
@@ -107,6 +113,7 @@
 	padding: 0 34rpx;
 	box-sizing: border-box;
 	z-index: 9;
+	
 	.header_box{
 		width: 100%;
 		height: 171rpx;
@@ -224,6 +231,67 @@
 			width: 340rpx;
 			height: 340rpx;
 			position: relative;
+			.circle {
+			  -webkit-mask: radial-gradient(transparent 80rpx, #000 80rpx);
+			  width: 250rpx;
+			  height: 250rpx;
+			  overflow: hidden;
+			  border-radius: 50%;
+			  position: absolute;
+			  left: 50%;
+			  top: 50%;
+			  transform: translate(-50%,-50%);
+			  z-index: 999999;
+			}
+			 
+			.circle-left {
+			  width: 50%;
+			  height: 100%;
+			  background: #60E2AA;
+			  transform-origin: 100% 50%;
+			  position: absolute;
+			  left: 0;
+			  z-index: 0;
+			  transform: rotate(-72deg);
+			}
+			 
+			.circle-right {
+			  width: 50%;
+			  height: 100%;
+			  background: #60E2AA;
+			  transition: transform 1s linear;
+			  transform-origin: 0% 50%;
+			  position: absolute;
+			  right: 0;
+			  z-index: 2;
+			  transform: rotate(36deg);
+			}
+			 
+			.circle-bottom-left {
+			  width: 50%;
+			  height: 100%;
+			  background: #F6B532;
+			  position: absolute;
+			  left: 0;
+			  z-index: -1;
+			}
+			 
+			.circle-bottom-right {
+			  width: 50%;
+			  height: 100%;
+			  background: #FF5283;
+			  position: absolute;
+			  right: 0;
+			  z-index: 1;
+			}
+			 
+			.info {
+			  width: 250rpx;
+			  height: 250rpx;
+			  line-height: 250rpx;
+			  text-align: center;
+			  margin-top: 250rpx;  
+			}
 			.panel{
 				position: absolute;
 				left: 50%;
