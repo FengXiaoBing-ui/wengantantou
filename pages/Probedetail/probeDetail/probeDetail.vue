@@ -36,12 +36,12 @@
 				<view
 					class="box-right"
 					:class="{
-						'box-right-blue': SensorBase.now_temperature <= $store.state.temperatureyellow && SensorBase.state_text == '工作中',
+						'box-right-blue': SensorBase.now_temperature <= SensorBase.early_warn_upper && SensorBase.state_text == '工作中',
 						'box-right-yellow':
-							SensorBase.now_temperature <= $store.state.temperaturered &&
-							SensorBase.now_temperature > $store.state.temperatureyellow &&
+							SensorBase.now_temperature <= SensorBase.high_temperature &&
+							SensorBase.now_temperature > SensorBase.early_warn_upper &&
 							SensorBase.state_text == '工作中',
-						'box-right-red': SensorBase.now_temperature > $store.state.temperaturered && SensorBase.state_text == '工作中',
+						'box-right-red': SensorBase.now_temperature > SensorBase.high_temperature && SensorBase.state_text == '工作中',
 						'electric-left-no': SensorBase.state_text == '已离线',
 						'electric-left-lixian': SensorBase.state_text == '待激活'
 					}"
@@ -118,7 +118,7 @@
 						v-if="showline"
 						type="line"
 						canvasId="scrolllineid"
-						:opts="{ enableScroll: true, xAxis: { scrollShow: true, itemCount: 6, disableGrid: true } }"
+						:opts="{ enableScroll: true, xAxis: { scrollShow: true, itemCount: 4, disableGrid: true } }"
 						:chartData="chartsDataLine4"
 						:ontouch="true"
 						:canvas2d="true"
@@ -171,8 +171,9 @@ export default {
 	onLoad(option) {
 		this.id = option.id;
 		this.$api.postapi('/api/Sensor/selSensorDetail', { id: this.id, loginId: uni.getStorageSync('loginId') }).then(res => {
-			console.log(res);
+			
 			this.SensorBase = res.data.data;
+			console.log(999,this.SensorBase);
 			this.checked = this.SensorBase.is_recieve_alarm == 1?true:false
 		});
 		// let year = new Date().getTime((this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDate))
@@ -277,11 +278,19 @@ export default {
 			this.temp_records();
 		},
 		handleNextMonth() {
+			let Year = new Date().getFullYear()
+			let Month = new Date().getMonth()
+			let Day = new Date().getDate()
 			let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 			if ((this.selectedYear % 4 === 0 && this.selectedYear % 100 !== 0) || this.selectedYear % 400 === 0) {
 				daysInMonth[1] = 29;
 			}
+			
+			if(this.selectedYear+this.selectedMonth+this.selectedDate>=Year+Month+Day){
+				return false
+			}
 			this.selectedDate++;
+			
 			if (this.selectedDate > daysInMonth[this.selectedMonth]) {
 				this.selectedMonth++;
 				if (this.selectedMonth > 11) {

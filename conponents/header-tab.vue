@@ -20,13 +20,15 @@
 		<view class="sureserch" v-if="sure">
 			<view class="serch_left">
 				<image src="../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<input style="width: 80%;" type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<!-- <view class="serchbtn">搜索</view> -->
 			</view>
 		</view>
 		<view class="serch" v-if="screen">
 			<view class="serch_left">
 				<image src="../static/icon/serch.png" mode=""></image>
-				<input type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<input style="width: 80%;" type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<!-- <view class="serchbtn">搜索</view> -->
 			</view>
 			<view class="serch_right">
 				<image src="../static/icon/668.png" mode=""></image>
@@ -183,6 +185,15 @@
 				align-items: center;
 				box-sizing: border-box;
 				z-index: 999;
+				.serchbtn{
+					width: 72rpx;
+					height: 72rpx;
+					color: #FFFFFF;
+					line-height: 72rpx;
+					font-size: 26rpx;
+					border: 1rpx solid #4492c2;
+					box-sizing: border-box;
+				}
 				image {
 					width: 64rpx;
 					height: 64rpx;

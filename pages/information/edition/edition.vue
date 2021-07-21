@@ -27,6 +27,12 @@
 			<view class="agreement">
 				<text @click="agreement('用户协议',1)">《用户协议》</text>和<text @click="agreement('隐私政策',2)">《隐私政策》</text>
 			</view>
+			<uni-popup :maskClick="false" ref="popup" type="center">
+				<view class="progress">
+					<text>安装包更新中...</text>
+					<progress :percent="progress" show-info stroke-width="3" />
+				</view>
+			</uni-popup>
 		</view>
 	</view>
 </template>
@@ -35,7 +41,8 @@
 	export default {
 		data() {
 			return {
-				version: ""
+				version: "",
+				progress:0
 			};
 		},
 		created() {
@@ -53,9 +60,42 @@
 				})
 			},
 			edition(){
-				uni.showToast({
-					title:'版本: V '+ plus.runtime.version,
-					icon:"none"
+				this.$api.postapi('/api/fuc/check_update',{version:plus.runtime.version}).then(res => {
+					
+					if(res.data.code==1){
+						this.$refs.popup.open()
+						
+						const downloadTask = uni.downloadFile({
+						    url:res.data.data,
+						    success: (respose) => {
+						      if (respose.statusCode === 200) {
+						        uni.saveFile({
+						          tempFilePath: respose.tempFilePath,
+						          success: (resData) => {
+						            uni.openDocument({
+						              filePath: resData.savedFilePath,
+						            });
+						          },
+						        });
+						      }
+						    },
+						  });
+						  downloadTask.onProgressUpdate((res) => {
+							  console.log('下载进度' + res.progress);
+							  this.progress = res.progress
+							  if(res.progress==100){
+								  this.$refs.popup.close()
+							  }
+						  })
+						
+						// var urlStr = encodeURI(res.data.data)
+						// plus.runtime.openURL(urlStr)
+					}else{
+						uni.showToast({
+							title:"当前版本已是最新版本",
+							icon:"none"
+						})
+					}
 				})
 			}
 		}
@@ -69,6 +109,12 @@
 	top: 168rpx;
 	box-sizing: border-box;
 	z-index: 1;
+	.progress{
+		width: 300rpx;
+		background: #FFFFFF;
+		border-radius: 10rpx;
+		padding: 32rpx;
+	}
 	.logo{
 		height: 360rpx;
 		display: flex;

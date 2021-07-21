@@ -13,7 +13,11 @@
 						<text>500</text>
 					</view>
 				</view>
-				<view class="right"></view>
+				<view class="right">
+					<view class="charts-box">
+					  <qiun-data-charts type="gauge" :opts="{fontSize: 10,fontColor:'#ffffff',title:{name: '88%',color: '#FFFCE6',fontSize: 24,offsetY:50},subtitle: {name: ''},extra:{gauge:{labelColor:'#fff',width:8,splitLine:{childWidth:8,width:10},pointer:{width:10}}}}" :chartData="chartsDataGauge1"/>
+					</view>
+				</view>
 				<image class="leftwifi" src="../../../static/icon/43wifi.png" mode=""></image>
 				<image class="right_icon" src="../../../static/icon/56.png" mode=""></image>
 				<image class="bot_left_icon" src="../../../static/icon/57.png" mode=""></image>
@@ -27,14 +31,27 @@
 				<image class="bot_bord" src="../../../static/icon/15.png" mode=""></image>
 			</view>
 			
-			<view class="pie">
+			<view class="Dashboard">
+				<view class="Dashboard_tab">
+					<view class="Dashboard_tab_left" :class="fontactive_left" @click="witeoverhaul">
+						<text>待检修</text>
+						<text>58</text>
+					</view>
+					<view class="Dashboard_tab_right" :class="fontactive_right" @click="witerepair">
+						<text>待维修</text>
+						<text>28</text>
+					</view>
+					<view class="bordbot" :class="active"></view>
+				</view>
+				<scroll-view scroll-y="true" class="listfather">
+					<view class="list" v-for="(item, index) in list" :key="index" @click="createBLEConnection(item.deviceId)">
+						<image src="../../../static/icon/wifi.png" mode=""></image>
+						<view class="">编号 {{ item.name }}</view>
+					</view>
+					<uni-load-more :status="more"></uni-load-more>
+				</scroll-view>
 				
 			</view>
-			<!-- <view class="Dashboard">
-				<view class="list" v-for="(item, index) in list" :key="index" @click="createBLEConnection(item.deviceId)">
-					<view class="">{{ item.name }}</view>
-				</view>
-			</view> -->
 		</view>
 	</view>
 </template>
@@ -43,13 +60,101 @@
 export default {
 	data() {
 		return {
-			list: []
+			more:'noMore',
+			active:'bordbot_left',
+			fontactive_left:'active',
+			fontactive_right:'',
+			list: [
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+				{
+					name:'1'
+				},
+			],
+			chartsDataGauge1:{
+			    "categories": [
+			        {
+			            "value": 0.2,
+			            "color": "#1890ff"
+			        },
+			        {
+			            "value": 0.8,
+			            "color": "#2fc25b"
+			        },
+			        {
+			            "value": 1,
+			            "color": "#f04864"
+			        }
+			    ],
+			    "series": [
+			        {
+			            "name": "完成率",
+			            "data": 0.89
+			        }
+			    ]
+			}
 		};
 	},
 	onLoad() {
 		this.openBluetoothAdapter();
 	},
 	methods: {
+		witeoverhaul(){
+			this.active = 'bordbot_left'
+			this.fontactive_left = 'active'
+			this.fontactive_right = ''
+		},
+		witerepair(){
+			this.active = 'bordbot_right'
+			this.fontactive_left = ''
+			this.fontactive_right = 'active'
+		},
+		
+		
+		
 		openBluetoothAdapter() {
 			uni.openBluetoothAdapter({
 				success: res => {
@@ -228,14 +333,87 @@ export default {
 	position: relative;
 	z-index: 9;
 	top: 200rpx;
+	padding-bottom: 100rpx;
 	
-
-
 	.Dashboard {
-		margin-top: 100rpx;
+		width: 100%;
+		margin-top: 20rpx;
+		border: 2rpx solid rgba(90, 232, 255, 0.7);
+		background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
+		box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
+		.Dashboard_tab{
+			height: 121rpx;
+			border: 2rpx solid rgba(90, 232, 255, 0.7);
+			background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
+			box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
+			display: flex;
+			justify-content: space-between;
+			padding: 0 190rpx;
+			box-sizing: border-box;
+			font-size: 30rpx;
+			font-family: Source Han Sans CN;
+			font-weight: 400;
+			line-height: 44rpx;
+			color: #FFFFFF;
+			position: relative;
+			.Dashboard_tab_left,.Dashboard_tab_right{
+				width: 164rpx;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: space-evenly;
+				font-size: 30rpx;
+				font-family: Source Han Sans CN;
+				font-weight: 400;
+				line-height: 44rpx;
+				color: #FFFFFF;
+			}
+			.active{
+				font-size: 32rpx;
+				font-weight: bold;
+			}
+			.bordbot{
+				position: absolute;
+				bottom: 0;
+				width: 164rpx;
+				height: 6rpx;
+				border: 1rpx solid #5AE8FF;
+				background: linear-gradient(180deg, #5AE8FF 0%, #1C54B8 100%);
+				box-sizing: border-box;
+				transition: 0.3s;
+			}
+			.bordbot_left{
+				left: 190rpx;
+			}
+			.bordbot_right{
+				left: 190rpx+164rpx;
+				
+			}
+		}
+		.listfather{
+			height: 600rpx;
+		}
 		.list {
+			display: flex;
+			align-items: center;
 			width: 100%;
-			border-top: 2rpx solid #ffffff;
+			height: 81rpx;
+			background: #033785;
+			padding: 19rpx;
+			font-size: 28rpx;
+			font-family: Source Han Sans CN;
+			font-weight: 400;
+			line-height: 40rpx;
+			color: #FFFFFF;
+			box-sizing: border-box;
+			&:nth-child(2n){
+				background: #002A6A;
+			}
+			image{
+				width: 40rpx;
+				height: 40rpx;
+				margin-right: 8rpx;
+			}
 		}
 	}
 	.header_box {
@@ -245,10 +423,11 @@ export default {
 		background: linear-gradient(180deg, rgba(59, 242, 255, 0.6) 0%, rgba(5, 51, 159, 0.6) 100%);
 		box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
 		position: relative;
-		padding: 0 61rpx;
 		box-sizing: border-box;
+		display: flex;
+		align-items: center;
 		.left {
-			width: 50%;
+			width: 40%;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -281,7 +460,11 @@ export default {
 			}
 		}
 		.right {
-			width: 50%;
+			width: 60%;
+			.charts-box{
+				width: 100%;
+				height: 320rpx;
+			}
 		}
 		.leftwifi {
 			width: 243rpx;

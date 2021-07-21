@@ -19,7 +19,7 @@
 						<view class="imgborder"></view>
 					</view>
 					<view class="righttext">
-						<text>我的告警</text>
+						<text>告警信息</text>
 						<text>{{ count }}</text>
 					</view>
 				</view>

@@ -33,14 +33,14 @@
 					<text style="color: #FF7672;">{{ repeateinfo.warn_count }}条</text>
 				</view>
 			</view>
-			<view class="electric">
+			<!-- <view class="electric">
 				<view class="electric-box" :class="repeateinfo.electric_quality<30?'electric-box-red':''">
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
 					<text style="font-weight: bold;">{{ repeateinfo.state_text=='工作中'?(repeateinfo.electric_quality+'%'):'- - -' }}</text>
 					<view class="process" :class="repeateinfo.electric_quality<30?'red':''" :style="{width: repeateinfo.state_text=='工作中'?repeateinfo.electric_quality+'%':0}"></view>
 				</view>
-			</view>
+			</view> -->
 			<view class="basic">
 				<view class="headtitlein">
 					<image src="../../../static/icon/6834.png" mode=""></image>

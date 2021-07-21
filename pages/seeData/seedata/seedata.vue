@@ -94,6 +94,9 @@
 						<view class="bord" style="background: #72E5FF;"></view>
 					</view>
 				</view>
+				<view class="charts-box">
+				  <qiun-data-charts type="pie" :opts="{'color':color,fontColor:'#fff',legend:{show: false}}" :chartData="chartsDataRose1"/>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -103,6 +106,28 @@
 	export default {
 		data() {
 			return {
+				color:[
+					'#60E2AA','#F6B532','#72E5FF','#FF5283'
+				],
+				chartsDataRose1:{
+					series: [{
+						"data": [
+					    {
+					    	"name": "正常",
+					    	"value": 60
+					    }, {
+					    	"name": "异常",
+					    	"value": 20
+					    }, {
+					    	"name": "待维修",
+					    	"value": 10
+					    }, {
+					    	"name": "待检修",
+					    	"value": 10
+					    }
+					  ]
+					}]
+				}
 				
 			};
 		}
@@ -115,6 +140,10 @@
 	box-sizing: border-box;
 	position: relative;
 	z-index: 10;
+	.charts-box{
+		width: 682rpx;
+		height: 380rpx;
+	}
 	.headerimg{
 		margin-top: 200rpx;
 		width: 100%;

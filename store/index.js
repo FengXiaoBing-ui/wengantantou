@@ -16,7 +16,7 @@ const store = new Vuex.Store({
 		},
 		probeid: "",
 		repeaterid: "",
-		electric: 30,
+		electric: 20,
 		temperatureyellow: 30,
 		temperaturered: 50
 	},

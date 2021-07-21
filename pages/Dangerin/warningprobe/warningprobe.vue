@@ -111,7 +111,7 @@ export default {
 		this.warning(this.type);
 		this.more = 'loading';
 	},
-	created() {
+	onShow() {
 		this.warning(this.type);
 	},
 	methods: {
@@ -123,6 +123,10 @@ export default {
 					limit: this.limit
 				})
 				.then(res => {
+					if(res.data.code==0){
+						this.warninglist = []
+						return false
+					}
 					if(this.limit>=res.data.count){
 						this.more = 'nomore'
 					}
@@ -132,8 +136,8 @@ export default {
 						}
 					}
 					this.warninglist = res.data.data;
-					for (let i = 0; i < this.warninglist.length; i++) {
-						this.warninglist[i].active = '';
+					for (let j = 0; j < this.warninglist.length; j++) {
+						this.warninglist[j].active = '';
 						arr.forEach( e => {
 							this.warninglist[e].active = 'active'
 						})

@@ -53,7 +53,7 @@
 				active: "待处理",
 				isshow: true,
 				currentTabIndex:2,
-				title: '',
+				title: '探头待办',
 				list: ["待处理","处理中","已完成"],
 				warninglist: [],
 				limit: 6
@@ -75,7 +75,7 @@
 		},
 		onLoad(option) {
 			this.index = option.type
-			this.title = option.title
+			// this.title = option.title
 		},
 		methods: {
 			serchdata(){

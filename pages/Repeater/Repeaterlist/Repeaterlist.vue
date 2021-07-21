@@ -18,6 +18,7 @@
 				<view class="list-mid">
 					<view class="list-mid-left">
 						<text>IP: {{ item.state_text=='待激活'?'- - -':item.ip }}</text>
+						<text>设备名称: {{ item.repeater_name }}</text>
 						<text>4G卡号: {{ item.state_text=='待激活'?'- - -':item.repeater_phone }}</text>
 						<text>位置: {{ item.state_text=='待激活'?'- - -':item.tower_position }}</text>
 					</view>
@@ -25,12 +26,6 @@
 						<text>关联探头</text>
 						<text>{{ item.temp_sensor_number }}个</text>
 					</view>
-				</view>
-				<view class="list-bot" :class="{'borderred':item.electric_quality<=30,'borderblue':item.electric_quality>30}">
-					<image src="../../../static/icon/6820.png" mode=""></image>
-					<text>电量 </text>
-					<text> {{ item.state_text=='工作中'?(item.electric_quality+'%'):'- - -' }}</text>
-					<view class="background" :class="{'blue':item.electric_quality>30,'red':item.electric_quality<=30}" :style="{width: item.state_text=='工作中'?(item.electric_quality+'%'):0}"></view>
 				</view>
 				<view class="botborder"></view>
 			</view>

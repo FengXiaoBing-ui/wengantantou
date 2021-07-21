@@ -43,9 +43,9 @@
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.now_temperature <= $store.state.temperatureyellow&&item.state_text == '工作中',
-							'electric-right-origin': item.now_temperature <= $store.state.temperaturered && item.now_temperature > $store.state.temperatureyellow&&item.state_text == '工作中',
-							'electric-right-red': item.now_temperature > $store.state.temperaturered&&item.state_text == '工作中',
+							'electric-right-blue': item.now_temperature <= item.early_warn_upper&&item.state_text == '工作中',
+							'electric-right-origin': item.now_temperature <= item.high_temperature && item.now_temperature > item.early_warn_upper&&item.state_text == '工作中',
+							'electric-right-red': item.now_temperature > item.high_temperature&&item.state_text == '工作中',
 							'electric-left-no': item.state_text == '已离线',
 							'electric-left-lixian': item.state_text == '待激活'
 						}"
