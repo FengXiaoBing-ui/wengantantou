@@ -38,8 +38,8 @@
 				@longtap="longtap(index)"
 				@click="active(index, item.id)"
 			>
-			<image v-if="item.active == 'active'" class="active" src="../../../static/icon/6979.png" mode=""></image>
-			<image v-if="operation && item.active == ''" class="active" src="../../../static/icon/2747.png" mode=""></image>
+				<image v-if="item.active == 'active'" class="active" src="../../../static/icon/6979.png" mode=""></image>
+				<image v-if="operation && item.active == ''" class="active" src="../../../static/icon/2747.png" mode=""></image>
 				<view class="list-left">
 					<view class="top">
 						<image src="../../../static/icon/6707.png" mode=""></image>
@@ -102,12 +102,12 @@ export default {
 			more: 'nomore',
 			isshow: true,
 			warninglist: [],
-			limit:8,
+			limit: 8,
 			type: 0
 		};
 	},
 	onReachBottom() {
-		this.limit += 8
+		this.limit += 8;
 		this.warning(this.type);
 		this.more = 'loading';
 	},
@@ -116,52 +116,52 @@ export default {
 	},
 	methods: {
 		warning(type) {
-			let arr = []
+			let arr = [];
 			this.$api
 				.postapi('/api/Alarmlog/sel_sensor_alarm_logs', {
 					type: type,
 					limit: this.limit
 				})
 				.then(res => {
-					if(res.data.code==0){
-						this.warninglist = []
-						return false
+					if (res.data.code == 0) {
+						this.warninglist = [];
+						return false;
 					}
-					if(this.limit>=res.data.count){
-						this.more = 'nomore'
+					if (this.limit >= res.data.count) {
+						this.more = 'nomore';
 					}
 					for (let i = 0; i < this.warninglist.length; i++) {
-						if(this.warninglist[i].active == 'active'){
-							arr.push(i)
+						if (this.warninglist[i].active == 'active') {
+							arr.push(i);
 						}
 					}
 					this.warninglist = res.data.data;
 					for (let j = 0; j < this.warninglist.length; j++) {
 						this.warninglist[j].active = '';
-						arr.forEach( e => {
-							this.warninglist[e].active = 'active'
-						})
+						arr.forEach(e => {
+							this.warninglist[e].active = 'active';
+						});
 					}
 				});
-				this.$forceUpdate()
+			this.$forceUpdate();
 		},
 		func() {
-			if(!this.record){
-				console.log("ok")
-				this.$refs.popup.open()
-				return false
+			if (!this.record) {
+				console.log('ok');
+				this.$refs.popup.open();
+				return false;
 			}
 			this.wraptop = true;
 			this.confirmed = false;
-			this.activeall = true
+			this.activeall = true;
 			this.operation = !this.operation;
-			if(!this.operation){
+			if (!this.operation) {
 				for (let i = 0; i < this.warninglist.length; i++) {
 					this.warninglist[i].active = '';
 					this.record = true;
 					this.wraptop = false;
 					this.confirmed = true;
-					this.activeall = true
+					this.activeall = true;
 				}
 			}
 		},
@@ -173,24 +173,24 @@ export default {
 				}
 			});
 			ids = JSON.stringify(ids);
-			if(!this.record){
-				this.$api.postapi('/api/Firealarm/del_alarms',{ids:ids,index:0}).then(res => {
-					console.log(res)
-					if(res.data.code==0){
+			if (!this.record) {
+				this.$api.postapi('/api/Firealarm/del_alarms', { ids: ids, index: 0 }).then(res => {
+					console.log(res);
+					if (res.data.code == 0) {
 						uni.showToast({
-							title:"该数据还未处理，不能删除",
-							icon:"none"
-						})
+							title: '该数据还未处理，不能删除',
+							icon: 'none'
+						});
 					}
-					if(res.data.code==1){
+					if (res.data.code == 1) {
 						uni.showToast({
-							title:"删除成功"
-						})
+							title: '删除成功'
+						});
 					}
 					this.wraptop = true;
 					this.confirmed = false;
 					this.operation = !this.operation;
-					if(!this.operation){
+					if (!this.operation) {
 						for (let i = 0; i < this.warninglist.length; i++) {
 							this.warninglist[i].active = '';
 							this.record = true;
@@ -199,12 +199,18 @@ export default {
 						}
 					}
 					this.warning(1);
-					this.$refs.popup.close()
-				})
-				return false
+					this.$refs.popup.close();
+				});
+				return false;
 			}
-			this.$api.postapi('/api/Alarmlog/confirm_choose_warnning', { ids: ids,index: 0, login_id: uni.getStorageSync('loginId') }).then(res => {
+			this.$api.postapi('/api/Alarmlog/confirm_choose_warnning', { ids: ids, index: 0, login_id: uni.getStorageSync('loginId') }).then(res => {
 				console.log(res);
+				if (res.data.code == 1) {
+					uni.showToast({
+						title: '操作成功'
+					});
+					this.warning(this.type); //刷新页面
+				}
 			});
 			for (let i = 0; i < this.warninglist.length; i++) {
 				this.warninglist[i].active = '';
@@ -213,7 +219,7 @@ export default {
 			this.record = true;
 			this.wraptop = false;
 			this.confirmed = true;
-			this.activeall = true
+			this.activeall = true;
 			this.$refs.popup.close();
 		},
 		close() {
@@ -224,24 +230,24 @@ export default {
 			this.record = true;
 			this.wraptop = false;
 			this.confirmed = true;
-			this.activeall = true
+			this.activeall = true;
 			this.$refs.popup.close();
 		},
 		sure() {
 			let x;
 			this.warninglist.forEach(e => {
 				if (e.active == 'active') {
-					x = true
+					x = true;
 				}
 			});
-			if(x == true){
+			if (x == true) {
 				this.$refs.popup.open();
-				return false
+				return false;
 			}
 			uni.showToast({
-				title:"请先选择探头",
-				icon:"none"
-			})
+				title: '请先选择探头',
+				icon: 'none'
+			});
 		},
 		allactive() {
 			this.activeall = !this.activeall;
@@ -255,8 +261,8 @@ export default {
 					this.warninglist[i].active = 'active';
 					if (this.isshow == false) {
 						this.record = false;
-					}else{
-						this.record = true
+					} else {
+						this.record = true;
 					}
 				}
 			}
@@ -277,8 +283,8 @@ export default {
 				if (arr.length < this.warninglist.length) {
 					if (this.isshow == false) {
 						this.record = false;
-					}else{
-						this.record = true
+					} else {
+						this.record = true;
 					}
 				} else {
 					this.record = true;
@@ -299,8 +305,8 @@ export default {
 					this.warninglist[index].active = 'active';
 					if (this.isshow == false) {
 						this.record = false;
-					}else{
-						this.record = true
+					} else {
+						this.record = true;
 					}
 				} else {
 					this.warninglist[index].active = '';
@@ -318,11 +324,11 @@ export default {
 			this.garbage = true;
 			if (v == '待确认') {
 				this.isshow = true;
-				this.type = 0
+				this.type = 0;
 				this.warning(this.type);
 			} else {
 				this.isshow = false;
-				this.type = 1
+				this.type = 1;
 				this.warning(this.type);
 			}
 		}

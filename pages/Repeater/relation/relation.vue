@@ -25,34 +25,34 @@
 					<view
 						class="electric-left"
 						:class="{
-							'electric-left-blue': item.power_number > $store.state.electric&&item.state_text == '工作中',
-							'electric-left-red': item.power_number <= $store.state.electric&&item.state_text == '工作中',
-							'electric-left-no': item.state_text == '已离线',
+							'electric-left-blue': item.power_number > $store.state.electric&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-left-red': item.power_number <= $store.state.electric&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-left-no': item.state_text == '已离线'||item.state_text == '维修'||item.state_text == '报废',
 							'electric-left-lixian': item.state_text == '待激活'
 						}"
 					>
 						<view
 							class="electric-num-left"
 							:class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }"
-							:style="{ width: item.state_text == '工作中'?(item.power_number + '%'):0 }"
+							:style="{ width: item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废'?(item.power_number + '%'):0 }"
 						></view>
 						<image src="../../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
-						<text class="num">{{ item.state_text == '工作中' ? item.power_number + '%' : '---' }}</text>
+						<text class="num">{{ item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废' ? item.power_number + '%' : '---' }}</text>
 					</view>
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.now_temperature <= item.early_warn_upper&&item.state_text == '工作中',
-							'electric-right-origin': item.now_temperature <= item.high_temperature && item.now_temperature > item.early_warn_upper&&item.state_text == '工作中',
-							'electric-right-red': item.now_temperature > item.high_temperature&&item.state_text == '工作中',
-							'electric-left-no': item.state_text == '已离线',
+							'electric-right-blue': item.now_temperature <= item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-right-origin': item.now_temperature <= item.high_temperature && item.now_temperature > item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-right-red': item.now_temperature > item.high_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-left-no': item.state_text == '已离线'||item.state_text == '维修'||item.state_text == '报废',
 							'electric-left-lixian': item.state_text == '待激活'
 						}"
 					>
 						<image src="../../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.state_text == '工作中' ? (item.now_temperature + '℃') : '---' }}</text>
+						<text class="num">{{ item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废' ? (item.now_temperature + '℃') : '---' }}</text>
 					</view>
 				</view>
 				<text class="bot-text" v-if="item.state_text != '待激活'" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>

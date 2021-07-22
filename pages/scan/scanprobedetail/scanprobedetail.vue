@@ -28,7 +28,7 @@
 						<text>{{ listcontent.work_environment }}</text>
 						<view></view>
 					</view>
-					<view class="list-content">
+					<!-- <view class="list-content">
 						<text>测量温度</text>
 						<text>{{ listcontent.measure_lower }}℃~{{ listcontent.measure_upper }}℃</text>
 						<view></view>
@@ -40,12 +40,12 @@
 					</view>
 					<view class="list-content">
 						<text>告警温度</text>
-						<text>{{ listcontent.early_warn_lower }}℃ ~ {{ listcontent.early_warn_upper }}℃</text>
+						<text>{{ listcontent.early_warn_lower }}℃ ~ {{ listcontent.over_temperature }}℃</text>
 						<view></view>
-					</view>
+					</view> -->
 					<view class="list-content">
 						<text>超温温度</text>
-						<text>{{ listcontent.early_warn_upper }}℃以上</text>
+						<text>≥{{ listcontent.over_temperature }}℃以上</text>
 						<view></view>
 					</view>
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>

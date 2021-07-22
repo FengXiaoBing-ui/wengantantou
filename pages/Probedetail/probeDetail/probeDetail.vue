@@ -31,24 +31,24 @@
 					></view>
 					<image src="../../../static/icon/6820.png" mode=""></image>
 					<text>电量</text>
-					<text class="num">{{ SensorBase.state_text=='工作中'?(SensorBase.power_number+'%'):'- - -' }}</text>
+					<text class="num">{{ SensorBase.state_text != '已离线'&&SensorBase.state_text != '待激活'&&SensorBase.state_text != '维修'&&SensorBase.state_text != '报废' ? (SensorBase.power_number + '℃') : '---' }}</text>
 				</view>
 				<view
 					class="box-right"
 					:class="{
-						'box-right-blue': SensorBase.now_temperature <= SensorBase.early_warn_upper && SensorBase.state_text == '工作中',
+						'box-right-blue': SensorBase.now_temperature <= SensorBase.over_temperature && SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
 						'box-right-yellow':
 							SensorBase.now_temperature <= SensorBase.high_temperature &&
-							SensorBase.now_temperature > SensorBase.early_warn_upper &&
-							SensorBase.state_text == '工作中',
-						'box-right-red': SensorBase.now_temperature > SensorBase.high_temperature && SensorBase.state_text == '工作中',
-						'electric-left-no': SensorBase.state_text == '已离线',
+							SensorBase.now_temperature > SensorBase.over_temperature &&
+							SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
+						'box-right-red': SensorBase.now_temperature > SensorBase.high_temperature && SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
+						'electric-left-no': SensorBase.state_text == '已离线'||SensorBase.state_text == '维修'||SensorBase.state_text == '报废',
 						'electric-left-lixian': SensorBase.state_text == '待激活'
 					}"
 				>
 					<image src="../../../static/icon/6823.png" mode=""></image>
 					<text>温度</text>
-					<text class="num">{{ SensorBase.state_text=='工作中'?(SensorBase.now_temperature+'℃'):'- - -' }}</text>
+					<text class="num">{{ SensorBase.state_text != '已离线'&&SensorBase.state_text != '待激活'&&SensorBase.state_text != '维修'&&SensorBase.state_text != '报废' ? (SensorBase.now_temperature + '℃') : '---' }}</text>
 				</view>
 			</view>
 			<view class="box-mid">
