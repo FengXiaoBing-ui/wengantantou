@@ -165,7 +165,14 @@ export default {
 	created() {
 	},
 	onShow() {
-		
+		this.$api.postapi('/api/Sensor/selSensorDetail', { id: this.id, loginId: uni.getStorageSync('loginId') }).then(res => {
+			
+			this.SensorBase = res.data.data;
+			console.log(999,this.SensorBase);
+			this.checked = this.SensorBase.is_recieve_alarm == 1?true:false
+		});
+		// let year = new Date().getTime((this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDate))
+		this.temp_records();
 	},
 	computed: {},
 	onLoad(option) {
