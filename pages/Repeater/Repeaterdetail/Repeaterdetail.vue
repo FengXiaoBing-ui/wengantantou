@@ -28,10 +28,10 @@
 					<text>关联探头</text>
 					<text>{{ repeateinfo.temp_sensor_number }}个</text>
 				</view>
-				<view @click="repeaterjump">
+				<!-- <view @click="repeaterjump">
 					<text>告警记录</text>
 					<text style="color: #FF7672;">{{ repeateinfo.warn_count }}条</text>
-				</view>
+				</view> -->
 			</view>
 			<!-- <view class="electric">
 				<view class="electric-box" :class="repeateinfo.electric_quality<30?'electric-box-red':''">
