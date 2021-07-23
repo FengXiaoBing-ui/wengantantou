@@ -25,7 +25,7 @@
 					</view>
 					<view class="list-content">
 						<text>工作环境</text>
-						<text>{{ listcontent.work_environment }}</text>
+						<text>{{ listcontent.normal_lower }}~{{listcontent.normal_upper}}℃</text>
 						<view></view>
 					</view>
 					<!-- <view class="list-content">
@@ -37,12 +37,12 @@
 						<text>正常温度</text>
 						<text>{{ listcontent.normal_lower }}℃-{{ listcontent.normal_upper }}℃</text>
 						<view></view>
-					</view>
+					</view>-->
 					<view class="list-content">
-						<text>告警温度</text>
-						<text>{{ listcontent.warm_number }}℃</text>
+						<text>异常告警温度</text>
+						<text>(含){{ listcontent.high_temperature }}~(不含){{ listcontent.over_temperature }}℃</text>
 						<view></view>
-					</view> -->
+					</view> 
 					<view class="list-content">
 						<text>超温温度</text>
 						<text> ≥{{ listcontent.over_temperature }}℃</text>
