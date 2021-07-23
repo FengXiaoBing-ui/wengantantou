@@ -58,7 +58,7 @@
 					</view>
 					<view class="list-content"  v-if="listcontent.device">
 						<text>设定值</text>
-						<text>＞{{ listcontent.device.warm_number }}℃</text>
+						<text>≥{{ listcontent.device.high_temperature }}℃</text>
 						<view></view>
 					</view>
 				</view>
