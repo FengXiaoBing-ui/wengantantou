@@ -44,7 +44,7 @@
 						<view></view>
 					</view> 
 					<view class="list-content">
-						<text>超温温度</text>
+						<text>超温告警温度</text>
 						<text> ≥{{ listcontent.over_temperature }}℃</text>
 						<view></view>
 					</view>

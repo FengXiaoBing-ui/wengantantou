@@ -52,13 +52,18 @@
 						<view></view>
 					</view>
 					<view class="list-content" v-if="listcontent.device">
-						<text>当前值</text>
+						<text>当前温度</text>
 						<text>{{ listcontent.device.now_temperature }}℃</text>
 						<view></view>
 					</view>
 					<view class="list-content"  v-if="listcontent.device">
-						<text>设定值</text>
+						<text>异常告警温度</text>
 						<text>≥{{ listcontent.device.high_temperature }}℃</text>
+						<view></view>
+					</view>
+					<view class="list-content"  v-if="listcontent.device">
+						<text>超温告警温度</text>
+						<text>≥{{ listcontent.device.over_temperature }}℃</text>
 						<view></view>
 					</view>
 				</view>
