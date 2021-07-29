@@ -35,6 +35,18 @@
 				<text @click="screenjump">筛选</text>
 			</view>
 		</view>
+		<view class="serch" v-if="test">
+			<view class="serch_left">
+				<image src="../static/icon/serch.png" mode=""></image>
+				<input style="width: 80%;" type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+			</view>
+			<view class="serch_right">
+				<!-- <image src="../static/icon/668.png" mode=""></image> -->
+				<!-- <text @click="screenjump">筛选</text> -->
+				<text @click="serchdata">搜索</text>
+			</view>
+		</view>
+		
 		<view class="record" v-if="confirmed">
 			<view class="screen">
 				<text @click="anime(item)" :class="item == active ? 'activetext' : ''" v-for="item in option" :key="item">{{ item }}</text>
@@ -72,6 +84,9 @@
 				type:Boolean
 			},
 			sure: {
+				type:Boolean
+			}
+			,test: {
 				type:Boolean
 			},
 			option: {

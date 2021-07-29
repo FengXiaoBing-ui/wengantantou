@@ -718,6 +718,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/Repeater/Repeaterlist1/Repeaterlist1",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
