@@ -27,7 +27,7 @@
 		<view class="serch" v-if="screen">
 			<view class="serch_left">
 				<image src="../static/icon/serch.png" mode=""></image>
-				<input style="width: 80%;" type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备名称或编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
+				<input style="width: 80%;" type="text" value="" confirm-type="search" @confirm="serchdata" placeholder="请输入设备编号搜索..." placeholder-style="color: #D6F2FF;" v-model="keyword" />
 				<view class="serchbtn" @click="serchdata">搜索</view>
 			</view>
 			<view class="serch_right">

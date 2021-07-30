@@ -202,7 +202,7 @@ export default {
 		},
 		queryprobelist() {
 			this.$api.postapi('/api/Search/search_content', { limit: this.limit, keyword: this.keyword,type:this.type }).then(res => {
-				console.log(res)
+				// console.log(res)
 				if(res.data.code==0){
 					this.more = 'nomore';
 					this.probelist = []
