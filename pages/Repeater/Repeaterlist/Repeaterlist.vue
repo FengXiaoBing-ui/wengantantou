@@ -113,7 +113,12 @@
 					if(this.limit>=res.data.count){
 						this.more = 'nomore'
 					}
-					this.list = res.data.data
+					if(res.data.data){
+						this.list = res.data.data
+					}else{
+						this.list = [];
+					}
+					
 				})
 			},
 			func(){

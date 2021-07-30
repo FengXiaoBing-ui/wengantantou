@@ -151,7 +151,7 @@ export default {
 		return true
 	},
 	onLoad(option) {
-		this.id = option.id;
+		this.id = 2;
 		
 		this.$store.commit('repeaterid', this.id);
 		this.repeater_detail();

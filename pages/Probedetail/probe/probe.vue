@@ -116,7 +116,7 @@ export default {
 				if (this.limit >= res.data.count) {
 					this.more = 'nomore';
 				}
-				console.log(456, res);
+				// console.log(456, res);
 				if (res.data.code == 0) {
 					this.more = 'nomore';
 					return false;
@@ -130,14 +130,19 @@ export default {
 				if (this.limit >= res.data.count) {
 					this.more = 'nomore';
 				}
-				this.probelist = res.data.data;
+				if(res.data.data){
+					this.probelist = res.data.data;
+				}else{
+					this.probelist=[];
+				}
+				
 			});
 		},
 		func() {
 			uni.scanCode({
 				success: function(res) {
-					console.log('条码类型：' + res.scanType);
-					console.log('条码内容：' + res.result);
+					// console.log('条码类型：' + res.scanType);
+					// console.log('条码内容：' + res.result);
 					let obj = JSON.parse(res.result);
 					if (obj.type == 0) {
 						uni.navigateTo({
