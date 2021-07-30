@@ -60,60 +60,13 @@
 export default {
 	data() {
 		return {
+			serviceId:'',
+			deviceId:'',
 			more:'noMore',
 			active:'bordbot_left',
 			fontactive_left:'active',
 			fontactive_right:'',
-			list: [
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-				{
-					name:'1'
-				},
-			],
+			list: [],
 			chartsDataGauge1:{
 			    "categories": [
 			        {
@@ -247,11 +200,12 @@ export default {
 						// console.log("成功",res)
 						console.log('device services:', res);
 						res.services.forEach(item => {
-							if (item.uuid.indexOf('AE00') != -1) {
-								// this.serviceId = item.uuid;
+							console.log(123,item);
+							if (item.uuid.indexOf('00001800') != -1) {
+								this.serviceId = item.uuid;
 								//存储到状态
 								this.$store.commit('upserviceId', item.uuid);
-								console.log(this.serviceId);
+								
 								// 这里获取回调，读取成功就的值就会在这个地方接收到！！！
 								uni.onBLECharacteristicValueChange(res => {
 									console.log('监听成功', res);
@@ -281,11 +235,11 @@ export default {
 						console.log(this.characteristics);
 						//循环所有的uuid
 
-						// for(let i=0;i<3;i++){
-						// 	this.notifyBLECharacteristicValueChange(res.characteristics[i].uuid)
-						// 	console.log(res.characteristics[i].uuid)
-						// 	console.log(i,'i')
-						// }
+						for(let i=0;i<3;i++){
+							this.notifyBLECharacteristicValueChange(res.characteristics[i].uuid)
+							console.log(res.characteristics[i].uuid)
+							console.log(i,'i')
+						}
 
 						res.characteristics.forEach(item => {
 							if (item.uuid.indexOf('AE02') != -1) {
@@ -302,7 +256,7 @@ export default {
 			}, 1000);
 		},
 		notifyBLECharacteristicValueChange(characteristicId) {
-			console.log(characteristicId, 'characteristicId');
+			console.log(this.deviceId,this.serviceId,characteristicId, '686868686');
 			uni.notifyBLECharacteristicValueChange({
 				state: true, // 启用 notify 功能
 				// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
@@ -317,10 +271,10 @@ export default {
 					console.log('notifyBLECharacteristicValueChange success', res.errMsg);
 				},
 				fail: res => {
-					console.log('notifyBLECharacteristicValueChange success2', res.errMsg);
+					console.log('success2', res.errMsg);
 				}
 			});
-		}
+		},
 	}
 };
 </script>

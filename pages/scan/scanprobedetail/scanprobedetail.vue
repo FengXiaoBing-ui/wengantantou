@@ -187,6 +187,7 @@ export default {
 	},
 	methods:{
 		detailinfo(id){
+			console.log(12456,id)
 			this.$api.postapi('/api/Sensor/selSensorBaseDetial',{loginId:uni.getStorageSync('loginId'),id:id}).then(res => {
 				console.log(99,res)
 				this.listcontent = res.data.data
