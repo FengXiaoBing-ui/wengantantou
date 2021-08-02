@@ -15,7 +15,17 @@
 				</view>
 				<view class="right">
 					<view class="charts-box">
-					  <qiun-data-charts type="gauge" :opts="{fontSize: 10,fontColor:'#ffffff',title:{name: '88%',color: '#FFFCE6',fontSize: 24,offsetY:50},subtitle: {name: ''},extra:{gauge:{labelColor:'#fff',width:8,splitLine:{childWidth:8,width:10},pointer:{width:10}}}}" :chartData="chartsDataGauge1"/>
+						<qiun-data-charts
+							type="gauge"
+							:opts="{
+								fontSize: 10,
+								fontColor: '#ffffff',
+								title: { name: '88%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
+								subtitle: { name: '' },
+								extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
+							}"
+							:chartData="chartsDataGauge1"
+						/>
 					</view>
 				</view>
 				<image class="leftwifi" src="../../../static/icon/43wifi.png" mode=""></image>
@@ -30,7 +40,7 @@
 				<image class="bot_icon" src="../../../static/icon/13967.png" mode=""></image>
 				<image class="bot_bord" src="../../../static/icon/15.png" mode=""></image>
 			</view>
-			
+
 			<view class="Dashboard">
 				<view class="Dashboard_tab">
 					<view class="Dashboard_tab_left" :class="fontactive_left" @click="witeoverhaul">
@@ -50,7 +60,6 @@
 					</view>
 					<uni-load-more :status="more"></uni-load-more>
 				</scroll-view>
-				
 			</view>
 		</view>
 	</view>
@@ -60,34 +69,34 @@
 export default {
 	data() {
 		return {
-			serviceId:'',
-			deviceId:'',
-			more:'noMore',
-			active:'bordbot_left',
-			fontactive_left:'active',
-			fontactive_right:'',
+			serviceId: '',
+			deviceId: '',
+			more: 'noMore',
+			active: 'bordbot_left',
+			fontactive_left: 'active',
+			fontactive_right: '',
 			list: [],
-			chartsDataGauge1:{
-			    "categories": [
-			        {
-			            "value": 0.2,
-			            "color": "#1890ff"
-			        },
-			        {
-			            "value": 0.8,
-			            "color": "#2fc25b"
-			        },
-			        {
-			            "value": 1,
-			            "color": "#f04864"
-			        }
-			    ],
-			    "series": [
-			        {
-			            "name": "完成率",
-			            "data": 0.89
-			        }
-			    ]
+			chartsDataGauge1: {
+				categories: [
+					{
+						value: 0.2,
+						color: '#1890ff'
+					},
+					{
+						value: 0.8,
+						color: '#2fc25b'
+					},
+					{
+						value: 1,
+						color: '#f04864'
+					}
+				],
+				series: [
+					{
+						name: '完成率',
+						data: 0.89
+					}
+				]
 			}
 		};
 	},
@@ -95,19 +104,17 @@ export default {
 		this.openBluetoothAdapter();
 	},
 	methods: {
-		witeoverhaul(){
-			this.active = 'bordbot_left'
-			this.fontactive_left = 'active'
-			this.fontactive_right = ''
+		witeoverhaul() {
+			this.active = 'bordbot_left';
+			this.fontactive_left = 'active';
+			this.fontactive_right = '';
 		},
-		witerepair(){
-			this.active = 'bordbot_right'
-			this.fontactive_left = ''
-			this.fontactive_right = 'active'
+		witerepair() {
+			this.active = 'bordbot_right';
+			this.fontactive_left = '';
+			this.fontactive_right = 'active';
 		},
-		
-		
-		
+
 		openBluetoothAdapter() {
 			uni.openBluetoothAdapter({
 				success: res => {
@@ -200,18 +207,13 @@ export default {
 						// console.log("成功",res)
 						console.log('device services:', res);
 						res.services.forEach(item => {
-							console.log(123,item);
-							if (item.uuid.indexOf('00001800') != -1) {
+							if (item.uuid.indexOf('0000FFE0') != -1) {
+								console.log(123, item.uuid);
 								this.serviceId = item.uuid;
 								//存储到状态
 								this.$store.commit('upserviceId', item.uuid);
-								
+
 								// 这里获取回调，读取成功就的值就会在这个地方接收到！！！
-								uni.onBLECharacteristicValueChange(res => {
-									console.log('监听成功', res);
-									//res.value是ArrayBuffer类型的，官方给了一个方法转16进制，我们再进行操作
-									this.shiliu = this.ab2hex(res.value);
-								});
 
 								this.getBLEDeviceCharacteristics();
 							}
@@ -235,10 +237,11 @@ export default {
 						console.log(this.characteristics);
 						//循环所有的uuid
 
-						for(let i=0;i<3;i++){
-							this.notifyBLECharacteristicValueChange(res.characteristics[i].uuid)
-							console.log(res.characteristics[i].uuid)
-							console.log(i,'i')
+						for (let i = 0; i < res.characteristics.length; i++) {
+							this.notifyBLECharacteristicValueChange(res.characteristics[i].uuid);
+
+							console.log(res.characteristics[i].uuid);
+							console.log(i, 'i');
 						}
 
 						res.characteristics.forEach(item => {
@@ -256,25 +259,105 @@ export default {
 			}, 1000);
 		},
 		notifyBLECharacteristicValueChange(characteristicId) {
-			console.log(this.deviceId,this.serviceId,characteristicId, '686868686');
+			let _this = this;
+			// uni.writeBLECharacteristicValue({
+			// 	deviceId: this.deviceId,
+			// 	serviceId: this.serviceId,
+			// 	characteristicId: characteristicId,
+			// 	value: buffer,
+			// 	success: function(res) {
+			// 		console.log(res);
+			// 	},
+			// 	fail: function(res) {
+			// 		console.log(res);
+			// 	}
+			// });
+			// console.log(this.deviceId,this.serviceId,characteristicId, '686868686');
 			uni.notifyBLECharacteristicValueChange({
 				state: true, // 启用 notify 功能
 				// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
-				deviceId: this.deviceId,
+				deviceId: _this.deviceId,
 				// 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
-				serviceId: this.serviceId,
+				serviceId: _this.serviceId,
 				// 这里的 characteristicId 需要在 getBLEDeviceCharacteristics 接口中获取
 				characteristicId: characteristicId,
 				success: res => {
-					console.log(res);
-					// console.log(this.characteristicId)
-					console.log('notifyBLECharacteristicValueChange success', res.errMsg);
+					let buffer = new ArrayBuffer(1);
+					let dataView = new DataView(buffer);
+					setTimeout(() => {
+						dataView.setUint8(0, 0);
+						console.log(7777777777, _this.string2buf('wwwwww'));
+						uni.writeBLECharacteristicValue({
+							deviceId: _this.deviceId,
+							serviceId: _this.serviceId,
+							characteristicId: characteristicId,
+							value: _this.string2buf('niubi'), 
+							success: function(res) {
+								console.log(123456789, res);
+							},
+							fail: function(res) {
+								console.log(789456123, res);
+							}
+						});
+					}, 1000);
+					function ab2hex(buffer) {
+						const hexArr = Array.prototype.map.call(new Uint8Array(buffer), function(bit) {
+							return ('00' + bit.toString(16)).slice(-2);
+						});
+						return hexArr.join('');
+					}
+					function hexCharCodeToStr(hexCharCodeStr) {
+					　　var trimedStr = hexCharCodeStr.trim();
+					　　var rawStr = 
+					　　trimedStr.substr(0,2).toLowerCase() === "0x"
+					　　? 
+					　　trimedStr.substr(2) 
+					　　: 
+					　　trimedStr;
+					　　var len = rawStr.length;
+					　　if(len % 2 !== 0) {
+					　　　　alert("Illegal Format ASCII Code!");
+					　　　　return "";
+					　　}
+					　　var curCharCode;
+					　　var resultStr = [];
+					　　for(var i = 0; i < len;i = i + 2) {
+					　　　　curCharCode = parseInt(rawStr.substr(i, 2), 16); // ASCII Code Value
+					　　　　resultStr.push(String.fromCharCode(curCharCode));
+					　　}
+					　　return resultStr.join("");
+					}
+					uni.onBLECharacteristicValueChange(function(res) {
+						console.log('uni.onBLECharacteristicValueChange');
+						console.log('特征值改变：' + JSON.stringify(res));
+						console.log(`characteristic ${res.characteristicId} has changed, now is ${JSON.stringify(res.value)}`);
+						var value = ab2hex(res.value);
+						console.log('ArrayBuffer转16进度字符串完成：' + value);
+						console.log(520,hexCharCodeToStr(value))
+					});
 				},
 				fail: res => {
 					console.log('success2', res.errMsg);
 				}
 			});
 		},
+		string2buf: function(str) {
+			// 首先将字符串转为16进制
+			let val = '';
+			for (let i = 0; i < str.length; i++) {
+				if (val === '') {
+					val = str.charCodeAt(i).toString(16);
+				} else {
+					val += ',' + str.charCodeAt(i).toString(16);
+				}
+			}
+			// 将16进制转化为ArrayBuffer
+			return new Uint8Array(
+				val.match(/[\da-f]{2}/gi).map(function(h) {
+					return parseInt(h, 16);
+				})
+			).buffer;
+		}
 	}
 };
 </script>
@@ -288,14 +371,14 @@ export default {
 	z-index: 9;
 	top: 200rpx;
 	padding-bottom: 100rpx;
-	
+
 	.Dashboard {
 		width: 100%;
 		margin-top: 20rpx;
 		border: 2rpx solid rgba(90, 232, 255, 0.7);
 		background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
 		box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
-		.Dashboard_tab{
+		.Dashboard_tab {
 			height: 121rpx;
 			border: 2rpx solid rgba(90, 232, 255, 0.7);
 			background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
@@ -308,9 +391,10 @@ export default {
 			font-family: Source Han Sans CN;
 			font-weight: 400;
 			line-height: 44rpx;
-			color: #FFFFFF;
+			color: #ffffff;
 			position: relative;
-			.Dashboard_tab_left,.Dashboard_tab_right{
+			.Dashboard_tab_left,
+			.Dashboard_tab_right {
 				width: 164rpx;
 				display: flex;
 				flex-direction: column;
@@ -320,31 +404,30 @@ export default {
 				font-family: Source Han Sans CN;
 				font-weight: 400;
 				line-height: 44rpx;
-				color: #FFFFFF;
+				color: #ffffff;
 			}
-			.active{
+			.active {
 				font-size: 32rpx;
 				font-weight: bold;
 			}
-			.bordbot{
+			.bordbot {
 				position: absolute;
 				bottom: 0;
 				width: 164rpx;
 				height: 6rpx;
-				border: 1rpx solid #5AE8FF;
-				background: linear-gradient(180deg, #5AE8FF 0%, #1C54B8 100%);
+				border: 1rpx solid #5ae8ff;
+				background: linear-gradient(180deg, #5ae8ff 0%, #1c54b8 100%);
 				box-sizing: border-box;
 				transition: 0.3s;
 			}
-			.bordbot_left{
+			.bordbot_left {
 				left: 190rpx;
 			}
-			.bordbot_right{
+			.bordbot_right {
 				left: 190rpx+164rpx;
-				
 			}
 		}
-		.listfather{
+		.listfather {
 			height: 600rpx;
 		}
 		.list {
@@ -358,12 +441,12 @@ export default {
 			font-family: Source Han Sans CN;
 			font-weight: 400;
 			line-height: 40rpx;
-			color: #FFFFFF;
+			color: #ffffff;
 			box-sizing: border-box;
-			&:nth-child(2n){
-				background: #002A6A;
+			&:nth-child(2n) {
+				background: #002a6a;
 			}
-			image{
+			image {
 				width: 40rpx;
 				height: 40rpx;
 				margin-right: 8rpx;
@@ -415,7 +498,7 @@ export default {
 		}
 		.right {
 			width: 60%;
-			.charts-box{
+			.charts-box {
 				width: 100%;
 				height: 320rpx;
 			}
