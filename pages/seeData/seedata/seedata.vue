@@ -71,7 +71,26 @@
 					<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
 				</view>
 			</view>
-			<view class="bot_box">
+			<view class="mid_count">
+				<view class="left" style="flex-direction: unset;justify-content: center;">
+					<image class="top_icon" style="width: 87rpx;height: 87rpx;" src="../../../static/icon/7100@2x.png" mode=""></image>
+					<view class="count_box">
+						<text class="name">维护班组</text>
+						<text class="count">123<text class="name">个</text></text>
+						<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
+					</view>
+				</view>
+				<view class="right" style="flex-direction: unset;justify-content: center;">
+					<image class="top_icon" style="width: 87rpx;height: 87rpx;" src="../../../static/icon/7099@2x.png" mode=""></image>
+					<view class="count_box">
+						<text class="name">维护人员</text>
+						<text class="count">123 <text class="name">个</text> </text>
+						<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
+					</view>
+					
+				</view>
+			</view>
+<!-- 			<view class="bot_box">
 				<view class="header_data">
 					<view class="equipment">
 						<text>正常设备</text>
@@ -97,7 +116,7 @@
 				<view class="charts-box">
 				  <qiun-data-charts type="pie" :opts="{'color':color,fontColor:'#fff',legend:{show: false}}" :chartData="chartsDataRose1"/>
 				</view>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
@@ -335,6 +354,11 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			.count_box{
+				display: flex;
+				flex-direction: column;
+				margin-left: 20rpx;
+			}
 			.top_icon{
 				margin-top: 21rpx;
 				width: 60rpx;

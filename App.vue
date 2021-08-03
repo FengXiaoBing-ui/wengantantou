@@ -1,43 +1,69 @@
 <script>
-	var sensor_id = '';
-	var type = '';
+var sensor_id = '';
+var type = '';
 export default {
 	onLaunch: function() {
-		// console.log('App Launch');
-		// uni.subscribePush({
-		// 	provider: "unipush",
-		//           success: function(res) {
-		//               console.log("success:" + JSON.stringify(res));
-		//           },
-		// 	fail:function(err){
-		// 		console.log(err)
-		// 	}
-		// })
+
+			// var server = 'http://wgtt.welamp.cn/static/files/20210802/a9619235e1865601b2cf0c013f1fcf9f.apk'; //检查更新地址
+			// var req = {
+			// 	appid: plus.runtime.appid,
+			// 	version: plus.runtime.version
+			// };
+
+			// uni.request({
+			// 	url: server,
+			// 	data: req,
+			// 	success: res => {
+			// 		console.log(6666, res);
+			// 		if (res.data.status === 1) {
+			// 			uni.showModal({
+			// 				//提醒用户更新
+			// 				title: '更新提示',
+			// 				content: res.data.note,
+			// 				success: confirm_status => {
+			// 					if (res.data == 'android') {
+			// 						var dtask = plus.downloader.createDownload(res.data.url, {}, function(d, status) {
+			// 							// 下载完成回调
+			// 							if (status == 200) {
+			// 								plus.runtime.install(d.filename);
+			// 							}
+			// 						});
+			// 						dtask.start();
+			// 					} else {
+			// 						plus.runtime.openURL(res.data.url);
+			// 					}
+			// 				}
+			// 			}); 
+			// 		}
+			// 	},
+			// 	fail(err) {
+			// 		console.log(err)
+			// 	}
+			// });
+
 		const clientInfo = plus.push.getClientInfo();
 		console.log(12, clientInfo);
-		this.$api.postapi('/api/admin/upd_user_cid', { cid: clientInfo.clientid, loginId: uni.getStorageSync('loginId') }).then(res => {
-			
-		});
+		this.$api.postapi('/api/admin/upd_user_cid', { cid: clientInfo.clientid, loginId: uni.getStorageSync('loginId') }).then(res => {});
 		plus.push.setAutoNotification(true);
 		const _self = this;
-		
+
 		//监听接收透传消息事件
 		plus.push.addEventListener(
 			'receive',
 			function(message) {
 				console.log(111, message);
-				
-				let options = { cover: false, sound: 'system', title: message.title};
-				
+
+				let options = { cover: false, sound: 'system', title: message.title };
+
 				sensor_id = message.payload.sensor_id;
 				type = message.payload.type;
-				
+
 				let obj = {
-					sensor_id:sensor_id,
-					type:type
-				}
-				
-				plus.push.createMessage(message.content,obj, options);
+					sensor_id: sensor_id,
+					type: type
+				};
+
+				plus.push.createMessage(message.content, obj, options);
 				//     plus.nativeUI.toast('receive:'+JSON.stringify(message));
 				// //处理透传消息的业务逻辑代码
 				// plus.nativeUI.toast('push receive');
@@ -56,14 +82,14 @@ export default {
 						uni.navigateTo({
 							url: '/pages/Dangerin/Confirmed/Confirmed?id=' + message.payload.sensor_id + '&index=0'
 						});
-					},1000)
+					}, 1000);
 				}
 				if (message.payload.type == 1) {
 					setTimeout(() => {
 						uni.redirectTo({
 							url: '/pages/Dangerin/Confirmed/Confirmed?id=' + message.payload.sensor_id + '&index=1'
 						});
-					},1000)
+					}, 1000);
 				}
 			},
 			false

@@ -4,6 +4,7 @@
 		<image class="titleimg" src="../../static/icon/title.png" mode=""></image>
 		<button @click="getinto">立即进入</button>
 		<image class="bot" src="../../static/icon/6892.png" mode=""></image>
+		
 	</view>
 </template>
 
@@ -43,9 +44,10 @@
 	}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 	.entrance{
 		background: #033785;
+
 		.top{
 			width: 100%;
 			height: 355rpx;

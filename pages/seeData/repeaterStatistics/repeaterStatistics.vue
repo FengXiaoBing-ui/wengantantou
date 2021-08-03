@@ -4,13 +4,20 @@
 		<view class="wrap">
 			<view class="header_box">
 				<view class="left">
-					<view class="all_count">
-						<view class="all_count_text"><text>中继器总数</text></view>
-						<text>500</text>
+					<view style="display: flex;justify-content: space-evenly;width: 100%;">
+						<view class="all_count">
+							<view class="all_count_text" style="width: 100rpx;"> <view style="width: 20rpx;height: 20rpx;border-radius: 50%;background: #60E2AA;"></view> <text>在线</text></view>
+							<text>720 <text style="opacity: 0.6;font-size: 24rpx;">台</text> </text>
+						</view>
+						<view class="all_count">
+							<view class="all_count_text" style="width: 100rpx;"> <view style="width: 20rpx;height: 20rpx;border-radius: 50%;background: #77BEC9;"></view> <text>在线</text></view>
+							<text>50 <text style="opacity: 0.6;font-size: 24rpx;">台</text></text>
+						</view>
 					</view>
+					
 					<view class="all_count">
 						<view class="all_count_text"><text>中继器总数</text></view>
-						<text>500</text>
+						<text> 752 <text style="opacity: 0.6;font-size: 24rpx;">台</text> </text>
 					</view>
 				</view>
 				<view class="right">
@@ -33,30 +40,35 @@
 				<image class="bot_left_icon" src="../../../static/icon/57.png" mode=""></image>
 				<image class="bot_icon" src="../../../static/icon/15.png" mode=""></image>
 			</view>
-			<view class="repair">
-				<image class="repair_icon" src="../../../static/icon/7028.png" mode=""></image>
-				<text class="all_count">总检修次数</text>
-				<text class="count">785</text>
-				<image class="bot_icon" src="../../../static/icon/13967.png" mode=""></image>
-				<image class="bot_bord" src="../../../static/icon/15.png" mode=""></image>
-			</view>
 
 			<view class="Dashboard">
 				<view class="Dashboard_tab">
 					<view class="Dashboard_tab_left" :class="fontactive_left" @click="witeoverhaul">
-						<text>待检修</text>
-						<text>58</text>
+						<text>待检修 <text style="padding: 0rpx 12rpx;background: #F6B532;border-radius: 21rpx;margin-left: 20rpx;">12</text> </text>
 					</view>
 					<view class="Dashboard_tab_right" :class="fontactive_right" @click="witerepair">
-						<text>待维修</text>
-						<text>28</text>
+						<text>待维修 <text style="padding: 0rpx 12rpx;background: #FF5252;border-radius: 21rpx;margin-left: 20rpx;">12</text> </text>
 					</view>
 					<view class="bordbot" :class="active"></view>
 				</view>
 				<scroll-view scroll-y="true" class="listfather">
+					<view style="display: flex;justify-content: space-evenly;background: linear-gradient(90deg, rgba(90, 232, 255, 0) 0%, rgba(90, 232, 255, 0.39) 16%, #5AE8FF 50%, rgba(90, 232, 255, 0.47) 77%, rgba(90, 232, 255, 0) 100%);color: #fff;">
+						<text>线路、位置</text>
+						<text>距上次检修时长</text>
+					</view>
 					<view class="list" v-for="(item, index) in list" :key="index" @click="createBLEConnection(item.deviceId)">
-						<image src="../../../static/icon/wifi.png" mode=""></image>
-						<view class="">编号 {{ item.name }}</view>
+						
+						<view class="list_repeater">
+							<view class="pagoda">
+								<image src="../../../static/icon/Gps.png" mode=""></image>
+								<view style="color: rgb(90, 232, 255);font-size: 30rpx;">{{ item.name }}  <text style="color: #fff;margin-left: 20rpx;">  第784号杆</text> </view>
+							</view>
+							<view class="num">
+								<image src="../../../static/icon/wifi.png" mode=""></image>
+								<view style="opacity: 0.6;font-size: 20rpx;">{{ item.num }} </view>
+							</view>
+						</view>
+						<text style="margin-right: 40rpx;">121天</text>
 					</view>
 					<uni-load-more :status="more"></uni-load-more>
 				</scroll-view>
@@ -75,20 +87,29 @@ export default {
 			active: 'bordbot_left',
 			fontactive_left: 'active',
 			fontactive_right: '',
-			list: [],
+			list: [
+				{
+					name:'dfsfd',
+					num:'T5B464668444447'
+				},
+				{
+					name:'woganni',
+					num:'T5B464668444447'
+				},
+			],
 			chartsDataGauge1: {
 				categories: [
 					{
 						value: 0.2,
-						color: '#1890ff'
+						color: '#60E2AA'
 					},
 					{
 						value: 0.8,
-						color: '#2fc25b'
+						color: '#60E2AA'
 					},
 					{
 						value: 1,
-						color: '#f04864'
+						color: '#60E2AA'
 					}
 				],
 				series: [
@@ -381,11 +402,11 @@ export default {
 		.Dashboard_tab {
 			height: 121rpx;
 			border: 2rpx solid rgba(90, 232, 255, 0.7);
-			background: linear-gradient(180deg, rgba(65, 201, 252, 0.7) 0%, rgba(28, 84, 184, 0.7) 100%);
+			background: linear-gradient(180deg, #41C9FC 0%, #1C54B8 100%);
 			box-shadow: 2rpx 3rpx 8rpx rgba(90, 232, 255, 0.8);
 			display: flex;
 			justify-content: space-between;
-			padding: 0 190rpx;
+			padding: 0 120rpx;
 			box-sizing: border-box;
 			font-size: 30rpx;
 			font-family: Source Han Sans CN;
@@ -395,7 +416,7 @@ export default {
 			position: relative;
 			.Dashboard_tab_left,
 			.Dashboard_tab_right {
-				width: 164rpx;
+				width: 228rpx;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
@@ -413,7 +434,7 @@ export default {
 			.bordbot {
 				position: absolute;
 				bottom: 0;
-				width: 164rpx;
+				width: 228rpx;
 				height: 6rpx;
 				border: 1rpx solid #5ae8ff;
 				background: linear-gradient(180deg, #5ae8ff 0%, #1c54b8 100%);
@@ -421,16 +442,17 @@ export default {
 				transition: 0.3s;
 			}
 			.bordbot_left {
-				left: 190rpx;
+				left: 120rpx;
 			}
 			.bordbot_right {
-				left: 190rpx+164rpx;
+				left: 120rpx+228rpx;
 			}
 		}
 		.listfather {
 			height: 600rpx;
 		}
 		.list {
+			padding: 10rpx 0;
 			display: flex;
 			align-items: center;
 			width: 100%;
@@ -442,7 +464,7 @@ export default {
 			font-weight: 400;
 			line-height: 40rpx;
 			color: #ffffff;
-			box-sizing: border-box;
+			justify-content: space-between;
 			&:nth-child(2n) {
 				background: #002a6a;
 			}
@@ -450,6 +472,12 @@ export default {
 				width: 40rpx;
 				height: 40rpx;
 				margin-right: 8rpx;
+			}
+			.list_repeater{
+				.pagoda,.num{
+					display: flex;
+					align-items: center;
+				}
 			}
 		}
 	}
@@ -477,21 +505,22 @@ export default {
 					background: #134a86;
 					opacity: 1;
 					border-radius: 24rpx;
-					text-align: center;
 					margin-bottom: 15rpx;
+					display: flex;
+					justify-content: space-evenly;
+					align-items: center;
 					text {
 						font-size: 28rpx;
 						font-family: Source Han Sans CN;
 						font-weight: 400;
-						line-height: 43rpx;
 						color: #54d6ff;
+						line-height: 0;
 					}
 				}
 				text {
-					font-size: 48rpx;
+					font-size: 42rpx;
 					font-family: Roboto;
 					font-weight: bold;
-					line-height: 58rpx;
 					color: #fffce6;
 				}
 			}
