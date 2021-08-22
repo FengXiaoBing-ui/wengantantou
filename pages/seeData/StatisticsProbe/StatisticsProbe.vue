@@ -7,8 +7,8 @@
 					<text>系统总运行时间</text>
 				</view>
 				<text class="title">5478</text>
-				<image class="mengban43" src="../../../static/icon/43.png" mode=""></image>
-				<image class="bord_icon" src="../../../static/icon/15.png" mode=""></image>
+				<image class="mengban43" src="。static/icon/43.png" mode=""></image>
+				<image class="bord_icon" src="。static/icon/15.png" mode=""></image>
 			</view> -->
 			<view class="mid_echart">
 				<view class="left">
@@ -46,63 +46,63 @@
 					<view class="all_wraning">
 						<text style="color: #54C8F4;">正常</text>
 						<view class="text_count">
-							<text>7845</text>
+							<text>{{ statistics.normal_count }}</text>
 							<text style="font-size: 24rpx;color: FFFFFF;opacity: 0.5;">支</text>
 						</view>
 					</view>
-					<image class="bot_icon" src="../../../static/icon/13965.png" mode=""></image>
+					<image class="bot_icon" src="。static/icon/13965.png" mode=""></image>
 				</view>
 				<view class="warning_count" style="width: 216rpx;flex-direction: column;align-items: center;justify-content: center;">
 					<image class="icon" style="width: 54rpx;height: 54rpx;" src="../../../static/icon/7097@2x.png" mode=""></image>
 					<view class="all_wraning">
-						<text style="color: #FFE300;">正常</text>
+						<text style="color: #FFE300;">高温</text>
 						<view class="text_count">
-							<text>7845</text>
+							<text>{{ statistics.high_temperature_count }}</text>
 							<text style="font-size: 24rpx;color: FFFFFF;opacity: 0.5;">次</text>
 						</view>
 					</view>
-					<image class="bot_icon" src="../../../static/icon/13965.png" mode=""></image>
+					<image class="bot_icon" src="。static/icon/13965.png" mode=""></image>
 				</view>
 				<view class="warning_count" style="width: 216rpx;flex-direction: column;align-items: center;justify-content: center;">
 					<image class="icon" style="width: 54rpx;height: 54rpx;" src="../../../static/icon/7098@2x.png" mode=""></image>
 					<view class="all_wraning">
-						<text style="color: #FF8784;">正常</text>
+						<text style="color: #FF8784;">超温</text>
 						<view class="text_count">
-							<text>7845</text>
+							<text>{{ statistics.over_temperature_count }}</text>
 							<text style="font-size: 24rpx;color: FFFFFF;opacity: 0.5;">次</text>
 						</view>
 					</view>
-					<image class="bot_icon" src="../../../static/icon/13965.png" mode=""></image>
+					<image class="bot_icon" src="。static/icon/13965.png" mode=""></image>
 				</view>
 			</view>
 			<view class="bot_list">
 				<view class="warning_count">
-					<image class="icon" src="../../../static/icon/71002x.png" mode=""></image>
+					<image class="icon" src="。static/icon/71002x.png" mode=""></image>
 					<view class="all_wraning">
 						<text>在线</text>
 						<view class="text_count">
-							<text>7845</text>
+							<text>{{ statistics.online_count }}</text>
 							<text style="font-size: 24rpx;color: FFFFFF;">次</text>
 						</view>
 					</view>
-					<image class="bot_icon" src="../../../static/icon/13965.png" mode=""></image>
+					<image class="bot_icon" src="。static/icon/13965.png" mode=""></image>
 				</view>
 				<view class="warning_count">
-					<image class="icon" src="../../../static/icon/70992x.png" mode=""></image>
+					<image class="icon" src="。static/icon/70992x.png" mode=""></image>
 					<view class="all_wraning">
 						<text>离线</text>
 						<view class="text_count">
-							<text>7845</text>
+							<text>{{ statistics.offline_count }}</text>
 							<text style="font-size: 24rpx;color: FFFFFF;">次</text>
 						</view>
 					</view>
-					<image class="bot_icon" src="../../../static/icon/13965.png" mode=""></image>
+					<image class="bot_icon" src="。static/icon/13965.png" mode=""></image>
 				</view>
 			</view>
 			<view class="footback">
-				<image class="background" src="../../../static/icon/59@2x.png" mode=""></image>
+				<image class="background" src="。static/icon/59@2x.png" mode=""></image>
 				<image src="../../../static/icon/7101@2x.png" mode=""></image>
-				<text style="color: #fff;">当前注册激活<text style="font-size: 36rpx;font-weight: bold;">45</text>支</text>
+				<text style="color: #fff;">当前注册激活<text style="font-size: 36rpx;font-weight: bold;">{{ statistics.active_count }}</text>支</text>
 			</view>
 		</view>
 	</view>
@@ -112,6 +112,7 @@
 export default {
 	data() {
 		return {
+			statistics:{},
 			chartsDataGauge1: {
 				categories: [
 					{
@@ -141,6 +142,17 @@ export default {
 				]
 			}
 		};
+	},
+	created() {
+		this.Probestatistics()
+	},
+	methods:{
+		Probestatistics(){
+			this.$api.postapi('/api/Watchdata/probe_statistics').then(res => {
+				console.log(res)
+				this.statistics = res.data
+			})
+		}
 	}
 };
 </script>

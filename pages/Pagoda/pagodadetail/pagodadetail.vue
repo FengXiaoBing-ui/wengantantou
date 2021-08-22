@@ -257,9 +257,17 @@
 				}
 			},
 			jump(id){
-				uni.navigateTo({
-					url:"../../Probedetail/probeDetail/probeDetail?id="+id
-				})
+				console.log(this.active)
+				if(this.active=='探头'){
+					uni.navigateTo({
+						url:"../../Probedetail/probeDetail/probeDetail?id="+id
+					})
+				}else{
+					uni.navigateTo({
+						url:"../../Repeater/Repeaterdetail/Repeaterdetail?id="+id
+					})
+				}
+				
 			},
 			repeaterjump(id){
 				uni.navigateTo({

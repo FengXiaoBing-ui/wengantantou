@@ -19,7 +19,9 @@
 			</view>
 			<button class="loginbtn" type="default" @click="login">立即登录</button>
 		</view>
-		<uni-popup ref="popup" class="popup" type="center"><Edition @downloadapk="downloadapk" :editiondata="editiondata"></Edition></uni-popup>
+		<uni-popup ref="popup" class="popup" type="center">
+			<Edition @downloadapk="downloadapk" @nexttime="nexttime" :editiondata="editiondata"></Edition>
+		</uni-popup>
 		<uni-popup :maskClick="false" class="popup" ref="mypopup" type="center">
 			<view class="progress">
 				<text>安装包更新中...</text>
@@ -30,7 +32,7 @@
 </template>
 
 <script>
-import Edition from '../../components/edition/edition.vue';
+import Edition from '../../components/edition.vue';
 export default {
 	components: {
 		Edition
@@ -91,6 +93,7 @@ export default {
 		}
 	},
 	methods: {
+		//现在升级
 		downloadapk() {
 			this.$refs.popup.close();
 			this.$refs.mypopup.open();
@@ -117,8 +120,13 @@ export default {
 				}
 			});
 		},
+		//下次升级
+		nexttime(){
+			this.$refs.popup.close();
+			this.$refs.mypopup.close();
+		},
 		edition() {
-			console.log('ok', plus.runtime.version);
+			// console.log('ok', plus.runtime.version);
 			this.$api.postapi('/api/fuc/check_update', { version: plus.runtime.version }).then(res => {
 				console.log('ok',res);  
 				if (res.data.code == 1) {

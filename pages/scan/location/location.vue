@@ -41,7 +41,8 @@
 				option: ["大号侧","小号侧"],
 				list: [],
 				inlist:[],
-				phase_name: ""
+				phase_name: "",
+				side_id:''
 			};
 		},
 		onLoad(option) {
@@ -56,6 +57,7 @@
 					this.title = res.data.tower_position
 					this.list = res.data.data
 					this.inlist = this.list[0].warefire
+					this.side_id = this.list[0].side_id
 				})
 			},
 			anime(item){
@@ -63,8 +65,10 @@
 				this.choiceactive = -1
 				if(item=='大号侧'){
 					this.inlist = this.list[0].warefire
+					this.side_id = this.list[0].side_id
 				}else{
 					this.inlist = this.list[1].warefire
+					this.side_id = this.list[1].side_id
 				}
 			},
 			sure(){
@@ -74,7 +78,8 @@
 					id: this.inlist[this.choiceactive].warefire_id,
 					img: this.inlist[this.choiceactive].ware_picture,
 					phase_name: this.phase_name,
-					title: this.title
+					title: this.title,
+					side_id: this.side_id
 				}
 				this.$store.commit('pagoda',obj)
 				uni.redirectTo({

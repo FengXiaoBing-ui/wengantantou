@@ -95,6 +95,10 @@
 					<image class="bordbotimg" src="../../../static/icon/15.png" mode=""></image>
 				</view>
 			</view>
+			<view class="Tips" v-if="listcontent.is_collect == 0">
+				<image src="../../../static/icon/tips.png" mode=""></image>
+				<text>设备库暂无该设备，若暂不需要激活，可将设备预先加入设备库</text>
+			</view>
 			<view class="botbtn">
 				<view class="btnleft" @click="add" v-if="listcontent.is_collect == 0">
 					<image src="../../../static/icon/addtwo.png" mode=""></image>
@@ -108,10 +112,6 @@
 					<image src="../../../static/icon/15144.png" mode=""></image>
 					<text>激活设备</text>
 				</view>
-			</view>
-			<view class="Tips" v-if="listcontent.is_collect == 0">
-				<image src="../../../static/icon/tips.png" mode=""></image>
-				<text>设备库暂无该设备，若暂不需要激活，可将设备预先加入设备库</text>
 			</view>
 		</view>
 		<uni-popup type="center" ref="popup" class="pop">
@@ -163,6 +163,7 @@ export default {
 	},
 	methods: {
 		repeater_detail(id) {
+			console.log(6453,{ id: this.id, loginId: uni.getStorageSync('loginId') })
 			this.$api.postapi('/api/repeater/sel_repeater_detail', { id: this.id, loginId: uni.getStorageSync('loginId') }).then(res => {
 				console.log(res);
 				this.listcontent = res.data.data;
@@ -453,8 +454,8 @@ export default {
 		}
 	}
 	.botbtn {
-		position: absolute;
-		bottom: 0;
+		position: relative;
+		bottom: -200rpx;
 		left: 0;
 		z-index: 1;
 		width: 100%;

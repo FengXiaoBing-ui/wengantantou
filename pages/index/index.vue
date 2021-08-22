@@ -130,19 +130,33 @@
 			Scancode(){
 				uni.scanCode({
 				    success: function (res) {
-						console.log(res)
+						console.log('OJBK',res)
 				        console.log('条码类型：' + res.scanType);
 				        console.log('条码内容：' + res.result);
-						let obj = JSON.parse(res.result)
-						if(obj.type==0){
-							uni.navigateTo({
-								url:"../scan/scanprobedetail/scanprobedetail?id="+obj.id
-							})
-						}else{
-							uni.navigateTo({
-								url:"../scan/scanRepeater/scanRepeater?id="+obj.id
+						try{
+							let obj = JSON.parse(res.result)
+							console.log('id:',obj.id)
+							if(obj.type==0){
+								uni.navigateTo({
+									url:"../scan/scanprobedetail/scanprobedetail?id="+obj.id
+								})
+							}else if(obj.type==1){
+								uni.navigateTo({
+									url:"../scan/scanRepeater/scanRepeater?id="+obj.id
+								})
+							}else{
+								uni.showToast({ 
+									title:'无效的二维码',
+									icon:"none"
+								})
+							}
+						}catch(e){
+							uni.showToast({
+								title:'无效的二维码',
+								icon:"none"
 							})
 						}
+						
 				    }
 				});
 			},

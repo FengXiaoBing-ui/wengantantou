@@ -4,8 +4,8 @@
 		<view class="wrap">
 			<view class="box">
 				<view class="title">
-					<text>版本{{ upgrade.title }}{{ upgrade.version_number }}</text>
-					<text>更新时间：{{ upgrade.update_time }}</text>
+					<text>版本v{{ upgrade.version_number }}{{ upgrade.title }}</text>
+					<text>更新时间：{{ upgrade.create_time }}</text>
 				</view>
 				<rich-text style="color: #FFFFFF;" :nodes="upgrade.content"></rich-text>
 			</view>

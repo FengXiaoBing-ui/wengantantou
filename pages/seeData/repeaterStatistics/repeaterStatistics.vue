@@ -7,17 +7,17 @@
 					<view style="display: flex;justify-content: space-evenly;width: 100%;">
 						<view class="all_count">
 							<view class="all_count_text" style="width: 100rpx;"> <view style="width: 20rpx;height: 20rpx;border-radius: 50%;background: #60E2AA;"></view> <text>在线</text></view>
-							<text>720 <text style="opacity: 0.6;font-size: 24rpx;">台</text> </text>
+							<text>{{ statistics.online_count }} <text style="opacity: 0.6;font-size: 24rpx;">台</text> </text>
 						</view>
 						<view class="all_count">
 							<view class="all_count_text" style="width: 100rpx;"> <view style="width: 20rpx;height: 20rpx;border-radius: 50%;background: #77BEC9;"></view> <text>在线</text></view>
-							<text>50 <text style="opacity: 0.6;font-size: 24rpx;">台</text></text>
+							<text>{{ statistics.offline_count }}<text style="opacity: 0.6;font-size: 24rpx;">台</text></text>
 						</view>
 					</view>
 					
 					<view class="all_count">
 						<view class="all_count_text"><text>中继器总数</text></view>
-						<text> 752 <text style="opacity: 0.6;font-size: 24rpx;">台</text> </text>
+						<text> {{ statistics.online_count+statistics.offline_count }} <text style="opacity: 0.6;font-size: 24rpx;">台</text> </text>
 					</view>
 				</view>
 				<view class="right">
@@ -81,6 +81,7 @@
 export default {
 	data() {
 		return {
+			statistics:{},
 			serviceId: '',
 			deviceId: '',
 			more: 'noMore',
@@ -122,9 +123,18 @@ export default {
 		};
 	},
 	onLoad() {
+		this.Repeaterstatistics()
 		this.openBluetoothAdapter();
 	},
 	methods: {
+		
+		Repeaterstatistics(){
+			this.$api.postapi('/api/watchdata/repeater_statistics').then(res => {
+				console.log(res)
+				this.statistics = res.data
+			})
+		},
+		
 		witeoverhaul() {
 			this.active = 'bordbot_left';
 			this.fontactive_left = 'active';

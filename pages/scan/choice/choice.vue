@@ -92,12 +92,13 @@
 			},
 			sure(){
 				if(this.btnshow){
-					this.$api.postapi('/api/sensor/activa_sensor',{
+					this.$api.postapi('/api/Sensor/activa_sensor1',{
+						side_id:this.obj.side_id,
 						repeater_id: this.reap.repeater_id,
 						warefire_id: this.obj.id,
 						id:this.$store.state.probeid
 					}).then(res => {
-						console.log(res)
+						console.log('okoko',res)
 						if(res.data.code==1){
 							uni.navigateTo({
 								url:"../result/result"

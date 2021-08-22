@@ -9,15 +9,15 @@
 					<text>系统总运行时间</text>
 				</view>
 				<view class="all_time">
-					<text>1258</text>
+					<text>{{ screening.days }}</text>
 					<text>天</text>
-					<text>25</text>
+					<text>{{ screening.hours }}</text>
 					<text>小时</text>
-					<text>54</text>
+					<text>{{ screening.minutes }}</text>
 					<text>分钟</text>
 				</view>
 				<view class="last_time">
-					<text>上次重启于：2012-12-25 15:33:41</text>
+					<text>上次重启于：{{ screening.restart_time }}</text>
 				</view>
 			</view>
 			<view class="mid_l1_and_r2">
@@ -28,8 +28,8 @@
 							<image class="out" src="../../../static/icon/6989.png" mode=""></image>
 						</view>
 						<view class="content">
-							<text>探头设备数量</text>
-							<text>5478</text>
+							<text>注册激活探头</text>
+							<text>{{ screening.sensor_count }}</text>
 							<view class="detail_box">
 								<text>详细统计</text>
 								<image src="../../../static/icon/right.png" mode=""></image>
@@ -46,8 +46,8 @@
 						<image class="out" src="../../../static/icon/6989.png" mode=""></image>
 					</view>
 					<view class="content">
-						<text>中继器设备数量</text>
-						<text>5478</text>
+						<text>注册中继器</text>
+						<text>{{ screening.repeater_count }}</text>
 						<view class="detail_box">
 							<text>详细统计</text>
 							<image src="../../../static/icon/right.png" mode=""></image>
@@ -60,14 +60,14 @@
 			<view class="mid_count">
 				<view class="left">
 					<image class="top_icon" src="../../../static/icon/7052.png" mode=""></image>
-					<text class="name">输电塔数量</text>
-					<text class="count">123</text>
+					<text class="name">登记输电塔</text>
+					<text class="count">{{ screening.tagan_count }} <text style="font-size: 24rpx;opacity: 0.6;">座</text></text>
 					<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
 				</view>
 				<view class="right">
 					<image class="top_icon" src="../../../static/icon/line_7053.png" mode=""></image>
-					<text class="name">输电塔数量</text>
-					<text class="count">123</text>
+					<text class="name">登记输电线路</text>
+					<text class="count">{{ screening.line_count }}<text style="font-size: 24rpx;opacity: 0.6;">条</text></text>
 					<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
 				</view>
 			</view>
@@ -76,7 +76,7 @@
 					<image class="top_icon" style="width: 87rpx;height: 87rpx;" src="../../../static/icon/7100@2x.png" mode=""></image>
 					<view class="count_box">
 						<text class="name">维护班组</text>
-						<text class="count">123<text class="name">个</text></text>
+						<text class="count">{{ screening.maintenance_team_count }}<text class="name">个</text></text>
 						<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
 					</view>
 				</view>
@@ -84,7 +84,7 @@
 					<image class="top_icon" style="width: 87rpx;height: 87rpx;" src="../../../static/icon/7099@2x.png" mode=""></image>
 					<view class="count_box">
 						<text class="name">维护人员</text>
-						<text class="count">123 <text class="name">个</text> </text>
+						<text class="count">{{ screening.maintenance_people_count }} <text class="name">个</text> </text>
 						<image class="bot_bord" src="../../../static/icon/13967.png" mode=""></image>
 					</view>
 					
@@ -146,9 +146,20 @@
 					    }
 					  ]
 					}]
-				}
-				
+				},
+				screening:{},
 			};
+		},
+		created() {
+			this.datascreening()
+		},
+		methods:{
+			datascreening(){
+				this.$api.postapi('/api/Watchdata/device_run_data_message').then(res => {
+					console.log(res)
+					this.screening = res.data
+				})
+			}
 		}
 	}
 </script>

@@ -2,8 +2,8 @@
     "name" : "温感探头",
     "appid" : "__UNI__2DB4C47",
     "description" : "",
-    "versionName" : "1.0.5",
-    "versionCode" : 105,
+    "versionName" : "1.1.1",
+    "versionCode" : 111,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
