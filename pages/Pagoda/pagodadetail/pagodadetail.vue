@@ -72,9 +72,9 @@
 						<view
 							class="electric-right"
 							:class="{
-								'electric-right-blue': item.now_temperature <= item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
-								'electric-right-origin': item.now_temperature <= item.high_temperature && item.now_temperature > item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
-								'electric-right-red': item.now_temperature > item.high_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+								'electric-right-blue': item.now_temperature < item.high_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+								'electric-right-origin': item.now_temperature >= item.high_temperature &&item.now_temperature < item.over_temperature && item.now_temperature > item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+								'electric-right-red': item.now_temperature >= item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
 								'electric-left-no': item.state_text == '已离线'||item.state_text == '维修'||item.state_text == '报废',
 								'electric-left-lixian': item.state_text == '待激活'
 							}"
@@ -175,6 +175,9 @@
 			};
 		},
 		created() {
+			this.arr = this.screenactive
+		},
+		onShow() {
 			this.arr = this.screenactive
 		},
 		onReachBottom() {

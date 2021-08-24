@@ -111,7 +111,7 @@ export default {
 		this.warning(this.type);
 		this.more = 'loading';
 	},
-	created() {
+	onShow() {
 		this.warning(0);
 	},
 	methods: {

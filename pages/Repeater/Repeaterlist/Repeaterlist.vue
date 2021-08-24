@@ -78,7 +78,7 @@
 			}
 		},
 		onShow() {
-			
+			this.repeaterlist()
 		},
 		methods:{
 			screen(obj){

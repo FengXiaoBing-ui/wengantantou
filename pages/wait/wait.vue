@@ -292,6 +292,11 @@
  			this.waitdata(this.type)
  		},
  		onShow() {
+			this.$api.postapi('/api/Alarmlog/sel_warn_task_count').then(res => {
+				this.$store.commit('count',res.data)
+				this.count = this.$store.state.count.total_warn_count
+				this.waitcount = this.$store.state.count.task_count
+			})
 			this.waitdata(0)
  			uni.hideTabBar()
  		},

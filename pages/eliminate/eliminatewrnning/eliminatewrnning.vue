@@ -46,6 +46,9 @@
 		created() {
 			this.alldata(0)
 		},
+		onShow() {
+			this.alldata(0)
+		},
 		onReachBottom() {
 			this.more = "loading"
 			this.limit += 4

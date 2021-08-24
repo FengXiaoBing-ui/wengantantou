@@ -27,7 +27,7 @@
 							:opts="{
 								fontSize: 10,
 								fontColor: '#ffffff',
-								title: { name: '88%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
+								title: { name: statistics.online_rate+'%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
 								subtitle: { name: '' },
 								extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
 							}"
@@ -98,40 +98,46 @@ export default {
 					num:'T5B464668444447'
 				},
 			],
-			chartsDataGauge1: {
-				categories: [
-					{
-						value: 0.2,
-						color: '#60E2AA'
-					},
-					{
-						value: 0.8,
-						color: '#60E2AA'
-					},
-					{
-						value: 1,
-						color: '#60E2AA'
-					}
-				],
-				series: [
-					{
-						name: '完成率',
-						data: 0.89
-					}
-				]
-			}
+			chartsDataGauge1: ""
 		};
 	},
+	beforeCreate() {
+		setTimeout(() => {
+			this.Repeaterstatistics()
+		},5)
+	},
 	onLoad() {
-		this.Repeaterstatistics()
+		
 		this.openBluetoothAdapter();
 	},
 	methods: {
-		
 		Repeaterstatistics(){
 			this.$api.postapi('/api/watchdata/repeater_statistics').then(res => {
 				console.log(res)
 				this.statistics = res.data
+				this.statistics.online_rate = this.statistics.online_rate.toFixed(2)
+				this.chartsDataGauge1 = {
+					categories: [
+						{
+							value: 0.2,
+							color: '#60E2AA'
+						},
+						{
+							value: 0.8,
+							color: '#60E2AA'
+						},
+						{
+							value: 1,
+							color: '#60E2AA'
+						}
+					],
+					series: [
+						{
+							name: '完成率',
+							data: this.statistics.online_rate/100
+						}
+					]
+				}
 			})
 		},
 		

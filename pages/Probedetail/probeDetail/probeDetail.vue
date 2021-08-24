@@ -36,12 +36,12 @@
 				<view
 					class="box-right"
 					:class="{
-						'box-right-blue': SensorBase.now_temperature <= SensorBase.over_temperature && SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
+						'box-right-blue': SensorBase.now_temperature < SensorBase.high_temperature && SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
 						'box-right-yellow':
-							SensorBase.now_temperature <= SensorBase.high_temperature &&
-							SensorBase.now_temperature > SensorBase.over_temperature &&
+							SensorBase.now_temperature >= SensorBase.high_temperature &&
+							SensorBase.now_temperature < SensorBase.over_temperature &&
 							SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
-						'box-right-red': SensorBase.now_temperature > SensorBase.high_temperature && SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
+						'box-right-red': SensorBase.now_temperature > SensorBase.over_temperature && SensorBase.state_text != '待激活'&& SensorBase.state_text != '已离线'&& SensorBase.state_text != '报废'&& SensorBase.state_text != '维修',
 						'electric-left-no': SensorBase.state_text == '已离线'||SensorBase.state_text == '维修'||SensorBase.state_text == '报废',
 						'electric-left-lixian': SensorBase.state_text == '待激活'
 					}"
@@ -515,7 +515,6 @@ export default {
 		}
 		.box-right-yellow {
 			background: linear-gradient(180deg, rgba(219, 229, 127, 0.7) 0%, #f86c10 100%);
-			opacity: 0.65;
 		}
 		.box-right-red {
 			background: linear-gradient(180deg, #f44336 0%, #710105 100%);

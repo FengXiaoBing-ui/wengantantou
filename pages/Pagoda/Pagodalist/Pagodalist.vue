@@ -97,6 +97,9 @@
 			this.more = 'loading'
 			this.pagodalist()
 		},
+		onShow() {
+			this.pagodalist()
+		},
 		methods:{
 			searchdata(){
 				this.limit = 20

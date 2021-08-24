@@ -18,7 +18,7 @@
 						:opts="{
 							fontSize: 10,
 							fontColor: '#ffffff',
-							title: { name: '8%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
+							title: { name: statistics.online_rate+'%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
 							subtitle: { name: '' },
 							extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
 						}"
@@ -32,7 +32,7 @@
 						:opts="{
 							fontSize: 10,
 							fontColor: '#ffffff',
-							title: { name: '88%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
+							title: { name: statistics.early_warning_rate+'%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
 							subtitle: { name: '' },
 							extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
 						}"
@@ -102,7 +102,11 @@
 			<view class="footback">
 				<image class="background" src="。static/icon/59@2x.png" mode=""></image>
 				<image src="../../../static/icon/7101@2x.png" mode=""></image>
-				<text style="color: #fff;">当前注册激活<text style="font-size: 36rpx;font-weight: bold;">{{ statistics.active_count }}</text>支</text>
+				<text style="color: #fff;">
+					当前注册激活
+					<text style="font-size: 36rpx;font-weight: bold;">{{ statistics.active_count }}</text>
+					支
+				</text>
 			</view>
 		</view>
 	</view>
@@ -112,46 +116,54 @@
 export default {
 	data() {
 		return {
-			statistics:{},
-			chartsDataGauge1: {
-				categories: [
-					{
-						value: 1,
-						color: '#FF8784'
-					}
-				],
-				series: [
-					{
-						name: '完成率',
-						data: 0.08
-					}
-				]
-			},
-			chartsDataGauge2: {
-				categories: [
-					{
-						value: 1,
-						color: '#43FFF2'
-					}
-				],
-				series: [
-					{
-						name: '完成率',
-						data: 0.89
-					}
-				]
-			}
+			statistics: {},
+			chartsDataGauge1: "",
+			chartsDataGauge2: ""
 		};
 	},
-	created() {
-		this.Probestatistics()
+	beforeCreate() {
+		setTimeout(() => {
+			this.Probestatistics();
+		},5)
 	},
-	methods:{
-		Probestatistics(){
+	onShow() {
+	},
+	methods: {
+		Probestatistics() {
 			this.$api.postapi('/api/Watchdata/probe_statistics').then(res => {
-				console.log(res)
-				this.statistics = res.data
-			})
+				console.log(res);
+				this.statistics = res.data;
+				this.statistics.online_rate = this.statistics.online_rate.toFixed(2)
+				this.statistics.early_warning_rate = this.statistics.early_warning_rate.toFixed(2)
+				this.chartsDataGauge1 = {
+					categories: [
+						{
+							value: 1,
+							color: '#FF8784'
+						}
+					],
+					series: [
+						{
+							name: '完成率',
+							data: this.statistics.online_rate/100
+						}
+					]
+				}
+				this.chartsDataGauge2 = {
+					categories: [
+						{
+							value: 1,
+							color: '#43FFF2'
+						}
+					],
+					series: [
+						{
+							name: '完成率',
+							data: this.statistics.early_warning_rate/100
+						}
+					]
+				}
+			});
 		}
 	}
 };
@@ -178,11 +190,11 @@ export default {
 		justify-content: center;
 		align-items: center;
 		position: relative;
-		image{
+		image {
 			width: 87rpx;
 			height: 87rpx;
 		}
-		.background{
+		.background {
 			position: absolute;
 			left: 0;
 			top: 0;

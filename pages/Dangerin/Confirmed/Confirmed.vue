@@ -97,7 +97,7 @@
 				</view>
 			</view>
 			
-			<view class="sumbit" @click="jump" v-if="listcontent.is_publish_task==0&&role==1">
+			<view class="sumbit" @click="jump" v-if="listcontent.is_publish_task==0&&role==1&&listcontent.is_remove_warning==1">
 				<image src="../../../static/icon/5144.png" mode=""></image>
 				<text>发布消警任务</text>
 			</view>

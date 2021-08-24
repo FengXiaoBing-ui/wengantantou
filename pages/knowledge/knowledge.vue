@@ -5,7 +5,7 @@
 			<view class="list" v-for="item in list" :key="item.id" @click="jump(item.id)">
 				<view class="textleft">
 					<text>{{ item.title }}</text>
-					<text class="time">更新时间：{{ item.update_time }}</text>
+					<text class="time">更新时间：{{ item.create_time }}</text>
 				</view>
 				<image class="minright" src="../../static/icon/minright.png" mode=""></image>
 				<image class="leftbord" src="../../static/icon/vertical.png" mode=""></image>
@@ -22,7 +22,7 @@
 				list: []
 			};
 		},
-		created() {
+		onShow() {
 			this.upgrate()
 		},
 		methods:{

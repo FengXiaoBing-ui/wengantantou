@@ -38,7 +38,7 @@
 					</view>
 					<view class="list-content">
 						<text>告警详情</text>
-						<text style="display: block;margin: 0;">告警详情的文字告警详情的文字告警详情的文字告警详情的文字告警详情的文字</text>
+						<text style="display: block;margin: 0;">{{ listcontent.remark }}</text>
 						<view></view>
 					</view>
 					<view class="list-content">

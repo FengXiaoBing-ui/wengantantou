@@ -153,6 +153,9 @@
 		created() {
 			this.datascreening()
 		},
+		onShow() {
+			this.datascreening()
+		},
 		methods:{
 			datascreening(){
 				this.$api.postapi('/api/Watchdata/device_run_data_message').then(res => {
