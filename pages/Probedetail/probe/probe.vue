@@ -98,15 +98,19 @@ export default {
 			// 	delete obj.tagan_id
 			// }
 			this.obj = obj;
-			setTimeout(() => {
-				this.screen(obj);
-			}, 0);
+			uni.showLoading({
+				title:'加载数据中...'
+			})
+			this.screen(obj);
 		} else {
 			this.queryprobelist();
 		}
 	},
 	onShow() {
-		this.queryprobelist();
+		if(JSON.stringify(this.obj)=='{}'){
+			this.queryprobelist();
+		}
+		
 	},
 	created() {},
 	methods: {
@@ -116,16 +120,16 @@ export default {
 		},
 		screen(obj) {
 			this.$api.postapi('/api/Sensor/sensor_screen', obj).then(res => {
+				
 				if (this.limit >= res.data.count) {
 					this.more = 'nomore';
 				}
-				// console.log(456, res);
 				if (res.data.code == 0) {
 					this.more = 'nomore';
-					return false;
 				} else {
 					this.probelist = res.data.data;
 				}
+				uni.hideLoading()
 			});
 		},
 		queryprobelist() {
@@ -134,6 +138,7 @@ export default {
 					this.more = 'nomore';
 				}
 				if(res.data.data){
+					console.log('OK')
 					this.probelist = res.data.data;
 				}else{
 					this.probelist=[];

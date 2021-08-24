@@ -110,7 +110,7 @@ export default {
 		
 		this.openBluetoothAdapter();
 	},
-	methods: {
+	methods: { 
 		Repeaterstatistics(){
 			this.$api.postapi('/api/watchdata/repeater_statistics').then(res => {
 				console.log(res)

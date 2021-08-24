@@ -15,7 +15,7 @@
 					<text class="title">当前预警率</text>
 					<qiun-data-charts
 						type="gauge"
-						:opts="{
+						:opts="{ 
 							fontSize: 10,
 							fontColor: '#ffffff',
 							title: { name: statistics.online_rate+'%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },

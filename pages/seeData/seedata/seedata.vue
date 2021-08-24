@@ -16,7 +16,7 @@
 					<text>{{ screening.minutes }}</text>
 					<text>分钟</text>
 				</view>
-				<view class="last_time">
+				<view class="last_time"> 
 					<text>上次重启于：{{ screening.restart_time }}</text>
 				</view>
 			</view>
