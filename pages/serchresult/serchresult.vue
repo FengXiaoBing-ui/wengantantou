@@ -39,36 +39,35 @@
 					<view
 						class="electric-left"
 						:class="{
-							'electric-left-blue': item.power_number > $store.state.electric && item.state_text == '工作中',
-							'electric-left-red': item.power_number <= $store.state.electric && item.state_text == '工作中',
-							'electric-left-no': item.state_text == '已离线',
+							'electric-left-blue': item.power_number > $store.state.electric&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-left-red': item.power_number <= $store.state.electric&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-left-no': item.state_text == '已离线'||item.state_text == '维修'||item.state_text == '报废',
 							'electric-left-lixian': item.state_text == '待激活'
 						}"
 					>
 						<view
 							class="electric-num-left"
 							:class="{ blue: item.power_number > $store.state.electric, red: item.power_number <= $store.state.electric }"
-							:style="{ width: item.state_text == '工作中' ? item.power_number + '%' : 0 }"
+							:style="{ width: item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废'?(item.power_number + '%'):0 }"
 						></view>
 						<image src="../../static/icon/6820.png" mode=""></image>
 						<text>电量</text>
-						<text class="num">{{ item.state_text == '工作中' ? item.power_number + '%' : '---' }}</text>
+						<text class="num">{{ item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废' ? item.power_number + '%' : '---' }}</text>
 					</view>
 					<view
 						class="electric-right"
 						:class="{
-							'electric-right-blue': item.now_temperature <= item.over_temperature && item.state_text == '工作中',
-							'electric-right-origin':
-								item.now_temperature <= item.high_temperature && item.now_temperature > item.over_temperature && item.state_text == '工作中',
-							'electric-right-red': item.now_temperature > item.high_temperature && item.state_text == '工作中',
-							'electric-left-no': item.state_text == '已离线',
+							'electric-right-blue': item.now_temperature <= item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-right-origin': item.now_temperature >= item.high_temperature && item.now_temperature < item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-right-red': item.now_temperature > item.over_temperature&&item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废',
+							'electric-left-no': item.state_text == '已离线'||item.state_text == '维修'||item.state_text == '报废',
 							'electric-left-lixian': item.state_text == '待激活'
 						}"
 					>
 						<image src="../../static/icon/6823.png" mode=""></image>
 						<text>温度</text>
-						<text class="num">{{ item.state_text == '工作中' ? item.now_temperature + '℃' : '---' }}</text>
-					</view>
+							<text class="num">{{ item.state_text != '已离线'&&item.state_text != '待激活'&&item.state_text != '维修'&&item.state_text != '报废' ? (item.now_temperature + '℃') : '---' }}</text>
+						</view>
 				</view>
 				<text class="bot-text" v-if="item.state_text != '待激活'" :style="item.state_text == '已离线' ? 'opacity:0.4' : ''">位置：{{ item.tower_position }}</text>
 				<view class="box-foot"></view>
@@ -93,6 +92,7 @@
 				<view class="list-mid">
 					<view class="list-mid-left">
 						<text>IP: {{ item.state_text=='待激活'?'- - -':item.ip }}</text>
+						<text>设备名称: {{ item.repeater_name }}</text>
 						<text>4G卡号: {{ item.state_text=='待激活'?'- - -':item.repeater_phone }}</text>
 						<text>位置: {{ item.state_text=='待激活'?'- - -':item.tower_position }}</text>
 					</view>
@@ -101,12 +101,12 @@
 						<text>{{ item.temp_sensor_number }}个</text>
 					</view>
 				</view>
-				<view class="list-bot" :class="{'borderred':item.electric_quality<=30,'borderblue':item.electric_quality>30}">
+<!-- 				<view class="list-bot" :class="{'borderred':item.electric_quality<=30,'borderblue':item.electric_quality>30}">
 					<image src="../../static/icon/6820.png" mode=""></image>
 					<text>电量 </text>
 					<text> {{ item.state_text=='工作中'?(item.electric_quality+'%'):'- - -' }}</text>
 					<view class="background" :class="{'blue':item.electric_quality>30,'red':item.electric_quality<=30}" :style="{width: item.state_text=='工作中'?(item.electric_quality+'%'):0}"></view>
-				</view>
+				</view> -->
 				<view class="botborder"></view>
 			</view>
 			<uni-load-more v-if="probelist.length>0" :status="more"></uni-load-more>

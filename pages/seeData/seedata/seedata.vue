@@ -13,7 +13,7 @@
 					<text>天</text>
 					<text>{{ screening.hours }}</text>
 					<text>小时</text>
-					<text>{{ screening.minutes }}</text>
+					<text>{{ screening.minutes?screening.minutes:0 }}</text>
 					<text>分钟</text>
 				</view>
 				<view class="last_time"> 

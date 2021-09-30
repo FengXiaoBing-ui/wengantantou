@@ -184,7 +184,9 @@ export default {
 							url: '../index/index'
 						});
 					}
-				});
+				}).catch(err => {
+					console.log(err)
+				})
 		},
 		remember() {
 			this.isshow = !this.isshow;

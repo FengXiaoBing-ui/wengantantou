@@ -101,12 +101,19 @@
 						console.log('okoko',res)
 						if(res.data.code==1){
 							uni.navigateTo({
-								url:"../result/result"
+								url:"../result/result?type="+true
+							})
+						}else{
+							uni.navigateTo({
+								url:"../result/result?type="+false
 							})
 						}
 					})
 				}else{
-					
+					uni.showToast({
+						title:'请选择中继器和输电塔',
+						icon:"none"
+					})
 				}
 				
 			}

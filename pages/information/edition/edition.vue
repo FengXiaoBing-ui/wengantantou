@@ -103,6 +103,7 @@
 				this.$api.postapi('/api/fuc/check_update', {
 					version: plus.runtime.version
 				}).then(res => {
+					console.log(res)
 					if (res.data.code == 1) {
 						_this.$refs.downloadpopup.open()
 						_this.editiondata = res.data.data
@@ -111,7 +112,7 @@
 						// plus.runtime.openURL(urlStr)
 					} else {
 						uni.showToast({
-							title: "当前版本已是最新版本",
+							title: res.data.msg,
 							icon: "none"
 						})
 					}

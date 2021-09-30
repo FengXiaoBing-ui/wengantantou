@@ -87,6 +87,11 @@
 						imgurl: require("../../static/icon/6815.png"),
 						path: "../seeData/seedata/seedata",
 					},
+					{
+						text: "中继器",
+						imgurl: require("../../static/icon/6815.png"),
+						path: "../Bluetooth/Bluetooth",
+					},
 				]
 			}
 		},
@@ -189,7 +194,7 @@
 		flex-direction: column;
 		background: #033785;
 		.content_wrap{
-			padding: 0 34rpx;
+			padding: 0 34rpx 150rpx 34rpx;
 			box-sizing: border-box;
 			text-align: center;
 			z-index: 999;

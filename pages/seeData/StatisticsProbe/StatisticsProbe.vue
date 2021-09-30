@@ -15,20 +15,6 @@
 					<text class="title">当前预警率</text>
 					<qiun-data-charts
 						type="gauge"
-						:opts="{ 
-							fontSize: 10,
-							fontColor: '#ffffff',
-							title: { name: statistics.online_rate+'%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
-							subtitle: { name: '' },
-							extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
-						}"
-						:chartData="chartsDataGauge1"
-					/>
-				</view>
-				<view class="right">
-					<text class="title">当前在线率</text>
-					<qiun-data-charts
-						type="gauge"
 						:opts="{
 							fontSize: 10,
 							fontColor: '#ffffff',
@@ -37,6 +23,21 @@
 							extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
 						}"
 						:chartData="chartsDataGauge2"
+					/>
+					
+				</view>
+				<view class="right">
+					<text class="title">当前在线率</text>
+					<qiun-data-charts
+						type="gauge"
+						:opts="{ 
+							fontSize: 10,
+							fontColor: '#ffffff',
+							title: { name: statistics.online_rate+'%', color: '#FFFCE6', fontSize: 24, offsetY: 50 },
+							subtitle: { name: '' },
+							extra: { gauge: { labelColor: '#fff', width: 8, splitLine: { childWidth: 8, width: 10 }, pointer: { width: 10 } } }
+						}"
+						:chartData="chartsDataGauge1"
 					/>
 				</view>
 			</view>
@@ -139,7 +140,7 @@ export default {
 					categories: [
 						{
 							value: 1,
-							color: '#FF8784'
+							color: '#43FFF2'
 						}
 					],
 					series: [
@@ -153,7 +154,7 @@ export default {
 					categories: [
 						{
 							value: 1,
-							color: '#43FFF2'
+							color: '#FF8784'
 						}
 					],
 					series: [

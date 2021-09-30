@@ -720,10 +720,25 @@
         }
         ,{
             "path" : "pages/Repeater/Repeaterlist1/Repeaterlist1",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
+                "enablePullDownRefresh": false,
+            	"app-plus":{
+            		"titleNView":false
+            	}
+            }
+            
+        }
+        ,{
+            "path" : "pages/Bluetooth/Bluetooth",
+            "style" :
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+            	"app-plus":{
+            		"titleNView":false
+            	}
             }
             
         }

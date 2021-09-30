@@ -1,4 +1,4 @@
-const httpurl = "http://wgtt.welamp.cn"
+const httpurl = "http://wgtt.welamp.cn:8090"
 export default {
 	postapi(myurl,data){
 		return new Promise((resolve,reject) => {

@@ -4,18 +4,31 @@
 		<view class="wrap">
 			<view class="anime">
 				<image class="out" src="../../../static/icon/6764.png" mode=""></image>
-				<image class="ok" src="../../../static/icon/completed.png" mode=""></image>
+				<image v-if="type=='true'" class="ok" src="../../../static/icon/completed.png" mode=""></image>
+				<image v-if="type=='false'" class="ok" src="../../../static/icon/bigclose.png" mode=""></image>
 			</view>
-			<view class="midtext">
+			<view class="midtext" v-if="type=='true'">
 				<text>激活成功</text>
 				<text>您可以继续激活其它设备或返回列表</text>
 			</view>
-			<view class="botbtn">
+			<view class="midtext" v-if="type=='false'">
+				<text>激活失败</text>
+				<text>您可以选择重试或新增其它设备</text>
+			</view>
+			<view class="botbtn" v-if="type=='true'">
 				<view class="botbtn-left" @click="open">
 					继续激活
 				</view>
 				<view class="botbtn-right" @click="back">
 					返回列表
+				</view>
+			</view>
+			<view class="botbtn" v-if="type=='false'">
+				<view class="botbtn-left" @click="retry">
+					重试
+				</view>
+				<view class="botbtn-right" @click="newadd">
+					新增
 				</view>
 			</view>
 		</view>
@@ -26,8 +39,11 @@
 	export default {
 		data() {
 			return {
-				
+				type:false
 			};
+		},
+		onLoad(options) {
+			this.type = options.type
 		},
 		methods:{
 			open(){
@@ -36,6 +52,18 @@
 				})
 			},
 			back(){
+				uni.redirectTo({
+					url:"../../Probedetail/probe/probe"
+				})
+			},
+			//重试
+			retry(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
+			//新增
+			newadd(){
 				uni.redirectTo({
 					url:"../../Probedetail/probe/probe"
 				})
