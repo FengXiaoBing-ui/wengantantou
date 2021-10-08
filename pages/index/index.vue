@@ -88,9 +88,9 @@
 						path: "../seeData/seedata/seedata",
 					},
 					{
-						text: "中继器",
+						text: "蓝牙",
 						imgurl: require("../../static/icon/6815.png"),
-						path: "../Bluetooth/Bluetooth",
+						path: "../BlueConnectivity/BlueConnectivity",
 					},
 				]
 			}

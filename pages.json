@@ -742,6 +742,19 @@
             }
             
         }
+        ,{
+            "path" : "pages/BlueConnectivity/BlueConnectivity",
+            "style" :
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+            	"app-plus":{
+            		"titleNView":false
+                }
+                
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
